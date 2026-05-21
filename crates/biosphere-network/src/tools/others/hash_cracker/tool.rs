@@ -189,7 +189,7 @@ impl HashCrackerTool {
             128 => "sha512".to_string(),
             8 => "crc32".to_string(),
             16 => "mysql323".to_string(),
-            32 if lower.chars().all(|c| c.is_ascii_hexdigit()) => "ntlm".to_string(),
+            // 32 if hex was already handled above; NTLM detected by $ prefix check earlier
             _ => "unknown".to_string(),
         }
     }

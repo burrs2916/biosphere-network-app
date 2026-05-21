@@ -16,12 +16,12 @@ struct MaigretData {
 struct MaigretSite {
     #[serde(default)]
     url: Option<String>,
-    #[serde(default)]
-    urlMain: Option<String>,
-    #[serde(default)]
-    urlProbe: Option<String>,
-    #[serde(default)]
-    urlSubpath: Option<String>,
+    #[serde(default, rename = "urlMain")]
+    url_main: Option<String>,
+    #[serde(default, rename = "urlProbe")]
+    url_probe: Option<String>,
+    #[serde(default, rename = "urlSubpath")]
+    url_subpath: Option<String>,
     #[serde(default, rename = "checkType")]
     check_type: Option<String>,
     #[serde(default, rename = "errorType")]
@@ -84,12 +84,12 @@ struct MaigretEngine {
 struct MaigretEngineSite {
     #[serde(default)]
     url: Option<String>,
-    #[serde(default)]
-    urlMain: Option<String>,
-    #[serde(default)]
-    urlProbe: Option<String>,
-    #[serde(default)]
-    urlSubpath: Option<String>,
+    #[serde(default, rename = "urlMain")]
+    url_main: Option<String>,
+    #[serde(default, rename = "urlProbe")]
+    url_probe: Option<String>,
+    #[serde(default, rename = "urlSubpath")]
+    url_subpath: Option<String>,
     #[serde(default, rename = "checkType")]
     check_type: Option<String>,
     #[serde(default, rename = "errorType")]
@@ -211,19 +211,19 @@ impl MaigretImporter {
 
         let url = site.url.as_deref()
             .or_else(|| engine_site.and_then(|es| es.url.as_deref()))
-            .or_else(|| site.urlMain.as_deref())?;
+            .or_else(|| site.url_main.as_deref())?;
 
         let url_template = url.to_string();
-        let url_main = site.urlMain.as_deref()
-            .or_else(|| engine_site.and_then(|es| es.urlMain.as_deref()))
+        let url_main = site.url_main.as_deref()
+            .or_else(|| engine_site.and_then(|es| es.url_main.as_deref()))
             .map(|s| s.to_string());
 
-        let url_probe = site.urlProbe.as_deref()
-            .or_else(|| engine_site.and_then(|es| es.urlProbe.as_deref()))
+        let url_probe = site.url_probe.as_deref()
+            .or_else(|| engine_site.and_then(|es| es.url_probe.as_deref()))
             .map(|s| s.to_string());
 
-        let url_subpath = site.urlSubpath.as_deref()
-            .or_else(|| engine_site.and_then(|es| es.urlSubpath.as_deref()))
+        let url_subpath = site.url_subpath.as_deref()
+            .or_else(|| engine_site.and_then(|es| es.url_subpath.as_deref()))
             .map(|s| s.to_string());
 
         let check_type = site.check_type.as_deref()
@@ -308,7 +308,7 @@ impl MaigretImporter {
                 "presence_strs": e.presence_strs,
                 "site": e.site.as_ref().map(|s| serde_json::json!({
                     "url": s.url,
-                    "urlMain": s.urlMain,
+                    "urlMain": s.url_main,
                     "checkType": s.check_type,
                     "errorType": s.error_type,
                     "presenseStrs": s.presence_strs,
