@@ -1,0 +1,9 @@
+{
+  "log": {
+    "log_dir": "logs",
+    "log_file": "api.log",
+    "clear_on_start": true,
+    "level": "info",
+    "console_output": true
+  }
+}
