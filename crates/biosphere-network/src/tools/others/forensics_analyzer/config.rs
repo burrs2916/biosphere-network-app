@@ -1,6 +1,8 @@
 use serde::{Deserialize, Serialize};
 use std::path::Path;
 use std::time::SystemTime;
+#[cfg(windows)]
+use std::os::windows::fs::MetadataExt;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ForensicsAnalyzerConfig {

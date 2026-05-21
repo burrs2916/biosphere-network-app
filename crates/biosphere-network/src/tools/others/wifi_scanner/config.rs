@@ -196,6 +196,7 @@ impl WifiScannerTool {
         }
     }
 
+    #[cfg_attr(target_os = "windows", allow(unused_variables))]
     fn try_system_scan(interface: &str) -> Vec<WifiNetwork> {
         #[cfg_attr(target_os = "windows", allow(unused_mut))]
         #[allow(unused_assignments)]
