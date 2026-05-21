@@ -1764,13 +1764,6 @@
     border-color: rgba(59, 130, 246, 0.2);
   }
 
-  .query-time {
-    font-size: 0.875rem;
-    color: #94a3b8;
-    background: rgba(168, 85, 247, 0.1);
-    padding: 0.25rem 0.75rem;
-    border-radius: 0.25rem;
-  }
 
   .records-table {
     overflow-x: auto;
