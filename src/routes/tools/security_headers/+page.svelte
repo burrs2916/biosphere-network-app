@@ -144,7 +144,7 @@
 	let url = $state('');
 	let activeMainTab = $state('analyze');
 	let activeResultTab = $state('overview');
-	let historyComponent: ToolHistory;
+	let historyComponent: ToolHistory = $state(null!);
 	let timeout = $state(15);
 	let followRedirects = $state(true);
 	let verifySsl = $state(false);

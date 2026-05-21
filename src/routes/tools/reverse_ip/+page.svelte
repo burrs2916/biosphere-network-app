@@ -54,7 +54,7 @@
 	let processing = $state(false);
 	let activeMainTab = $state('lookup');
 	let activeResultTab = $state('domains');
-	let historyComponent: ToolHistory;
+	let historyComponent: ToolHistory = $state(null!);
 
 	async function lookup() {
 		if (!ip.trim()) { error = $tr('reverseIp.error.ipRequired'); return; }

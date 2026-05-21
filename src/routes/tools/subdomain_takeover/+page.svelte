@@ -40,7 +40,7 @@
 
 	let domain = $state('');
 	let activeMainTab = $state('analyze');
-	let historyComponent: ToolHistory;
+	let historyComponent: ToolHistory = $state(null!);
 	let subdomains = $state('');
 	let timeout = $state(10);
 	let threads = $state(10);

@@ -77,7 +77,7 @@
 	let query = $state('');
 	let activeMainTab = $state('analyze');
 	let activeResultTab = $state('overview');
-	let historyComponent: ToolHistory;
+	let historyComponent: ToolHistory = $state(null!);
 	let limit = $state(20);
 	let severityFilter = $state('');
 	let cvssMin = $state<number | null>(null);

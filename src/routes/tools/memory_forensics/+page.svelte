@@ -78,7 +78,7 @@
 	let activeMainTab = $state('analyze');
 	let activeResultTab = $state('overview');
 
-	let historyComponent: ToolHistory;
+	let historyComponent: ToolHistory = $state(null!);
 
 	let highFindingCount = $derived(
 		(result as MemoryForensicsResult | null)?.security_findings.filter((f: MemorySecurityFinding) => f.severity === 'critical' || f.severity === 'high').length ?? 0

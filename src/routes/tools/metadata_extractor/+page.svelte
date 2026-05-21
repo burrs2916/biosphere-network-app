@@ -39,7 +39,7 @@
 	let searchQuery = $state('');
 	let copied = $state(false);
 
-	let historyComponent: ToolHistory;
+	let historyComponent: ToolHistory = $state(null!);
 
 	async function selectFile() {
 		try {

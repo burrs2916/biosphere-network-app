@@ -12,7 +12,7 @@
 
 	let baseWords = $state('');
 	let activeMainTab = $state('analyze');
-	let historyComponent: ToolHistory;
+	let historyComponent: ToolHistory = $state(null!);
 	let minLength = $state(4);
 	let maxLength = $state(32);
 	let useLeet = $state(false);

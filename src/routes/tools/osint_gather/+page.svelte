@@ -79,7 +79,7 @@
 	let activeMainTab = $state('gather');
 	let activeResultTab = $state('overview');
 
-	let historyComponent: ToolHistory;
+	let historyComponent: ToolHistory = $state(null!);
 
 	let totalData = $derived(
 		result

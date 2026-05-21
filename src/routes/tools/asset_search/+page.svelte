@@ -57,7 +57,7 @@
 	let processing = $state(false);
 	let activeMainTab = $state('search');
 	let activeResultTab = $state('assets');
-	let historyComponent: ToolHistory;
+	let historyComponent: ToolHistory = $state(null!);
 
 	async function search() {
 		if (!query.trim()) { error = $tr('assetSearch.error.queryRequired'); return; }

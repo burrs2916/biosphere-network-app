@@ -276,25 +276,25 @@ import ToolHistory from '$lib/components/ToolHistory.svelte';
   // Reactive filtered ports - dependencies are automatically tracked
   $: filteredPorts = ports.filter(port => {
     const query = portSearchQuery.trim().toLowerCase();
-    const matchesSearch = !query || 
+    const matchesSearch = !query ||
       port.port.toString().includes(query) ||
       port.service.toLowerCase().includes(query) ||
       port.description.toLowerCase().includes(query);
-    
+
     const matchesCategory = !selectedCategory || port.category === selectedCategory;
     const matchesRisk = !selectedRisk || port.risk_level === selectedRisk;
-    
+
     const portMarking = markings.find(m => m.port === port.port);
-    const matchesMark = !selectedMarkFilter || 
+    const matchesMark = !selectedMarkFilter ||
       (selectedMarkFilter === 'marked' && portMarking) ||
       (portMarking && portMarking.mark_type === selectedMarkFilter);
-    
+
     return matchesSearch && matchesCategory && matchesRisk && matchesMark;
   });
-  
+
   let portCurrentPage = 1;
   let portPageSize = 20;
-  
+
   $: categories = [
     { value: '', label: $tr('portKnowledge.filters.allCategories') },
     { value: 'Web', label: $tr('portKnowledge.categories.Web') },
@@ -313,7 +313,7 @@ import ToolHistory from '$lib/components/ToolHistory.svelte';
     { value: 'Gaming', label: $tr('portKnowledge.categories.Gaming') },
     { value: 'Other', label: $tr('portKnowledge.categories.Other') }
   ];
-  
+
   $: riskLevels = [
     { value: '', label: $tr('portKnowledge.filters.allRisks') },
     { value: 'Critical', label: $tr('portKnowledge.riskLevels.Critical') },
@@ -322,7 +322,7 @@ import ToolHistory from '$lib/components/ToolHistory.svelte';
     { value: 'Low', label: $tr('portKnowledge.riskLevels.Low') },
     { value: 'Info', label: $tr('portKnowledge.riskLevels.Info') }
   ];
-  
+
   $: markFilters = [
     { value: '', label: $tr('portKnowledge.filters.allMarks') },
     { value: 'marked', label: $tr('portKnowledge.filters.marked') },
@@ -330,7 +330,7 @@ import ToolHistory from '$lib/components/ToolHistory.svelte';
     { value: 'important', label: $tr('portKnowledge.marks.important') },
     { value: 'dangerous', label: $tr('portKnowledge.marks.dangerous') }
   ];
-  
+
   $: portTotalPages = Math.ceil(filteredPorts.length / portPageSize);
   $: paginatedPorts = filteredPorts.slice((portCurrentPage - 1) * portPageSize, portCurrentPage * portPageSize);
 

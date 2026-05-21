@@ -76,7 +76,7 @@
 	let loadingTargets = $state(false);
 
 	const TOOL_NAME = 'sqli_scanner';
-	let historyComponent: ToolHistory;
+	let historyComponent: ToolHistory = $state(null!);
 
 	function getScanLevelLabel(level: string): string {
 		const labels: Record<string, string> = {

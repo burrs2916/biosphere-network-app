@@ -104,7 +104,7 @@
 	let activeMainTab = $state('detect');
 	let activeTab = $state('single');
 	let activeResultTab = $state('overview');
-	let historyComponent: ToolHistory;
+	let historyComponent: ToolHistory = $state(null!);
 	let showTargetSelector = $state(false);
 	let targetList: any[] = $state([]);
 	let selectedTargets: any[] = $state([]);

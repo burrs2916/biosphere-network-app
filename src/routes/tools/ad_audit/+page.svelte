@@ -38,7 +38,7 @@
 	let processing = $state(false);
 	let activeMainTab = $state('analyze');
 	let activeResultTab = $state('overview');
-	let historyComponent: ToolHistory;
+	let historyComponent: ToolHistory = $state(null!);
 
 	async function audit() {
 		if (!domain.trim()) { error = $tr('adAudit.error.domainRequired'); return; }

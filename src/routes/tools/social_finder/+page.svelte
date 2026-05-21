@@ -78,7 +78,7 @@
 	let loadingTargets = $state(false);
 	let showTargetManagerSelector = $state(false);
 
-	let historyComponent: ToolHistory;
+	let historyComponent: ToolHistory = $state(null!);
 
 	let filteredPlatformSelectList = $derived(
 		platformSelectList.filter(p => {

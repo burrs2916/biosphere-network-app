@@ -24,7 +24,7 @@
 	let activeMainTab = 'analyze';
 	let copied = false;
 
-	let historyComponent: ToolHistory;
+	let historyComponent: ToolHistory = $state(null!);
 
 	async function selectFile(field: 'cover' | 'secret' | 'output') {
 		try {

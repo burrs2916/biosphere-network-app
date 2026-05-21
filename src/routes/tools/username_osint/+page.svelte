@@ -85,7 +85,7 @@
 	let username = $state('');
 	let additionalUsernames = $state('');
 	let activeMainTab = $state('check');
-	let historyComponent: ToolHistory;
+	let historyComponent: ToolHistory = $state(null!);
 	let selectedCategories = $state<string[]>([]);
 	let result: UsernameOsintResult | null = $state(null);
 	let error = $state('');

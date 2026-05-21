@@ -114,7 +114,7 @@
 	let autoConnectEnabled = $state(false);
 	let autoConnectSsid = $state('');
 
-	let historyComponent: ToolHistory;
+	let historyComponent: ToolHistory = $state(null!);
 
 	onMount(async () => {
 		await loadInterfaces();

@@ -44,7 +44,7 @@
 	let activeResultTab = $state('overview');
 	let severityFilter = $state('all');
 	let categoryFilter = $state('all');
-	let historyComponent: ToolHistory;
+	let historyComponent: ToolHistory = $state(null!);
 
 	let criticalCount = $derived(result?.findings.filter(f => f.severity === 'critical').length ?? 0);
 	let highCount = $derived(result?.findings.filter(f => f.severity === 'high').length ?? 0);

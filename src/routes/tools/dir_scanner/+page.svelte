@@ -52,7 +52,7 @@
 
 	let url = $state('');
 	let activeMainTab = $state('analyze');
-	let historyComponent: ToolHistory;
+	let historyComponent: ToolHistory = $state(null!);
 	let timeout = $state(10);
 	let threads = $state(20);
 	let followRedirects = $state(false);

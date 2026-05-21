@@ -50,7 +50,7 @@
 	let url = $state('');
 	let activeMainTab = $state('analyze');
 	let activeResultTab = $state('overview');
-	let historyComponent: ToolHistory;
+	let historyComponent: ToolHistory = $state(null!);
 	let scanMode = $state('balanced');
 	let timeout = $state(15);
 	let maxPages = $state(20);

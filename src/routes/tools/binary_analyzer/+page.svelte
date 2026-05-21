@@ -182,7 +182,7 @@
 	let batchProcessing = $state(false);
 	let batchProgress = $state({ current: 0, total: 0 });
 
-	let historyComponent: ToolHistory;
+	let historyComponent: ToolHistory = $state(null!);
 
 	let scoreColor = $derived(
 		result

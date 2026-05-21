@@ -41,7 +41,7 @@
 
 	let url = $state('');
 	let activeMainTab = $state('analyze');
-	let historyComponent: ToolHistory;
+	let historyComponent: ToolHistory = $state(null!);
 	let timeout = $state(15);
 	let concurrent = $state(10);
 	let scanMode = $state('normal');

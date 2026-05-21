@@ -58,7 +58,7 @@
 	let activeMainTab = $state('scan');
 	let activeResultTab = $state('overview');
 
-	let historyComponent: ToolHistory;
+	let historyComponent: ToolHistory = $state(null!);
 
 	let highFindingCount = $derived(
 		result ? (result as BluetoothScanResult).security_findings.filter(f => f.severity === 'critical' || f.severity === 'high').length : 0

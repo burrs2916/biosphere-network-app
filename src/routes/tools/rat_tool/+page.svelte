@@ -60,7 +60,7 @@
 	let activeMainTab = $state('analyze');
 	let activeResultTab = $state('overview');
 
-	let historyComponent: ToolHistory;
+	let historyComponent: ToolHistory = $state(null!);
 
 	let highFindingCount = $derived(
 		result ? (result as RatToolResult).security_findings.filter(f => f.severity === 'critical' || f.severity === 'high').length : 0

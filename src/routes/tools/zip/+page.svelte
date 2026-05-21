@@ -32,7 +32,7 @@
 	let zipPath = $state('');
 	let activeMainTab = $state('analyze');
 	let activeModeTab = $state('extract');
-	let historyComponent: ToolHistory;
+	let historyComponent: ToolHistory = $state(null!);
 	let outputDir = $state('');
 	let password = $state('');
 	let files: ZipFileInfo[] = $state([]);

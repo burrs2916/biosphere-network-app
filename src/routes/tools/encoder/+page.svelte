@@ -23,7 +23,7 @@ import ToolHistory from '$lib/components/ToolHistory.svelte';
 
   let mode: 'text' | 'file' = 'text';
   let activeMainTab = 'analyze';
-  let historyComponent: ToolHistory;
+  let historyComponent: ToolHistory = $state(null!);
   let toolMode: 'encode' | 'hash' = 'encode';
   let encodingType = 'base64';
   let hashType = 'md5';

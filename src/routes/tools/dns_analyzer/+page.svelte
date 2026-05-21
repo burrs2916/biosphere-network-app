@@ -56,7 +56,7 @@
 	let activeMainTab = $state('analyze');
 	let activeResultTab = $state('overview');
 	let recordFilter = $state('all');
-	let historyComponent: ToolHistory;
+	let historyComponent: ToolHistory = $state(null!);
 
 	function getFilteredRecords(): DnsRecord[] {
 		if (!result) return [];

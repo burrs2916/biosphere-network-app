@@ -164,7 +164,7 @@
 	let activeResultTab = $state('permissions');
 	let activeDeepTab = $state('overview');
 	let permFilter = $state('all');
-	let historyComponent: ToolHistory;
+	let historyComponent: ToolHistory = $state(null!);
 
 	let highRiskCount = $derived(result?.permissions.filter(p => getPermissionRisk(p) === 'high').length ?? 0);
 	let mediumRiskCount = $derived(result?.permissions.filter(p => getPermissionRisk(p) === 'medium').length ?? 0);

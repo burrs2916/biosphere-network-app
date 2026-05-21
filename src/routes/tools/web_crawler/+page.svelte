@@ -166,7 +166,7 @@
 
 	let url = $state('');
 	let activeMainTab = $state('analyze');
-	let historyComponent: ToolHistory;
+	let historyComponent: ToolHistory = $state(null!);
 	let maxDepth = $state(2);
 	let maxPages = $state(100);
 	let timeout = $state(15);

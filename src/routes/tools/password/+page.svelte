@@ -7,7 +7,7 @@
 	let passwordLength = $state(16);
 	let activeMainTab = $state('analyze');
 	let activeResultTab = $state('passwords');
-	let historyComponent: ToolHistory;
+	let historyComponent: ToolHistory = $state(null!);
 	let includeLowercase = $state(true);
 	let includeUppercase = $state(true);
 	let includeNumbers = $state(true);

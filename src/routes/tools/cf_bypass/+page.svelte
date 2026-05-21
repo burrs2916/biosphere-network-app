@@ -76,7 +76,7 @@
 	let activeMainTab = $state('bypass');
 	let activeResultTab = $state('origin');
 
-	let historyComponent: ToolHistory;
+	let historyComponent: ToolHistory = $state(null!);
 
 	async function bypass() {
 		if (!domain.trim()) { error = $tr('cfBypass.error.domainRequired'); return; }

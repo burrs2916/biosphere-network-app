@@ -95,7 +95,7 @@
 	let activeTab = $state('single');
 	let activeResultTab = $state('overview');
 	let batchInput = $state('');
-	let historyComponent: ToolHistory;
+	let historyComponent: ToolHistory = $state(null!);
 
 	function getRiskColor(level: string): string {
 		switch (level) {

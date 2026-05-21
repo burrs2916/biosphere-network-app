@@ -35,7 +35,7 @@
 
 	let emails = $state('');
 	let activeMainTab = $state('check');
-	let historyComponent: ToolHistory;
+	let historyComponent: ToolHistory = $state(null!);
 	let checkSmtp = $state(true);
 	let checkSpf = $state(true);
 	let checkDkim = $state(false);

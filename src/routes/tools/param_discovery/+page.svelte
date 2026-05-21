@@ -58,7 +58,7 @@
 
 	let url = $state('');
 	let activeMainTab = $state('analyze');
-	let historyComponent: ToolHistory;
+	let historyComponent: ToolHistory = $state(null!);
 	let method = $state('GET');
 	let timeout = $state(10);
 	let threads = $state(10);

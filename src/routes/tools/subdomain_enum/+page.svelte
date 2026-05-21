@@ -35,7 +35,7 @@
 
 	let domain = $state('');
 	let activeMainTab = $state('analyze');
-	let historyComponent: ToolHistory;
+	let historyComponent: ToolHistory = $state(null!);
 	let timeout = $state(15);
 	let threads = $state(50);
 	let scanMode = $state('normal');
