@@ -511,7 +511,7 @@ impl CfBypassTool {
                     let stdout = String::from_utf8_lossy(&output.stdout);
                     for line in stdout.lines() {
                         let ip = line.trim().to_string();
-                        if ip.is_empty() || !ip.parse::<std::net::IpAddr>().is_ok() {
+                        if ip.is_empty() || ip.parse::<std::net::IpAddr>().is_err() {
                             continue;
                         }
 
@@ -692,7 +692,7 @@ impl CfBypassTool {
                             if !is_cf && possible_origin.is_none() {
                                 possible_origin = Some(ip.clone());
                                 origins.push(OriginIp {
-                                    ip: ip,
+                                    ip,
                                     source: format!("SSL Certificate SAN ({})", san_trimmed),
                                     confidence: "medium".to_string(),
                                     is_verified: false,
@@ -1098,8 +1098,8 @@ impl CfBypassTool {
                                             let stdout = String::from_utf8_lossy(&dig_output.stdout);
                                             for ip_line in stdout.lines() {
                                                 let ip = ip_line.trim().to_string();
-                                                if ip.parse::<std::net::IpAddr>().is_ok() && !Self::is_cf_ip(&ip) {
-                                                    if !origins.iter().any(|o| o.ip == ip) {
+                                                if ip.parse::<std::net::IpAddr>().is_ok() && !Self::is_cf_ip(&ip)
+                                                    && !origins.iter().any(|o| o.ip == ip) {
                                                         origins.push(OriginIp {
                                                             ip,
                                                             source: format!("Wayback Machine ({})", host),
@@ -1107,7 +1107,6 @@ impl CfBypassTool {
                                                             is_verified: false,
                                                         });
                                                     }
-                                                }
                                             }
                                         }
                                     }

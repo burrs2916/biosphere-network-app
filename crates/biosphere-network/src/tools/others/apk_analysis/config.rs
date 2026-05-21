@@ -307,11 +307,10 @@ impl ApkAnalysisTool {
                         if !activities.contains(&act_name) {
                             activities.push(act_name.clone());
                         }
-                        if line.contains("exported='true'") || line.contains("exported=\"true\"") {
-                            if !exported_activities.contains(&act_name) {
+                        if (line.contains("exported='true'") || line.contains("exported=\"true\""))
+                            && !exported_activities.contains(&act_name) {
                                 exported_activities.push(act_name);
                             }
-                        }
                     }
                 }
             }
@@ -534,11 +533,10 @@ impl ApkAnalysisTool {
                     let stdout = String::from_utf8_lossy(&output.stdout).to_string();
                     for line in stdout.lines() {
                         let line = line.trim();
-                        if line.starts_with("package:") {
-                            if line.contains("debuggable='true'") || line.contains("debuggable=\"true\"") {
+                        if line.starts_with("package:")
+                            && (line.contains("debuggable='true'") || line.contains("debuggable=\"true\"")) {
                                 is_debuggable = true;
                             }
-                        }
                     }
                 }
             }
@@ -567,16 +565,16 @@ impl ApkAnalysisTool {
                         let backup_pattern = b"allowBackup";
                         for i in 0..raw.len().saturating_sub(20) {
                             if raw[i..].starts_with(debuggable_pattern) {
-                                for j in i..std::cmp::min(i + 20, raw.len()) {
-                                    if raw[j] == 0xFF || raw[j] == 0x01 || raw[j] == b't' {
+                                for byte in &raw[i..std::cmp::min(i + 20, raw.len())] {
+                                    if *byte == 0xFF || *byte == 0x01 || *byte == b't' {
                                         is_debuggable = true;
                                         break;
                                     }
                                 }
                             }
                             if raw[i..].starts_with(backup_pattern) {
-                                for j in i..std::cmp::min(i + 20, raw.len()) {
-                                    if raw[j] == 0xFF || raw[j] == 0x01 || raw[j] == b't' {
+                                for byte in &raw[i..std::cmp::min(i + 20, raw.len())] {
+                                    if *byte == 0xFF || *byte == 0x01 || *byte == b't' {
                                         is_allow_backup = true;
                                         break;
                                     }
@@ -808,7 +806,7 @@ impl ApkAnalysisTool {
                         if let Some(idx) = line.find("android:name=") {
                             let rest = &line[idx + 14..];
                             let name = if rest.starts_with('"') {
-                                &rest[1..]
+                                rest.strip_prefix('"').unwrap()
                             } else {
                                 rest
                             };
@@ -1267,7 +1265,7 @@ impl ApkAnalysisTool {
                         let size = file.size();
                         let symbols = Self::extract_so_symbols(&name, apk_path);
                         native_libs.push(NativeLibrary {
-                            name: name.split('/').last().unwrap_or(&name).to_string(),
+                            name: name.split('/').next_back().unwrap_or(&name).to_string(),
                             arch,
                             size,
                             symbols,
@@ -1319,7 +1317,7 @@ impl ApkAnalysisTool {
                 let path = entry.path();
                 if path.is_dir() {
                     files.extend(Self::collect_java_files(&path)?);
-                } else if path.extension().map_or(false, |ext| ext == "java") {
+                } else if path.extension().is_some_and(|ext| ext == "java") {
                     files.push(path);
                 }
             }
@@ -1481,11 +1479,10 @@ impl ApkAnalysisTool {
             }
         }
 
-        if content.contains("X509TrustManager") && content.contains("checkServerTrusted") {
-            if content.contains("return;") || content.contains("{}") {
+        if content.contains("X509TrustManager") && content.contains("checkServerTrusted")
+            && (content.contains("return;") || content.contains("{}")) {
                 network_security.trust_manager_issues.push(file_path_str.clone());
             }
-        }
 
         if content.contains("HostnameVerifier") && content.contains("return true") {
             network_security.hostname_verifier_issues.push(file_path_str.clone());
@@ -1796,15 +1793,13 @@ impl ApkAnalysisTool {
                             }
                         }
 
-                        for sub_entry in std::fs::read_dir(&path).unwrap_or_else(|_| std::fs::read_dir(".").unwrap()) {
-                            if let Ok(se) = sub_entry {
-                                let sp = se.path();
-                                if sp.is_dir() {
-                                    let bp = sp.join("bin").join(bin_name);
-                                    if bp.exists() {
-                                        if let Some(p) = bp.to_str() {
-                                            return Some(p.to_string());
-                                        }
+                        for se in std::fs::read_dir(&path).unwrap_or_else(|_| std::fs::read_dir(".").unwrap()).flatten() {
+                            let sp = se.path();
+                            if sp.is_dir() {
+                                let bp = sp.join("bin").join(bin_name);
+                                if bp.exists() {
+                                    if let Some(p) = bp.to_str() {
+                                        return Some(p.to_string());
                                     }
                                 }
                             }
@@ -1916,19 +1911,17 @@ impl ApkAnalysisTool {
             return jadx_bin.to_str().map(|s| s.to_string()).ok_or("Failed to get jadx path".to_string());
         }
 
-        for entry in std::fs::read_dir(&extract_dir).unwrap_or_else(|_| std::fs::read_dir(".").unwrap()) {
-            if let Ok(e) = entry {
-                let p = e.path();
-                if p.is_dir() {
-                    let bp = p.join("bin").join(bin_name);
-                    if bp.exists() {
-                        #[cfg(unix)]
-                        {
-                            use std::os::unix::fs::PermissionsExt;
-                            let _ = std::fs::set_permissions(&bp, std::fs::Permissions::from_mode(0o755));
-                        }
-                        return bp.to_str().map(|s| s.to_string()).ok_or("Failed to get jadx path".to_string());
+        for e in std::fs::read_dir(&extract_dir).unwrap_or_else(|_| std::fs::read_dir(".").unwrap()).flatten() {
+            let p = e.path();
+            if p.is_dir() {
+                let bp = p.join("bin").join(bin_name);
+                if bp.exists() {
+                    #[cfg(unix)]
+                    {
+                        use std::os::unix::fs::PermissionsExt;
+                        let _ = std::fs::set_permissions(&bp, std::fs::Permissions::from_mode(0o755));
                     }
+                    return bp.to_str().map(|s| s.to_string()).ok_or("Failed to get jadx path".to_string());
                 }
             }
         }

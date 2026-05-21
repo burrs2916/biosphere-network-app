@@ -91,7 +91,7 @@ impl CorsCheckerTool {
             }
         }
 
-        let semaphore = Arc::new(Semaphore::new(config.threads.max(1).min(20)));
+        let semaphore = Arc::new(Semaphore::new(config.threads.clamp(1, 20)));
         let mut join_set = tokio::task::JoinSet::new();
 
         for origin in &test_origins {
@@ -475,51 +475,47 @@ impl CorsCheckerTool {
             Err(_) => return tests,
         };
 
-        match client
+        if let Ok(resp) = client
             .request(reqwest::Method::OPTIONS, target_url)
             .header("Origin", test_origin)
             .header("Access-Control-Request-Method", "PUT")
             .header("Access-Control-Request-Headers", "Content-Type, Authorization")
             .send()
-            .await
-        {
-            Ok(resp) => {
-                tests += 1;
-                let acao = resp.headers()
-                    .get("access-control-allow-origin")
-                    .and_then(|v| v.to_str().ok())
-                    .map(|s| s.to_string());
-                let acam = resp.headers()
-                    .get("access-control-allow-methods")
-                    .and_then(|v| v.to_str().ok())
-                    .map(|s| s.to_string());
-                let acac = resp.headers()
-                    .get("access-control-allow-credentials")
-                    .and_then(|v| v.to_str().ok())
-                    .map(|s| s.to_string());
+            .await {
+            tests += 1;
+            let acao = resp.headers()
+                .get("access-control-allow-origin")
+                .and_then(|v| v.to_str().ok())
+                .map(|s| s.to_string());
+            let acam = resp.headers()
+                .get("access-control-allow-methods")
+                .and_then(|v| v.to_str().ok())
+                .map(|s| s.to_string());
+            let acac = resp.headers()
+                .get("access-control-allow-credentials")
+                .and_then(|v| v.to_str().ok())
+                .map(|s| s.to_string());
 
-                if let Some(ref acao_val) = acao {
-                    if acao_val == test_origin || acao_val == "*" {
-                        let has_put = acam.as_ref().map(|m| {
-                            m.to_uppercase().contains("PUT")
-                        }).unwrap_or(false);
+            if let Some(ref acao_val) = acao {
+                if acao_val == test_origin || acao_val == "*" {
+                    let has_put = acam.as_ref().map(|m| {
+                        m.to_uppercase().contains("PUT")
+                    }).unwrap_or(false);
 
-                        if has_put && acac.as_deref() == Some("true") {
-                            issues.push(CorsIssue {
-                                issue_type: "Preflight Allows PUT with Credentials".to_string(),
-                                severity: "high".to_string(),
-                                description: "Preflight response allows PUT method with credentials".to_string(),
-                                detail: format!("The OPTIONS preflight for origin '{}' allows PUT with credentials, enabling cross-origin data modification.", test_origin),
-                                recommendation: "Restrict allowed methods and origins in preflight responses.".to_string(),
-                                confidence: 0.9,
-                                origin: Some(test_origin.to_string()),
-                                method: Some("OPTIONS".to_string()),
-                            });
-                        }
+                    if has_put && acac.as_deref() == Some("true") {
+                        issues.push(CorsIssue {
+                            issue_type: "Preflight Allows PUT with Credentials".to_string(),
+                            severity: "high".to_string(),
+                            description: "Preflight response allows PUT method with credentials".to_string(),
+                            detail: format!("The OPTIONS preflight for origin '{}' allows PUT with credentials, enabling cross-origin data modification.", test_origin),
+                            recommendation: "Restrict allowed methods and origins in preflight responses.".to_string(),
+                            confidence: 0.9,
+                            origin: Some(test_origin.to_string()),
+                            method: Some("OPTIONS".to_string()),
+                        });
                     }
                 }
             }
-            Err(_) => {}
         }
 
         tests
@@ -578,7 +574,7 @@ impl CorsCheckerTool {
         if !header_analysis.security_headers.has_hsts { score -= 3.0; }
         if !header_analysis.security_headers.has_xfo { score -= 2.0; }
 
-        score.max(0.0).min(100.0)
+        score.clamp(0.0, 100.0)
     }
 
     fn extract_domain(url: &str) -> Option<String> {

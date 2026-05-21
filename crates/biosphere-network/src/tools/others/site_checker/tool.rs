@@ -284,7 +284,6 @@ impl SiteCheckerTool {
 
         for url in urls {
             let url = url.clone();
-            let timeout = timeout;
             let semaphore = semaphore.clone();
             join_set.spawn(async move {
                 let _permit = semaphore.acquire().await.unwrap();

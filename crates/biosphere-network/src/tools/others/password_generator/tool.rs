@@ -5,6 +5,12 @@ use super::{PasswordConfig, PasswordResult};
 
 pub struct PasswordGenerator;
 
+impl Default for PasswordGenerator {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl PasswordGenerator {
     pub fn new() -> Self {
         Self
@@ -302,7 +308,7 @@ impl Tool for PasswordGenerator {
 
     fn run(&self, args: ToolArgs, _progress: Option<Box<dyn ProgressReporter>>) -> Result<ToolOutput> {
         let config_json = args.get_target()?;
-        let config: PasswordConfig = serde_json::from_str(&config_json)
+        let config: PasswordConfig = serde_json::from_str(config_json)
             .map_err(|e| ToolError::ExecutionError(format!("Invalid config: {}", e)))?;
 
         let result = self.generate(config)?;

@@ -34,6 +34,12 @@ pub struct ZipBruteForceResult {
 
 pub struct ZipExtractor;
 
+impl Default for ZipExtractor {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl ZipExtractor {
     pub fn new() -> Self {
         Self
@@ -41,7 +47,7 @@ impl ZipExtractor {
 
     pub fn list_files(zip_path: &str) -> Result<Vec<ZipFileInfo>> {
         let file = File::open(zip_path)
-            .map_err(|e| ToolError::NetworkError(e))?;
+            .map_err(ToolError::NetworkError)?;
         
         let reader = BufReader::new(file);
         let mut archive = ZipArchive::new(reader)
@@ -67,7 +73,7 @@ impl ZipExtractor {
 
     fn get_encrypted_indices(zip_path: &str) -> Result<Vec<usize>> {
         let file = File::open(zip_path)
-            .map_err(|e| ToolError::NetworkError(e))?;
+            .map_err(ToolError::NetworkError)?;
         
         let reader = BufReader::new(file);
         let mut archive = ZipArchive::new(reader)
@@ -97,7 +103,7 @@ impl ZipExtractor {
         }
 
         let file = File::open(zip_path)
-            .map_err(|e| ToolError::NetworkError(e))?;
+            .map_err(ToolError::NetworkError)?;
         
         let reader = BufReader::new(file);
         let mut archive = ZipArchive::new(reader)
@@ -106,7 +112,7 @@ impl ZipExtractor {
         let output_path = PathBuf::from(output_dir);
         if !output_path.exists() {
             std::fs::create_dir_all(&output_path)
-                .map_err(|e| ToolError::NetworkError(e))?;
+                .map_err(ToolError::NetworkError)?;
         }
 
         let mut files_extracted = 0u32;
@@ -134,24 +140,24 @@ impl ZipExtractor {
             
             if file.is_dir() {
                 std::fs::create_dir_all(&file_path)
-                    .map_err(|e| ToolError::NetworkError(e))?;
+                    .map_err(ToolError::NetworkError)?;
             } else {
                 if let Some(parent) = file_path.parent() {
                     if !parent.exists() {
                         std::fs::create_dir_all(parent)
-                            .map_err(|e| ToolError::NetworkError(e))?;
+                            .map_err(ToolError::NetworkError)?;
                     }
                 }
 
                 let mut output_file = File::create(&file_path)
-                    .map_err(|e| ToolError::NetworkError(e))?;
+                    .map_err(ToolError::NetworkError)?;
                 
                 let mut buffer = Vec::new();
                 file.read_to_end(&mut buffer)
-                    .map_err(|e| ToolError::NetworkError(e))?;
+                    .map_err(ToolError::NetworkError)?;
                 
                 output_file.write_all(&buffer)
-                    .map_err(|e| ToolError::NetworkError(e))?;
+                    .map_err(ToolError::NetworkError)?;
 
                 total_size += buffer.len() as u64;
                 files_extracted += 1;
@@ -225,10 +231,10 @@ impl ZipExtractor {
                     ToolError::ExecutionError("Dictionary path is required for dictionary mode".to_string())
                 })?;
                 let file = File::open(dict_path)
-                    .map_err(|e| ToolError::NetworkError(e))?;
+                    .map_err(ToolError::NetworkError)?;
                 let reader = BufReader::new(file);
                 reader.lines()
-                    .filter_map(|line| line.ok())
+                    .map_while(|line| line.ok())
                     .filter(|line| !line.is_empty())
                     .collect()
             }

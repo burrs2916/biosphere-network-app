@@ -184,18 +184,14 @@ impl SecurityHeaderAnalyzer {
         let csp_analysis = if config.check_csp_details {
             if let Some(value) = headers.get("content-security-policy").and_then(|v| v.to_str().ok()) {
                 Some(Self::analyze_csp(value, false))
-            } else if let Some(value) = headers.get("content-security-policy-report-only").and_then(|v| v.to_str().ok()) {
-                Some(Self::analyze_csp(value, true))
-            } else {
-                None
-            }
+            } else { headers.get("content-security-policy-report-only").and_then(|v| v.to_str().ok()).map(|value| Self::analyze_csp(value, true)) }
         } else {
             None
         };
 
         let hsts_analysis = headers.get("strict-transport-security")
             .and_then(|v| v.to_str().ok())
-            .map(|v| Self::analyze_hsts(v));
+            .map(Self::analyze_hsts);
 
         let information_leakage = if config.check_information_leakage {
             Self::check_information_leakage(&headers)
@@ -538,7 +534,7 @@ impl SecurityHeaderAnalyzer {
                         total_checked += 1;
                         let feature_part: Option<&str> = lower.split(feature).nth(1);
                         if let Some(rest) = feature_part {
-                            let after_feature = rest.trim_start_matches(|c: char| c == '=' || c == ' ');
+                            let after_feature = rest.trim_start_matches(['=', ' ']);
                             if after_feature.starts_with("()") || after_feature.starts_with("none") {
                                 restricted_count += 1;
                             }
@@ -1035,7 +1031,7 @@ impl SecurityHeaderAnalyzer {
                 let samesite_value = if has_samesite {
                     lower.split("samesite")
                         .nth(1)
-                        .and_then(|rest| rest.trim_start_matches(|c: char| c == '=' || c == ' ').split(';').next())
+                        .and_then(|rest| rest.trim_start_matches(['=', ' ']).split(';').next())
                         .map(|v| v.trim().to_string())
                 } else {
                     None
@@ -1044,7 +1040,7 @@ impl SecurityHeaderAnalyzer {
                 let path_value = if lower.contains("path") {
                     lower.split("path")
                         .nth(1)
-                        .and_then(|rest| rest.trim_start_matches(|c: char| c == '=' || c == ' ').split(';').next())
+                        .and_then(|rest| rest.trim_start_matches(['=', ' ']).split(';').next())
                         .map(|v| v.trim().to_string())
                 } else {
                     None
@@ -1054,7 +1050,7 @@ impl SecurityHeaderAnalyzer {
                 let domain_value = if lower.contains("domain") {
                     lower.split("domain")
                         .nth(1)
-                        .and_then(|rest| rest.trim_start_matches(|c: char| c == '=' || c == ' ').split(';').next())
+                        .and_then(|rest| rest.trim_start_matches(['=', ' ']).split(';').next())
                         .map(|v| v.trim().to_string())
                 } else {
                     None

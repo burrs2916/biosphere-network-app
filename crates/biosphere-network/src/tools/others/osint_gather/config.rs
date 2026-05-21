@@ -740,7 +740,7 @@ impl OsintGatherTool {
     async fn gather_emails_real(client: &reqwest::Client, target: &str, max_results: usize) -> serde_json::Value {
         let mut emails = Vec::new();
         let domain = if target.contains('@') {
-            target.split('@').last().unwrap_or(target).to_string()
+            target.split('@').next_back().unwrap_or(target).to_string()
         } else {
             target.to_string()
         };

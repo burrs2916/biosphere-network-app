@@ -942,7 +942,7 @@ impl ReverseEngineerTool {
                 "android.permission.READ_PHONE_STATE", "android.permission.CALL_PHONE",
             ];
             let found_dangerous: Vec<&str> = manifest.permissions.iter()
-                .filter(|p| dangerous_perms.iter().any(|dp| p.as_str() == *dp))
+                .filter(|p| dangerous_perms.contains(&p.as_str()))
                 .map(|p| p.as_str())
                 .collect();
             if !found_dangerous.is_empty() {

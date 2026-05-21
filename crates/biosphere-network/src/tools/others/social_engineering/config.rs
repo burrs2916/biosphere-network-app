@@ -407,9 +407,9 @@ impl SocialEngineeringTool {
             if let (Some(rt), Some(fm)) = (reply_to_match, from_match) {
                 if let (Some(rt_match), Some(fm_match)) = (rt.find(email), fm.find(email)) {
                     let rt_str = rt_match.as_str();
-                    let rt_domain: Option<String> = rt_str.split('@').last().map(|d: &str| d.trim().to_lowercase());
+                    let rt_domain: Option<String> = rt_str.split('@').next_back().map(|d: &str| d.trim().to_lowercase());
                     let fm_str = fm_match.as_str();
-                    let fm_domain: Option<String> = fm_str.split('@').last().map(|d: &str| d.trim().to_lowercase());
+                    let fm_domain: Option<String> = fm_str.split('@').next_back().map(|d: &str| d.trim().to_lowercase());
                     if let (Some(rt_d), Some(fm_d)) = (rt_domain, fm_domain) {
                         if rt_d != fm_d {
                             indicators.push(EmailPhishingIndicator {
@@ -542,8 +542,8 @@ impl SocialEngineeringTool {
             }
         }
 
-        if url_lower.contains("login") || url_lower.contains("signin") || url_lower.contains("account") {
-            if url_lower.starts_with("http://") {
+        if (url_lower.contains("login") || url_lower.contains("signin") || url_lower.contains("account"))
+            && url_lower.starts_with("http://") {
                 indicators.push(EmailPhishingIndicator {
                     indicator_type: "insecure_login_page".to_string(),
                     description: "Login-related URL uses insecure HTTP instead of HTTPS".to_string(),
@@ -552,7 +552,6 @@ impl SocialEngineeringTool {
                     recommendation: "Legitimate login pages always use HTTPS, do not enter credentials on HTTP pages".to_string(),
                 });
             }
-        }
 
         if !indicators.is_empty() {
             let critical_count = indicators.iter().filter(|i| i.risk_level == "critical").count();

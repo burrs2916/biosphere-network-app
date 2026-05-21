@@ -103,6 +103,7 @@ impl EngineDatabase {
     pub fn new<P: AsRef<Path>>(path: P) -> SqliteResult<Self> {
         let conn = Connection::open(path)?;
         let db = Self {
+            #[allow(clippy::arc_with_non_send_sync)]
             conn: Arc::new(RwLock::new(conn)),
         };
         db.initialize()?;
@@ -112,6 +113,7 @@ impl EngineDatabase {
     pub fn in_memory() -> SqliteResult<Self> {
         let conn = Connection::open_in_memory()?;
         let db = Self {
+            #[allow(clippy::arc_with_non_send_sync)]
             conn: Arc::new(RwLock::new(conn)),
         };
         db.initialize()?;
@@ -430,7 +432,7 @@ impl EngineDatabase {
         let events = stmt.query_map(params![scan_id], |row| {
             let event_type_str: String = row.get(0)?;
             let event_type = BiosEventType::from_str(&event_type_str)
-                .unwrap_or_else(|| BiosEventType::Custom(event_type_str));
+                .unwrap_or(BiosEventType::Custom(event_type_str));
             let source_event_type_str: Option<String> = row.get(8)?;
             let source_event_type = source_event_type_str
                 .as_deref()
@@ -463,7 +465,7 @@ impl EngineDatabase {
         let events = stmt.query_map(params![scan_id, event_type.as_str()], |row| {
             let event_type_str: String = row.get(0)?;
             let et = BiosEventType::from_str(&event_type_str)
-                .unwrap_or_else(|| BiosEventType::Custom(event_type_str));
+                .unwrap_or(BiosEventType::Custom(event_type_str));
             let source_event_type_str: Option<String> = row.get(8)?;
             let source_event_type = source_event_type_str
                 .as_deref()
@@ -556,8 +558,7 @@ impl EngineDatabase {
         sql.push_str(" GROUP BY event_type, data ORDER BY cnt DESC");
 
         let mut stmt = conn.prepare(&sql)?;
-        let results: SqliteResult<Vec<(String, String, usize)>> = if event_type.is_some() {
-            let et = event_type.unwrap();
+        let results: SqliteResult<Vec<(String, String, usize)>> = if let Some(et) = event_type {
             stmt.query_map(params![scan_id, et], |row| {
                 Ok((row.get::<_, String>(0)?, row.get::<_, String>(1)?, row.get::<_, usize>(2)?))
             })?.collect()
@@ -633,7 +634,7 @@ impl EngineDatabase {
             |row| {
                 let event_type_str: String = row.get(0)?;
                 let event_type = BiosEventType::from_str(&event_type_str)
-                    .unwrap_or_else(|| BiosEventType::Custom(event_type_str));
+                    .unwrap_or(BiosEventType::Custom(event_type_str));
                 let source_event_type_str: Option<String> = row.get(8)?;
                 let source_event_type = source_event_type_str
                     .as_deref()
@@ -731,7 +732,7 @@ impl EngineDatabase {
     }
 
     pub fn get_correlations_by_risk(&self, scan_id: &str, min_risk: &str) -> SqliteResult<Vec<CorrelationResult>> {
-        let risk_order = vec![("critical", 4), ("high", 3), ("medium", 2), ("low", 1), ("info", 0)];
+        let risk_order = [("critical", 4), ("high", 3), ("medium", 2), ("low", 1), ("info", 0)];
         let min_level = risk_order.iter()
             .find(|(name, _)| name == &min_risk.to_lowercase())
             .map(|(_, level)| *level)
@@ -810,7 +811,7 @@ impl EngineDatabase {
             |row| {
                 let event_type_str: String = row.get(0)?;
                 let event_type = BiosEventType::from_str(&event_type_str)
-                    .unwrap_or_else(|| BiosEventType::Custom(event_type_str));
+                    .unwrap_or(BiosEventType::Custom(event_type_str));
                 let source_event_type_str: Option<String> = row.get(8)?;
                 let source_event_type = source_event_type_str
                     .as_deref()
@@ -969,7 +970,7 @@ impl EngineDatabase {
             } else if component == "global" {
                 global_options.insert(opt.clone(), val.clone());
             } else if component.starts_with("module:") {
-                let module_name = component[7..].to_string();
+                let module_name = component.strip_prefix("module:").unwrap().to_string();
                 module_options.entry(module_name).or_insert_with(HashMap::new).insert(opt.clone(), val.clone());
             }
         }
@@ -1524,7 +1525,7 @@ impl EngineDatabase {
                  source_event_hash, source_event_type, source_event_data, store_only \
                  FROM engine_events WHERE scan_id = ?1 AND hash = ?2",
                 params![scan_id, hash],
-                |row| Self::row_to_event_ref(row),
+                Self::row_to_event_ref,
             );
 
             match result {
@@ -1562,7 +1563,7 @@ impl EngineDatabase {
                  source_event_hash, source_event_type, source_event_data, store_only \
                  FROM engine_events WHERE scan_id = ?1 AND hash = ?2",
                 params![scan_id, hash],
-                |row| Self::row_to_event_ref(row),
+                Self::row_to_event_ref,
             );
 
             match result {
@@ -1596,7 +1597,7 @@ impl EngineDatabase {
              source_event_hash, source_event_type, source_event_data, store_only \
              FROM engine_events WHERE scan_id = ?1 AND hash = ?2",
             params![scan_id, event_hash],
-            |row| Self::row_to_event_ref(row),
+            Self::row_to_event_ref,
         )?;
         drop(conn);
 
@@ -1698,10 +1699,8 @@ impl EngineDatabase {
         })?;
 
         let mut events = Vec::new();
-        for r in results {
-            if let Ok(e) = r {
-                events.push(e);
-            }
+        for e in results.flatten() {
+            events.push(e);
         }
         Ok(events)
     }
@@ -1722,10 +1721,8 @@ impl EngineDatabase {
         })?;
 
         let mut events = Vec::new();
-        for r in results {
-            if let Ok(e) = r {
-                events.push(e);
-            }
+        for e in results.flatten() {
+            events.push(e);
         }
         Ok(events)
     }
@@ -2711,7 +2708,7 @@ impl EngineDatabase {
     fn row_to_event_ref(row: &rusqlite::Row) -> SqliteResult<BiosEventRef> {
         let event_type_str: String = row.get(0)?;
         let event_type = BiosEventType::from_str(&event_type_str)
-            .unwrap_or_else(|| BiosEventType::Custom(event_type_str));
+            .unwrap_or(BiosEventType::Custom(event_type_str));
         let source_event_type_str: Option<String> = row.get(8)?;
         let source_event_type = source_event_type_str
             .as_deref()

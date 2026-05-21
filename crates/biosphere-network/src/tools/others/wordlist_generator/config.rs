@@ -223,7 +223,7 @@ pub fn generate_cupp_wordlist(config: &CuppConfig) -> Vec<String> {
         "100", "123", "1234", "12345", "123456", "007", "777", "888", "999",
     ].iter().map(|s| s.to_string()).collect();
 
-    let symbols: Vec<String> = vec!["!", "@", "#", "$", "%", "!!", "@@", "!!1", "!@#"].iter().map(|s| s.to_string()).collect();
+    let symbols: Vec<String> = ["!", "@", "#", "$", "%", "!!", "@@", "!!1", "!@#"].iter().map(|s| s.to_string()).collect();
 
     let leet_map: std::collections::HashMap<char, Vec<char>> = {
         let mut m = std::collections::HashMap::new();
@@ -299,8 +299,7 @@ pub fn generate_cupp_wordlist(config: &CuppConfig) -> Vec<String> {
     if config.use_capitalization {
         let original_count = words.len();
         let mut to_add = Vec::new();
-        for i in 0..original_count.min(200) {
-            let word = &words[i];
+        for word in words.iter().take(original_count.min(200)) {
             if !word.is_empty() {
                 to_add.push(word.to_uppercase());
                 let mut chars: Vec<char> = word.chars().collect();

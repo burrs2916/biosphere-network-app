@@ -63,7 +63,7 @@ impl RequestProfile {
     pub fn chrome_desktop() -> Self {
         let mut rng = rand::thread_rng();
         let chrome_uas: Vec<&&str> = USER_AGENTS.iter().filter(|ua| !ua.contains("Firefox")).collect();
-        let ua = chrome_uas.choose(&mut rng).copied().unwrap_or(&&USER_AGENTS[0]);
+        let ua = chrome_uas.choose(&mut rng).copied().unwrap_or(&USER_AGENTS[0] );
         Self {
             user_agent: ua.to_string(),
             accept: ACCEPT_HEADERS.choose(&mut rng).unwrap().to_string(),
@@ -79,7 +79,7 @@ impl RequestProfile {
     pub fn firefox_desktop() -> Self {
         let mut rng = rand::thread_rng();
         let ff_uas: Vec<&&str> = USER_AGENTS.iter().filter(|ua| ua.contains("Firefox")).collect();
-        let ua = ff_uas.choose(&mut rng).copied().unwrap_or(&&USER_AGENTS[2]);
+        let ua = ff_uas.choose(&mut rng).copied().unwrap_or(&USER_AGENTS[2] );
         Self {
             user_agent: ua.to_string(),
             accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8".to_string(),

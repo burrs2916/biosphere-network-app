@@ -179,7 +179,7 @@ fn calculate_confidence(path: &str, status: u16, title: Option<&str>, has_login_
 
     if status == 200 {
         score += 0.3;
-    } else if status >= 300 && status < 400 {
+    } else if (300..400).contains(&status) {
         score += 0.15;
     }
 
@@ -279,7 +279,7 @@ impl AdminFinderTool {
                             .get("content-length")
                             .and_then(|v| v.to_str().ok())
                             .and_then(|s| s.parse::<u64>().ok());
-                        let redirect_url = if status >= 300 && status < 400 {
+                        let redirect_url = if (300..400).contains(&status) {
                             resp.headers().get("location")
                                 .and_then(|v| v.to_str().ok())
                                 .map(|s| s.to_string())

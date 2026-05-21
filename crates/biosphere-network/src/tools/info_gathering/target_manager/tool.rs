@@ -41,7 +41,7 @@ impl Tool for TargetManagerTool {
                 let target_type_str = args.get_option("targetType")
                     .ok_or_else(|| ToolError::MissingArgument("targetType".to_string()))?;
                 
-                let target_type = TargetType::from_str(&target_type_str)
+                let target_type = TargetType::from_str(target_type_str)
                     .ok_or_else(|| ToolError::ParseError(format!("Invalid target type: {}", target_type_str)))?;
                 
                 let target_value = args.get_option("targetValue")
@@ -82,7 +82,7 @@ impl Tool for TargetManagerTool {
                 let target_type_str = args.get_option("targetType")
                     .ok_or_else(|| ToolError::MissingArgument("targetType".to_string()))?;
                 
-                let target_type = TargetType::from_str(&target_type_str)
+                let target_type = TargetType::from_str(target_type_str)
                     .ok_or_else(|| ToolError::ParseError(format!("Invalid target type: {}", target_type_str)))?;
                 
                 let target_value = args.get_option("targetValue")
@@ -143,7 +143,7 @@ impl Tool for TargetManagerTool {
                     .and_then(|s| s.parse::<i32>().ok())
                     .unwrap_or(20);
                 
-                let result = self.manager.search_targets(&query, page, page_size)?;
+                let result = self.manager.search_targets(query, page, page_size)?;
                 Ok(ToolOutput::success(serde_json::to_string(&result).unwrap_or_default()))
             }
             _ => Err(ToolError::ExecutionError(format!("Unknown action: {}", action))),

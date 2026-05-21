@@ -211,7 +211,7 @@ impl MaigretImporter {
 
         let url = site.url.as_deref()
             .or_else(|| engine_site.and_then(|es| es.url.as_deref()))
-            .or_else(|| site.url_main.as_deref())?;
+            .or(site.url_main.as_deref())?;
 
         let url_template = url.to_string();
         let url_main = site.url_main.as_deref()

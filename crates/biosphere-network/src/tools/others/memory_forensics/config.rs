@@ -689,7 +689,7 @@ impl MemoryForensicsTool {
 
             for (dir, category) in &launch_agents {
                 let expanded_dir = if dir.starts_with("~") {
-                    if let Some(home) = std::env::var("HOME").ok() {
+                    if let Ok(home) = std::env::var("HOME") {
                         dir.replace("~", &home)
                     } else {
                         dir.to_string()

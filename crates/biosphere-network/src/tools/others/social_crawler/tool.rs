@@ -107,6 +107,12 @@ pub struct SocialCrawler {
     proxy_manager: Option<ProxyManager>,
 }
 
+impl Default for SocialCrawler {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl SocialCrawler {
     pub fn new() -> Self {
         let client = reqwest::Client::builder()
@@ -134,9 +140,11 @@ impl SocialCrawler {
 
     pub async fn crawl(&self, config: &SocialCrawlConfig) -> Result<SocialCrawlResult> {
         let start = std::time::Instant::now();
-        let mut result = SocialCrawlResult::default();
-        result.platform = config.platform.clone();
-        result.target = config.target.clone();
+        let mut result = SocialCrawlResult {
+            platform: config.platform.clone(),
+            target: config.target.clone(),
+            ..Default::default()
+        };
 
         if config.search_mode && !config.search_query.is_empty() {
             self.crawl_search(config, &mut result).await?;
@@ -465,7 +473,6 @@ impl SocialCrawler {
             let filename = filename.clone();
             let save_dir = save_dir.clone();
             let semaphore = semaphore.clone();
-            let max_size = max_size;
 
             join_set.spawn(async move {
                 let _permit = semaphore.acquire().await.unwrap();
@@ -759,7 +766,7 @@ impl SocialCrawler {
                             created_at: mblog.get("created_at").and_then(|v| v.as_str()).unwrap_or("").to_string(),
                             media_urls: media,
                             location: mblog.get("region_name").and_then(|v| v.as_str()).unwrap_or("").to_string(),
-                            is_original: !mblog.get("retweeted_status").is_some(),
+                            is_original: mblog.get("retweeted_status").is_none(),
                             crawl_time: now_timestamp_str(),
                             ..Default::default()
                         });
@@ -900,7 +907,7 @@ impl SocialCrawler {
                         title: answer.get("question").and_then(|q| q.get("title")).and_then(|v| v.as_str()).unwrap_or("").to_string(),
                         content: excerpt,
                         author: author_name,
-                        author_id: author_id,
+                        author_id,
                         likes: voteup,
                         comments_count: comment_count,
                         url: format!("https://www.zhihu.com/question/{}/answer/{}", qid, aid),
@@ -1003,7 +1010,7 @@ impl SocialCrawler {
                     let body = resp.text().await.unwrap_or_default();
 
                     if detect_ip_block(status, &body, &config.ip_block_detection) {
-                        result_proxy_stats(config, true, !use_proxy.is_none(), use_proxy.is_some());
+                        result_proxy_stats(config, true, use_proxy.is_some(), use_proxy.is_some());
 
                         if let Some(ref pm) = self.proxy_manager {
                             if let Some(ref proxy) = use_proxy {
@@ -1027,7 +1034,7 @@ impl SocialCrawler {
                         }
                     }
 
-                    result_proxy_stats(config, false, !use_proxy.is_none(), use_proxy.is_some());
+                    result_proxy_stats(config, false, use_proxy.is_some(), use_proxy.is_some());
                     return Ok(body);
                 }
                 Err(e) => {

@@ -265,7 +265,7 @@ impl UsernameOsintTool {
         let mut depth = 0;
         while !queue.is_empty() && depth < config.max_recursive_depth {
             depth += 1;
-            let current_batch: Vec<(String, String, String, u32)> = queue.drain(..).collect();
+            let current_batch: Vec<(String, String, String, u32)> = std::mem::take(&mut queue);
 
             for (id_value, id_type, source_platform, current_depth) in current_batch {
                 let filtered_platforms: Vec<OsintPlatform> = platforms
@@ -507,7 +507,7 @@ impl UsernameOsintTool {
                     || status == 200
                     || status == 301
                     || status == 302
-                    || content_length.map_or(false, |cl| cl < MIN_RESPONSE_SIZE);
+                    || content_length.is_some_and(|cl| cl < MIN_RESPONSE_SIZE);
 
                 let body_text = if need_body {
                     resp.text().await.ok()
@@ -526,17 +526,17 @@ impl UsernameOsintTool {
                     let common_err = detect_common_errors(body);
                     let site_err = detect_error_page(body, status, &site_errors, platform.ignore403);
 
-                    let is_captcha = common_err.as_ref().map_or(false, |e| e.error_type == "Captcha" || e.error_type == "Bot protection")
-                        || site_err.as_ref().map_or(false, |e| e.error_type == "Captcha" || e.error_type == "Bot protection");
-                    let is_censored = common_err.as_ref().map_or(false, |e| e.error_type == "Censorship")
-                        || site_err.as_ref().map_or(false, |e| e.error_type == "Censorship");
+                    let is_captcha = common_err.as_ref().is_some_and(|e| e.error_type == "Captcha" || e.error_type == "Bot protection")
+                        || site_err.as_ref().is_some_and(|e| e.error_type == "Captcha" || e.error_type == "Bot protection");
+                    let is_censored = common_err.as_ref().is_some_and(|e| e.error_type == "Censorship")
+                        || site_err.as_ref().is_some_and(|e| e.error_type == "Censorship");
 
                     (is_captcha, is_censored, common_err.or(site_err))
                 } else {
                     (false, false, None)
                 };
 
-                let is_suspiciously_small = body_size.map_or(false, |s| s < MIN_RESPONSE_SIZE);
+                let is_suspiciously_small = body_size.is_some_and(|s| s < MIN_RESPONSE_SIZE);
 
                 let should_ignore_403 = platform.ignore403 && status == 403;
 
@@ -548,11 +548,7 @@ impl UsernameOsintTool {
                     None
                 } else if is_suspiciously_small && status != 404 {
                     Some("empty_response".to_string())
-                } else if let Some(ref err) = detected_error {
-                    Some(err.error_type.clone())
-                } else {
-                    None
-                };
+                } else { detected_error.as_ref().map(|err| err.error_type.clone()) };
 
                 let found = if is_captcha || is_censored {
                     false

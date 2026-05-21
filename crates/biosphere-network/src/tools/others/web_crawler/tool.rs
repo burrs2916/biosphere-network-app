@@ -289,7 +289,7 @@ fn html_to_markdown(html: &str) -> String {
                             if let Some(href_start) = tag_full.find("href=\"") {
                                 if let Some(href_end) = tag_full[href_start + 6..].find('"') {
                                     let href = &tag_full[href_start + 6..href_start + 6 + href_end];
-                                    md.push_str(&format!("[") );
+                                    md.push('[');
                                     current_tag = format!("href:{}", href);
                                 }
                             } else {
@@ -509,9 +509,9 @@ fn normalize_url(url: &str) -> String {
                 .map(|(k, v)| format!("{}={}", k, v))
                 .collect::<Vec<_>>()
                 .join("&");
-            let _ = parsed.set_query(Some(&query_str));
+            parsed.set_query(Some(&query_str));
         } else {
-            let _ = parsed.set_query(None);
+            parsed.set_query(None);
         }
         return parsed.to_string();
     }
@@ -594,11 +594,10 @@ fn parse_css_urls(css: &str) -> Vec<String> {
     let url_re = regex::Regex::new(r#"url\(\s*['"]?([^'")\s]+)['"]?\s*\)"#).unwrap();
     for cap in url_re.captures_iter(css) {
         let url = &cap[1];
-        if !url.starts_with("data:") && !url.starts_with("#") && !url.starts_with("blob:") {
-            if seen.insert(url.to_string()) {
+        if !url.starts_with("data:") && !url.starts_with("#") && !url.starts_with("blob:")
+            && seen.insert(url.to_string()) {
                 urls.push(url.to_string());
             }
-        }
     }
 
     let import_re = regex::Regex::new(r##"@import\s+(?:url\(\s*['"]?|['"])([^'")\s;]+)(?:['"]?\s*\)|['"])"##).unwrap();
@@ -615,11 +614,10 @@ fn parse_css_urls(css: &str) -> Vec<String> {
         let font_url_re = regex::Regex::new(r#"url\(\s*['"]?([^'")\s]+)['"]?\s*\)"#).unwrap();
         for font_cap in font_url_re.captures_iter(font_block) {
             let url = &font_cap[1];
-            if !url.starts_with("data:") && !url.starts_with("#") && !url.starts_with("blob:") {
-                if seen.insert(url.to_string()) {
+            if !url.starts_with("data:") && !url.starts_with("#") && !url.starts_with("blob:")
+                && seen.insert(url.to_string()) {
                     urls.push(url.to_string());
                 }
-            }
         }
     }
 
@@ -627,14 +625,13 @@ fn parse_css_urls(css: &str) -> Vec<String> {
     for cap in image_set_re.captures_iter(css) {
         let image_set_content = &cap[1];
         for entry in image_set_content.split(',') {
-            let parts: Vec<&str> = entry.trim().split_whitespace().collect();
+            let parts: Vec<&str> = entry.split_whitespace().collect();
             if let Some(url_part) = parts.first() {
                 let clean_url = url_part.trim_matches('\'').trim_matches('"');
-                if !clean_url.starts_with("data:") && !clean_url.starts_with("#") && !clean_url.starts_with("blob:") {
-                    if seen.insert(clean_url.to_string()) {
+                if !clean_url.starts_with("data:") && !clean_url.starts_with("#") && !clean_url.starts_with("blob:")
+                    && seen.insert(clean_url.to_string()) {
                         urls.push(clean_url.to_string());
                     }
-                }
             }
         }
     }
@@ -642,11 +639,10 @@ fn parse_css_urls(css: &str) -> Vec<String> {
     let var_url_re = regex::Regex::new(r#"var\(\s*--[\w-]+\s*,\s*url\(\s*['"]?([^'")\s]+)['"]?\s*\)\s*\)"#).unwrap();
     for cap in var_url_re.captures_iter(css) {
         let url = &cap[1];
-        if !url.starts_with("data:") && !url.starts_with("#") && !url.starts_with("blob:") {
-            if seen.insert(url.to_string()) {
+        if !url.starts_with("data:") && !url.starts_with("#") && !url.starts_with("blob:")
+            && seen.insert(url.to_string()) {
                 urls.push(url.to_string());
             }
-        }
     }
 
     urls
@@ -860,8 +856,7 @@ fn score_url(url: &str, keywords: &[String]) -> f64 {
         score += 0.05;
     }
 
-    if score < 0.0 { score = 0.0; }
-    if score > 1.0 { score = 1.0; }
+    score = score.clamp(0.0, 1.0);
     score
 }
 
@@ -1000,7 +995,7 @@ fn get_resource_priority(resource_type: &str, priority_order: &str) -> usize {
     priorities.len()
 }
 
-fn sort_resources_by_priority(resources: &mut Vec<ResourceInfo>, priority_order: &str) {
+fn sort_resources_by_priority(resources: &mut [ResourceInfo], priority_order: &str) {
     let order = priority_order.to_string();
     resources.sort_by(|a, b| {
         let pa = get_resource_priority(&a.resource_type, &order);
@@ -1362,12 +1357,11 @@ fn is_disallowed_by_robots_v2(url: &str, parsed: &ParsedRobots) -> bool {
         let mut best_match_is_allow = false;
 
         for rule in &parsed.rules {
-            if path.starts_with(&rule.path) && rule.path.len() >= best_match_len {
-                if rule.path.len() > best_match_len || rule.is_allow {
+            if path.starts_with(&rule.path) && rule.path.len() >= best_match_len
+                && (rule.path.len() > best_match_len || rule.is_allow) {
                     best_match_len = rule.path.len();
                     best_match_is_allow = rule.is_allow;
                 }
-            }
         }
 
         if best_match_len > 0 {
@@ -1439,7 +1433,7 @@ async fn fetch_sitemap_urls(base_url: &str, client: &reqwest::Client) -> Vec<Str
                     for line in text.lines() {
                         let line = line.trim();
                         if line.starts_with("Sitemap:") {
-                            let sitemap_url = line["Sitemap:".len()..].trim().to_string();
+                            let sitemap_url = line.strip_prefix("Sitemap:").unwrap().trim().to_string();
                             if !sitemap_url.is_empty() {
                                 eprintln!("[WebCrawler] Found sitemap in robots.txt: {}", sitemap_url);
                                 if let Ok(resp) = client.get(&sitemap_url).send().await {
@@ -1619,7 +1613,7 @@ impl WebCrawlerTool {
         }
 
         let normalize = config.normalize_urls;
-        let concurrency = config.concurrent_requests.max(1).min(30);
+        let concurrency = config.concurrent_requests.clamp(1, 30);
         let semaphore = Arc::new(Semaphore::new(concurrency));
         let request_delay = config.request_delay_ms;
         let max_depth = config.max_depth;
@@ -1630,11 +1624,10 @@ impl WebCrawlerTool {
                 let mut stack: Vec<(String, usize)> = vec![(start_url.clone(), 0)];
                 for sitemap_url in &sitemap_urls {
                     let link_domain = Self::extract_domain(sitemap_url);
-                    if config.follow_external || link_domain.as_deref() == Some(&base_domain) {
-                        if is_crawlable_url(sitemap_url) && !is_disallowed_by_robots(sitemap_url, &disallowed_paths) {
+                    if (config.follow_external || link_domain.as_deref() == Some(&base_domain))
+                        && is_crawlable_url(sitemap_url) && !is_disallowed_by_robots(sitemap_url, &disallowed_paths) {
                             stack.push((sitemap_url.clone(), 1));
                         }
-                    }
                 }
                 eprintln!("[WebCrawler] Starting DFS crawl from: {} ({} sitemap seeds)", start_url, sitemap_urls.len());
                 while !stack.is_empty() && links.len() < max_pages {
@@ -1675,11 +1668,10 @@ impl WebCrawlerTool {
                             let norm_link = if normalize { normalize_url(&link) } else { link.clone() };
                             if !visited.contains(&norm_link) {
                                 let link_domain = Self::extract_domain(&link);
-                                if config.follow_external || link_domain.as_ref() == Some(&base_domain) {
-                                    if is_crawlable_url(&link) && !is_disallowed_by_robots(&link, &disallowed_paths) {
+                                if (config.follow_external || link_domain.as_ref() == Some(&base_domain))
+                                    && is_crawlable_url(&link) && !is_disallowed_by_robots(&link, &disallowed_paths) {
                                         stack.push((link, current_depth + 1));
                                     }
-                                }
                             }
                         }
                     }
@@ -1690,12 +1682,11 @@ impl WebCrawlerTool {
                 heap.push(ScoredUrl { url: start_url.clone(), score: 1.0, depth: 0 });
                 for sitemap_url in &sitemap_urls {
                     let link_domain = Self::extract_domain(sitemap_url);
-                    if config.follow_external || link_domain.as_deref() == Some(&base_domain) {
-                        if is_crawlable_url(sitemap_url) && !is_disallowed_by_robots(sitemap_url, &disallowed_paths) {
+                    if (config.follow_external || link_domain.as_deref() == Some(&base_domain))
+                        && is_crawlable_url(sitemap_url) && !is_disallowed_by_robots(sitemap_url, &disallowed_paths) {
                             let link_score = score_url(sitemap_url, &keywords);
                             heap.push(ScoredUrl { url: sitemap_url.clone(), score: link_score * 0.8, depth: 1 });
                         }
-                    }
                 }
                 eprintln!("[WebCrawler] Starting Best-First crawl from: {} ({} sitemap seeds)", start_url, sitemap_urls.len());
 
@@ -1737,12 +1728,11 @@ impl WebCrawlerTool {
                             let norm_link = if normalize { normalize_url(&link) } else { link.clone() };
                             if !visited.contains(&norm_link) {
                                 let link_domain = Self::extract_domain(&link);
-                                if config.follow_external || link_domain.as_ref() == Some(&base_domain) {
-                                    if is_crawlable_url(&link) && !is_disallowed_by_robots(&link, &disallowed_paths) {
+                                if (config.follow_external || link_domain.as_ref() == Some(&base_domain))
+                                    && is_crawlable_url(&link) && !is_disallowed_by_robots(&link, &disallowed_paths) {
                                         let link_score = score_url(&link, &keywords);
                                         heap.push(ScoredUrl { url: link, score: link_score, depth: current_depth + 1 });
                                     }
-                                }
                             }
                         }
                     }
@@ -1753,11 +1743,10 @@ impl WebCrawlerTool {
                 queue.push_back((start_url.clone(), 0));
                 for sitemap_url in &sitemap_urls {
                     let link_domain = Self::extract_domain(sitemap_url);
-                    if config.follow_external || link_domain.as_deref() == Some(&base_domain) {
-                        if is_crawlable_url(sitemap_url) && !is_disallowed_by_robots(sitemap_url, &disallowed_paths) {
+                    if (config.follow_external || link_domain.as_deref() == Some(&base_domain))
+                        && is_crawlable_url(sitemap_url) && !is_disallowed_by_robots(sitemap_url, &disallowed_paths) {
                             queue.push_back((sitemap_url.clone(), 1));
                         }
-                    }
                 }
                 eprintln!("[WebCrawler] Starting BFS crawl from: {} ({} sitemap seeds)", start_url, sitemap_urls.len());
 
@@ -1830,11 +1819,10 @@ impl WebCrawlerTool {
                                 let norm_link = if normalize { normalize_url(&link) } else { link.clone() };
                                 if !visited.contains(&norm_link) {
                                     let link_domain = Self::extract_domain(&link);
-                                    if config.follow_external || link_domain.as_ref() == Some(&base_domain) {
-                                        if is_crawlable_url(&link) && !is_disallowed_by_robots(&link, &disallowed_paths) {
+                                    if (config.follow_external || link_domain.as_ref() == Some(&base_domain))
+                                        && is_crawlable_url(&link) && !is_disallowed_by_robots(&link, &disallowed_paths) {
                                             queue.push_back((link, current_depth + 1));
                                         }
-                                    }
                                 }
                             }
                         }
@@ -2270,7 +2258,7 @@ impl WebCrawlerTool {
                         }
                     };
 
-                    if bytes.len() == 0 {
+                    if bytes.is_empty() {
                         return Ok(DownloadResult {
                             url: url.to_string(),
                             file_path: String::new(),
@@ -2439,15 +2427,12 @@ impl WebCrawlerTool {
             let url = url.clone();
             let save_dir = save_dir.to_string();
             let download_mode = download_mode.to_string();
-            let mirror_mode = mirror_mode;
-            let max_retries = max_retries;
-            let retry_delay_ms = retry_delay_ms;
 
             join_set.spawn(async move {
                 let _permit = semaphore.acquire().await.unwrap();
 
                 let effective_save_dir = if download_mode == "by_type" {
-                    let ext = url.split('.').last().unwrap_or("unknown").to_lowercase();
+                    let ext = url.split('.').next_back().unwrap_or("unknown").to_lowercase();
                     let ext_without_query = ext.split('?').next().unwrap_or("unknown");
                     let subdir = match ext_without_query {
                         "jpg" | "jpeg" | "png" | "gif" | "svg" | "webp" | "ico" | "bmp" | "tiff" => "images",
@@ -2582,7 +2567,7 @@ impl WebCrawlerTool {
                                 }
                             };
 
-                            if bytes.len() == 0 {
+                            if bytes.is_empty() {
                                 return DownloadResult {
                                     url: url.clone(),
                                     file_path: String::new(),
@@ -2860,7 +2845,7 @@ impl WebCrawlerTool {
                         let srcset_re = regex::Regex::new(r#"srcset\s*=\s*"([^"]+)""#).unwrap();
                         for cap in srcset_re.captures_iter(&body) {
                             for entry in cap[1].split(',') {
-                                if let Some(src) = entry.trim().split_whitespace().next() {
+                                if let Some(src) = entry.split_whitespace().next() {
                                     if !src.starts_with("data:") {
                                         resources.push(WebCrawlerTool::resolve_url(&url, src));
                                     }
@@ -3122,7 +3107,7 @@ impl WebCrawlerTool {
             }
 
             let sanitized = path.split('/')
-                .map(|segment| sanitize_filename(segment))
+                .map(sanitize_filename)
                 .collect::<Vec<_>>()
                 .join("/");
 
@@ -3368,7 +3353,6 @@ impl WebCrawlerTool {
                 let full_url = format!("{}/{}", base_url, full_path);
                 let client = client.clone();
                 let semaphore = semaphore.clone();
-                let client_timeout = client_timeout;
 
                 join_set.spawn(async move {
                     let _permit = semaphore.acquire().await.unwrap();
@@ -3377,7 +3361,7 @@ impl WebCrawlerTool {
                         match client.head(&full_url).send().await {
                             Ok(resp) => {
                                 let status = resp.status().as_u16();
-                                if status >= 200 && status < 400 {
+                                if (200..400).contains(&status) {
                                     let content_length = resp.headers()
                                         .get("content-length")
                                         .and_then(|v| v.to_str().ok())
@@ -3659,7 +3643,7 @@ impl WebCrawlerTool {
             for cap in re.captures_iter(html) {
                 let srcset = &cap[1];
                 for entry in srcset.split(',') {
-                    let url_part = entry.trim().split_whitespace().next().unwrap_or("");
+                    let url_part = entry.split_whitespace().next().unwrap_or("");
                     if !url_part.is_empty() && !url_part.starts_with("data:") {
                         let full_url = Self::resolve_url(base_url, url_part);
                         links.push(full_url);
@@ -3918,7 +3902,7 @@ impl WebCrawlerTool {
     fn parse_srcset(srcset_value: &str, base_url: &str, seen_urls: &mut HashSet<String>, resource_type: &str) -> Vec<ResourceInfo> {
         let mut resources = Vec::new();
         for entry in srcset_value.split(',') {
-            let parts: Vec<&str> = entry.trim().split_whitespace().collect();
+            let parts: Vec<&str> = entry.split_whitespace().collect();
             if let Some(url_part) = parts.first() {
                 if url_part.starts_with("data:") || url_part.starts_with("blob:") {
                     continue;

@@ -167,7 +167,7 @@ impl PrivilegeEscCheckTool {
         let mut vulnerable_services = Vec::new();
         let mut kernel_exploits = Vec::new();
         let mut docker_issues = Vec::new();
-        let misconfigurations: Vec<Misconfiguration>;
+        
 
         if config.check_suid {
             suid_binaries = Self::check_suid_binaries(&os_type);
@@ -201,7 +201,7 @@ impl PrivilegeEscCheckTool {
             docker_issues = Self::check_docker_issues(&os_type);
         }
 
-        misconfigurations = Self::check_misconfigurations(&os_type);
+        let misconfigurations: Vec<Misconfiguration> = Self::check_misconfigurations(&os_type);
 
         let critical_count = suid_binaries.iter().filter(|b| b.risk_level == "critical").count()
             + sgid_binaries.iter().filter(|b| b.risk_level == "critical").count()
@@ -280,8 +280,8 @@ impl PrivilegeEscCheckTool {
     }
 
     fn calculate_security_score(critical: usize, high: usize, medium: usize, low: usize) -> u8 {
-        let penalty = (critical as i32 * 30 + high as i32 * 15 + medium as i32 * 5 + low as i32 * 1).min(100);
-        (100 - penalty as u8).max(0)
+        let penalty = (critical as i32 * 30 + high as i32 * 15 + medium as i32 * 5 + (low as i32)).min(100);
+        100 - penalty as u8 
     }
 
     fn score_to_level(score: u8) -> String {
@@ -850,8 +850,8 @@ impl PrivilegeEscCheckTool {
                     if fields.len() >= 4 {
                         let name = fields[1].trim();
                         let path = fields[2].trim();
-                        if path.contains("Program Files") || path.contains("C:\\") {
-                            if path.starts_with('"') && path[1..].contains('"') == false {
+                        if (path.contains("Program Files") || path.contains("C:\\"))
+                            && path.starts_with('"') && !path[1..].contains('"') {
                                 results.push(VulnerableService {
                                     name: name.to_string(),
                                     version: String::new(),
@@ -861,7 +861,6 @@ impl PrivilegeEscCheckTool {
                                     exploit_hint: "Place malicious executable in unquoted path gap".to_string(),
                                 });
                             }
-                        }
                     }
                 }
             }
@@ -909,7 +908,7 @@ impl PrivilegeEscCheckTool {
                     let user = parts[0];
                     let command = parts[10..].join(" ");
                     if user == "root" && !command.contains("grep") {
-                        let service_name = parts[10].split('/').last().unwrap_or("unknown");
+                        let service_name = parts[10].split('/').next_back().unwrap_or("unknown");
                         if !results.iter().any(|r| r.name.to_lowercase() == service_name.to_lowercase()) {
                             results.push(VulnerableService {
                                 name: service_name.to_string(),
@@ -982,7 +981,7 @@ impl PrivilegeEscCheckTool {
         let mut results = Vec::new();
 
         for exploit in known_exploits {
-            if Self::kernel_version_matches(&kernel_version, &exploit.affected_versions) {
+            if Self::kernel_version_matches(&kernel_version, exploit.affected_versions) {
                 results.push(KernelExploit {
                     kernel_version: kernel_version.clone(),
                     cve: exploit.cve.to_string(),

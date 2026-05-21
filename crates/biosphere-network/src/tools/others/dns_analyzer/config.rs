@@ -209,7 +209,7 @@ impl DnsAnalyzerTool {
 
         let a_records: Vec<&DnsRecord> = records.iter().filter(|r| r.record_type == "A").collect();
         let unique_ips: std::collections::HashSet<&str> = a_records.iter().map(|r| r.value.as_str()).collect();
-        if a_records.len() > 0 && unique_ips.len() == 1 {
+        if !a_records.is_empty() && unique_ips.len() == 1 {
             security_issues.push(DnsSecurityIssue {
                 severity: "info".to_string(),
                 category: "IP冗余".to_string(),
@@ -523,7 +523,7 @@ impl DnsAnalyzerTool {
                 }
             }
             5 | 2 | 12 => {
-                if rdata.len() > 0 {
+                if !rdata.is_empty() {
                     let name = Self::parse_name(full_response, rdata_start);
                     if name.is_empty() {
                         String::from_utf8_lossy(rdata).to_string()
@@ -580,7 +580,7 @@ impl DnsAnalyzerTool {
                 txt
             }
             6 => {
-                if rdata.len() > 0 {
+                if !rdata.is_empty() {
                     let mname = Self::parse_name(full_response, rdata_start);
                     let mut pos = rdata_start;
                     while pos < full_response.len() && full_response[pos] != 0 {
@@ -708,7 +708,7 @@ impl DnsAnalyzerTool {
             "PTR" => {
                 records.push(DnsRecord {
                     record_type: "PTR".to_string(),
-                    name: format!("34.216.184.93.in-addr.arpa"),
+                    name: "34.216.184.93.in-addr.arpa".to_string(),
                     value: domain.to_string(),
                     ttl: 3600,
                     priority: None,
@@ -748,8 +748,8 @@ impl DnsAnalyzerTool {
                     if let Ok(tag) = parts[0].parse::<u32>() {
                         key_tags.push(tag);
                     }
-                    algorithms.push(Self::algorithm_name(parts.get(1).map(|s| *s).unwrap_or("0")));
-                    digest_types.push(Self::digest_type_name(parts.get(2).map(|s| *s).unwrap_or("0")));
+                    algorithms.push(Self::algorithm_name(parts.get(1).copied().unwrap_or("0")));
+                    digest_types.push(Self::digest_type_name(parts.get(2).copied().unwrap_or("0")));
                 }
             }
         }
@@ -758,7 +758,7 @@ impl DnsAnalyzerTool {
             for record in &dnskey_records {
                 let parts: Vec<&str> = record.value.split_whitespace().collect();
                 if parts.len() >= 2 {
-                    algorithms.push(Self::algorithm_name(parts.get(1).map(|s| *s).unwrap_or("0")));
+                    algorithms.push(Self::algorithm_name(parts.get(1).copied().unwrap_or("0")));
                 }
             }
         }
@@ -825,17 +825,14 @@ impl DnsAnalyzerTool {
                 resolved.first().map(|r| r.value.clone()).unwrap_or_else(|| ns.clone())
             };
 
-            match timeout(
+            if let Ok(Ok(zone_records)) = timeout(
                 Duration::from_secs(timeout_secs),
                 Self::attempt_axfr(domain, &ns_ip),
             ).await {
-                Ok(Ok(zone_records)) => {
-                    if !zone_records.is_empty() {
-                        vulnerable.push(ns.clone());
-                        transferred.extend(zone_records);
-                    }
+                if !zone_records.is_empty() {
+                    vulnerable.push(ns.clone());
+                    transferred.extend(zone_records);
                 }
-                _ => {}
             }
         }
 

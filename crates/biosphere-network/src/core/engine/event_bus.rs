@@ -461,7 +461,7 @@ impl EventBus {
                     return true;
                 }
                 if let Some(ref src_type) = parent.source_event_type {
-                    if src_type == event_type && parent.source_event_data.as_ref().map_or(false, |d| d.to_lowercase() == event_data_lower) {
+                    if src_type == event_type && parent.source_event_data.as_ref().is_some_and(|d| d.to_lowercase() == event_data_lower) {
                         return true;
                     }
                 }
@@ -587,7 +587,7 @@ impl EventBus {
 
         if let Some(ref db) = self.database {
             let scan_id = self.stats.read().await.scan_id.clone();
-            let events: Vec<BiosEventRef> = buffer.drain(..).collect();
+            let events: Vec<BiosEventRef> = std::mem::take(buffer);
             if let Err(e) = db.store_events_batch(&events, &scan_id) {
                 warn!("Failed to batch store {} events: {}", events.len(), e);
             }

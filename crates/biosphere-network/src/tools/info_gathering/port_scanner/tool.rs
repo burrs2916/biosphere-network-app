@@ -3,6 +3,12 @@ use crate::core::{ProgressReporter, Result, Tool, ToolArgs, ToolCategory, ToolIn
 
 pub struct PortScanner;
 
+impl Default for PortScanner {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl PortScanner {
     pub fn new() -> Self {
         Self

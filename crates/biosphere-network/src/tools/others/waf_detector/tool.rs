@@ -432,8 +432,7 @@ impl WafDetectorTool {
     }
 
     pub async fn detect_simple(url: &str, timeout: Option<u64>) -> Result<WafDetectionResult> {
-        let mut config = WafConfig::default();
-        config.url = url.to_string();
+        let mut config = WafConfig { url: url.to_string(), ..Default::default() };
         if let Some(t) = timeout {
             config.timeout = t;
         }
@@ -636,13 +635,11 @@ impl WafDetectorTool {
                             blocked_keywords.iter().any(|k| body_lower.contains(k))
                         } else if status != baseline_status {
                             (status as i32 - baseline_status as i32).abs() >= 100
+                        } else if baseline_content_length > 0 && content_len > 0 {
+                            let diff = (content_len as f64 - baseline_content_length as f64).abs();
+                            diff / baseline_content_length as f64 > 0.5
                         } else {
-                            if baseline_content_length > 0 && content_len > 0 {
-                                let diff = (content_len as f64 - baseline_content_length as f64).abs();
-                                diff / baseline_content_length as f64 > 0.5
-                            } else {
-                                false
-                            }
+                            false
                         };
 
                         let block_method = if status == 403 { "403 Forbidden".to_string() }
@@ -897,7 +894,7 @@ impl WafDetectorTool {
             .get("x-powered-by")
             .and_then(|v| v.to_str().ok())
             .map(|s| s.to_string());
-        let redirect_url = if status >= 300 && status < 400 {
+        let redirect_url = if (300..400).contains(&status) {
             resp.headers().get("location")
                 .and_then(|v| v.to_str().ok())
                 .map(|s| s.to_string())

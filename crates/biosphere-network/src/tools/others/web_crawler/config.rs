@@ -49,6 +49,7 @@ impl Default for CacheConfig {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Default)]
 pub struct SslCertInfo {
     pub subject: Option<String>,
     pub issuer: Option<String>,
@@ -60,20 +61,6 @@ pub struct SslCertInfo {
     pub subject_alt_names: Vec<String>,
 }
 
-impl Default for SslCertInfo {
-    fn default() -> Self {
-        Self {
-            subject: None,
-            issuer: None,
-            not_before: None,
-            not_after: None,
-            is_expired: false,
-            days_remaining: None,
-            fingerprint_sha256: None,
-            subject_alt_names: Vec::new(),
-        }
-    }
-}
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PopupDetection {
@@ -375,6 +362,7 @@ pub fn detect_antibot(status_code: u16, html: &str) -> AntibotDetection {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Default)]
 pub struct SecurityInfo {
     pub has_https: bool,
     pub has_hsts: bool,
@@ -391,25 +379,6 @@ pub struct SecurityInfo {
     pub has_permissions_policy: bool,
 }
 
-impl Default for SecurityInfo {
-    fn default() -> Self {
-        Self {
-            has_https: false,
-            has_hsts: false,
-            has_csp: false,
-            has_x_frame_options: false,
-            has_x_content_type_options: false,
-            server_header: None,
-            powered_by_header: None,
-            security_score: 0,
-            csp_directives: None,
-            has_strict_transport: false,
-            has_x_xss_protection: false,
-            has_referrer_policy: false,
-            has_permissions_policy: false,
-        }
-    }
-}
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CrawledLink {
@@ -450,6 +419,7 @@ pub struct DirEntryInfo {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Default)]
 pub struct PageMetadata {
     pub title: Option<String>,
     pub description: Option<String>,
@@ -472,31 +442,6 @@ pub struct PageMetadata {
     pub robots: Option<String>,
 }
 
-impl Default for PageMetadata {
-    fn default() -> Self {
-        Self {
-            title: None,
-            description: None,
-            keywords: None,
-            og_title: None,
-            og_description: None,
-            og_image: None,
-            og_video: None,
-            og_audio: None,
-            og_type: None,
-            og_site_name: None,
-            twitter_card: None,
-            twitter_title: None,
-            twitter_description: None,
-            twitter_image: None,
-            canonical: None,
-            generator: None,
-            author: None,
-            viewport: None,
-            robots: None,
-        }
-    }
-}
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DownloadResult {

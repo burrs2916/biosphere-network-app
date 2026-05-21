@@ -453,7 +453,7 @@ impl BruteForceTool {
 
         stream.write_all(b"EHLO test\r\n").map_err(|e| format!("EHLO failed: {}", e))?;
         let mut buf = [0u8; 2048];
-        if let Ok(_) = stream.read(&mut buf) {}
+        let _ = stream.read(&mut buf);
 
         stream.write_all(b"AUTH LOGIN\r\n").map_err(|e| format!("AUTH LOGIN failed: {}", e))?;
         let mut buf = [0u8; 1024];
@@ -710,13 +710,12 @@ impl BruteForceTool {
             }
         }
 
-        if status == 200 || status == 302 || status == 301 {
-            if !body.contains("error") && !body.contains("invalid") && !body.contains("incorrect")
+        if (status == 200 || status == 302 || status == 301)
+            && !body.contains("error") && !body.contains("invalid") && !body.contains("incorrect")
                 && !body.contains("wrong") && !body.contains("failed") && !body.contains("denied")
             {
                 return Ok(true);
             }
-        }
 
         Ok(false)
     }

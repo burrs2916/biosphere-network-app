@@ -313,9 +313,7 @@ impl MobileSecurityTool {
         let lower = path.to_lowercase();
         if lower.ends_with(".apk") {
             "android".to_string()
-        } else if lower.ends_with(".ipa") {
-            "ios".to_string()
-        } else if lower.ends_with(".app") || lower.ends_with(".appx") {
+        } else if lower.ends_with(".ipa") || lower.ends_with(".app") || lower.ends_with(".appx") {
             "ios".to_string()
         } else {
             config_platform.to_lowercase()
@@ -351,10 +349,10 @@ impl MobileSecurityTool {
                             }
                         }
                         if line.contains("sdkVersion:") {
-                            min_sdk = line.split(':').last().unwrap_or("").trim().to_string();
+                            min_sdk = line.split(':').next_back().unwrap_or("").trim().to_string();
                         }
                         if line.contains("targetSdkVersion:") {
-                            target_sdk = line.split(':').last().unwrap_or("").trim().to_string();
+                            target_sdk = line.split(':').next_back().unwrap_or("").trim().to_string();
                         }
                     }
                 }
@@ -384,16 +382,16 @@ impl MobileSecurityTool {
                                 for line in content.lines() {
                                     let line = line.trim();
                                     if line.contains("package=") {
-                                        package_name = Self::extract_attr(&line, "package");
+                                        package_name = Self::extract_attr(line, "package");
                                     }
                                     if line.contains("android:versionName=") {
-                                        version = Self::extract_attr(&line, "android:versionName");
+                                        version = Self::extract_attr(line, "android:versionName");
                                     }
                                     if line.contains("android:minSdkVersion=") {
-                                        min_sdk = Self::extract_attr(&line, "android:minSdkVersion");
+                                        min_sdk = Self::extract_attr(line, "android:minSdkVersion");
                                     }
                                     if line.contains("android:targetSdkVersion=") {
-                                        target_sdk = Self::extract_attr(&line, "android:targetSdkVersion");
+                                        target_sdk = Self::extract_attr(line, "android:targetSdkVersion");
                                     }
                                 }
                             }
@@ -530,7 +528,7 @@ impl MobileSecurityTool {
                         let line = line.trim();
                         if line.starts_with("uses-permission:") {
                             let perm = line.replace("uses-permission:", "").trim().to_string();
-                            let perm_name = perm.split('.').last().unwrap_or("").to_string();
+                            let perm_name = perm.split('.').next_back().unwrap_or("").to_string();
 
                             let (category, risk, is_dangerous, description) = if let Some((cat, risk)) = dangerous_perms.get(perm_name.as_str()) {
                                 (cat.to_string(), risk.to_string(), true, format!("Dangerous permission: {}", perm_name))
@@ -564,7 +562,7 @@ impl MobileSecurityTool {
                                     if line.contains("uses-permission") && line.contains("android:name=") {
                                         let perm = Self::extract_attr(line, "android:name");
                                         if !perm.is_empty() {
-                                            let perm_name = perm.split('.').last().unwrap_or("").to_string();
+                                            let perm_name = perm.split('.').next_back().unwrap_or("").to_string();
                                             let (category, risk, is_dangerous, description) = if let Some((cat, risk)) = dangerous_perms.get(perm_name.as_str()) {
                                                 (cat.to_string(), risk.to_string(), true, format!("Dangerous permission: {}", perm_name))
                                             } else {
@@ -656,11 +654,10 @@ impl MobileSecurityTool {
                 if line.contains("/api/") || line.contains("/v1/") || line.contains("/v2/") || line.contains("/rest/") {
                     api_endpoints.push(line.to_string());
                 }
-                if line.contains("api_key") || line.contains("apikey") || line.contains("API_KEY") {
-                    if line.contains("=") && line.len() > 20 {
+                if (line.contains("api_key") || line.contains("apikey") || line.contains("API_KEY"))
+                    && line.contains("=") && line.len() > 20 {
                         has_api_key = true;
                     }
-                }
                 if line.contains("Bearer ") && line.len() > 30 {
                     has_hardcoded_token = true;
                 }
@@ -935,8 +932,8 @@ impl MobileSecurityTool {
                         if !find_output.trim().is_empty() {
                             for file_path in find_output.lines().take(5) {
                                 if let Ok(content) = std::fs::read_to_string(file_path.trim()) {
-                                    if content.contains("AES/ECB") {
-                                        if !issues.iter().any(|i| i.algorithm == "AES/ECB") {
+                                    if content.contains("AES/ECB")
+                                        && !issues.iter().any(|i| i.algorithm == "AES/ECB") {
                                             issues.push(CryptoIssue {
                                                 algorithm: "AES/ECB".to_string(),
                                                 usage: "Data Encryption".to_string(),
@@ -946,7 +943,6 @@ impl MobileSecurityTool {
                                                 recommendation: "Use AES/GCM/NoPadding".to_string(),
                                             });
                                         }
-                                    }
                                 }
                             }
                         }
@@ -1285,7 +1281,7 @@ impl MobileSecurityTool {
         ].iter().cloned().collect();
 
         for perm in permissions {
-            let perm_name = perm.name.split('.').last().unwrap_or("");
+            let perm_name = perm.name.split('.').next_back().unwrap_or("");
             if let Some((data, reg, necessary)) = privacy_sensitive_perms.get(perm_name) {
                 issues.push(PrivacyIssue {
                     data_collected: data.to_string(),

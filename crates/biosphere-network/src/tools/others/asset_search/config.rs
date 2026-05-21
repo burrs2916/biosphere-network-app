@@ -654,7 +654,7 @@ fn base64_encode(input: &str) -> String {
         }
     }
 
-    while result.len() % 4 != 0 {
+    while !result.len().is_multiple_of(4) {
         result.push('=');
     }
 

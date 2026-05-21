@@ -765,7 +765,7 @@ impl AdAuditTool {
             for line in output.lines() {
                 let line = line.trim();
                 if line.starts_with("name = ") || line.contains("origin =") {
-                    let zone = line.split('=').last().unwrap_or("").trim().trim_end_matches('.').to_string();
+                    let zone = line.split('=').next_back().unwrap_or("").trim().trim_end_matches('.').to_string();
                     if !zone.is_empty() && !zones.contains(&zone) {
                         zones.push(zone);
                     }
@@ -898,7 +898,7 @@ impl AdAuditTool {
                 let line = line.trim();
                 if !line.is_empty() && !line.contains("CertUtil") && !line.contains("Template") {
                     let parts: Vec<&str> = line.splitn(2, ':').collect();
-                    if parts.len() >= 1 {
+                    if !parts.is_empty() {
                         let name = parts[0].trim().to_string();
                         if !templates.iter().any(|t| t.name == name) {
                             templates.push(CertTemplate {
@@ -1267,8 +1267,8 @@ impl AdAuditTool {
             domain, dc, username, password,
             &["(&(objectClass=domain)(distinguishedName=*))", "nTSecurityDescriptor"]
         )) {
-            if output.contains("DS-Replication-Get-Changes") || output.contains("1131f6aa") {
-                if output.contains("1131f6ad") || output.contains("DS-Replication-Get-Changes-All") {
+            if (output.contains("DS-Replication-Get-Changes") || output.contains("1131f6aa"))
+                && (output.contains("1131f6ad") || output.contains("DS-Replication-Get-Changes-All")) {
                     dcsync_possible = true;
                     issues.push(AdIssue {
                         category: "ACL".to_string(),
@@ -1279,7 +1279,6 @@ impl AdAuditTool {
                         mitre_attack: Some("T1003.006".to_string()),
                     });
                 }
-            }
         }
 
         if !excessive_permissions.is_empty() {

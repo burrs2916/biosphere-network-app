@@ -709,7 +709,7 @@ impl AnonymityCheckerTool {
         if !languages.is_empty() && languages.len() > 1 { uniqueness_score += 0.1; }
         if !platform.is_empty() { uniqueness_score += 0.1; }
         if do_not_track { uniqueness_score -= 0.05; }
-        uniqueness_score = uniqueness_score.min(1.0).max(0.0);
+        uniqueness_score = uniqueness_score.clamp(0.0, 1.0);
 
         issues.push(AnonymityIssue {
             category: "Browser Fingerprint".to_string(),
@@ -1084,7 +1084,7 @@ impl AnonymityCheckerTool {
             "info" => 0.0,
             _ => 0.01,
         }).sum();
-        (1.0 - penalty).max(0.0).min(1.0)
+        (1.0 - penalty).clamp(0.0, 1.0)
     }
 
     fn score_to_level(score: f64) -> String {

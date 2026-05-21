@@ -647,7 +647,7 @@ impl PhishingDetectorTool {
 
         let mut matrix = vec![vec![0; b_len + 1]; a_len + 1];
         for (i, row) in matrix.iter_mut().enumerate() { row[0] = i; }
-        for j in 0..=b_len { matrix[0][j] = j; }
+        for (j, val) in matrix[0].iter_mut().enumerate().take(b_len + 1) { *val = j; }
 
         for (i, ac) in a.chars().enumerate() {
             for (j, bc) in b.chars().enumerate() {

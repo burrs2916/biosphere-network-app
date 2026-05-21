@@ -357,11 +357,10 @@ impl FirmwareAnalyzerTool {
             for line in stdout.lines().take(5000) {
                 let line = line.trim();
                 for pattern in &version_patterns {
-                    if line.to_lowercase().contains(&pattern.to_lowercase()) {
-                        if line.len() < 100 && (line.contains('.') || line.contains('-')) {
+                    if line.to_lowercase().contains(&pattern.to_lowercase())
+                        && line.len() < 100 && (line.contains('.') || line.contains('-')) {
                             return line.to_string();
                         }
-                    }
                 }
             }
         }
@@ -477,8 +476,6 @@ impl FirmwareAnalyzerTool {
                         else if description.to_lowercase().contains("ubifs") { "ubifs" }
                         else if description.to_lowercase().contains("ext2") || description.to_lowercase().contains("ext3") || description.to_lowercase().contains("ext4") { "ext4" }
                         else if description.to_lowercase().contains("cpio") { "cpio" }
-                        else if description.to_lowercase().contains("u-boot") { "raw" }
-                        else if description.to_lowercase().contains("kernel") || description.to_lowercase().contains("linux") { "raw" }
                         else { "raw" };
 
                     let name = if description.to_lowercase().contains("u-boot") || description.to_lowercase().contains("bootloader") { "bootloader" }
@@ -540,9 +537,9 @@ impl FirmwareAnalyzerTool {
             for (pattern, cred_type) in &password_patterns {
                 if lower.contains(&pattern.to_lowercase()) && !seen.contains(s) {
                     let value = if s.contains('=') {
-                        s.split('=').last().unwrap_or(s).trim().to_string()
+                        s.split('=').next_back().unwrap_or(s).trim().to_string()
                     } else if s.contains(':') {
-                        s.split(':').last().unwrap_or(s).trim().to_string()
+                        s.split(':').next_back().unwrap_or(s).trim().to_string()
                     } else {
                         s.trim().to_string()
                     };
@@ -722,7 +719,7 @@ impl FirmwareAnalyzerTool {
                     else { "Unknown" };
 
                 binaries.push(FirmwareBinary {
-                    name: firmware_path.split('/').last().unwrap_or("firmware").to_string(),
+                    name: firmware_path.split('/').next_back().unwrap_or("firmware").to_string(),
                     path: firmware_path.to_string(),
                     architecture: arch.to_string(),
                     is_stripped,

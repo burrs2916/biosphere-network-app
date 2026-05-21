@@ -108,7 +108,7 @@ impl CompiledMatchRule {
         let (values, negative_values): (Vec<String>, Vec<String>) = match &rule.value {
             serde_yaml::Value::String(s) => {
                 if s.starts_with("not ") {
-                    (Vec::new(), vec![s[4..].to_string()])
+                    (Vec::new(), vec![s.strip_prefix("not ").unwrap().to_string()])
                 } else {
                     (vec![s.clone()], Vec::new())
                 }
@@ -119,7 +119,7 @@ impl CompiledMatchRule {
                 for v in seq {
                     if let Some(s) = v.as_str() {
                         if s.starts_with("not ") {
-                            neg.push(s[4..].to_string());
+                            neg.push(s.strip_prefix("not ").unwrap().to_string());
                         } else {
                             pos.push(s.to_string());
                         }
@@ -616,14 +616,13 @@ impl Correlator {
 
         let headline_fields = extract_headline_fields(&rule.headline);
         for hf in &headline_fields {
-            if !valid_fields.contains(&hf.as_str()) && hf != "count" && hf != "confidence" && hf != "risk" {
-                if !hf.starts_with("unique_count:") {
+            if !valid_fields.contains(&hf.as_str()) && hf != "count" && hf != "confidence" && hf != "risk"
+                && !hf.starts_with("unique_count:") {
                     return Err(format!(
                         "Rule {} headline references unknown field '{}'",
                         rule.id, hf
                     ));
                 }
-            }
         }
 
         Ok(())
@@ -701,10 +700,7 @@ impl Correlator {
             let mut enriched = enrich_events(events, event_index, ci, &rule.scope);
 
             for matcher in collection_matchers {
-                enriched = enriched
-                    .into_iter()
-                    .filter(|e| matcher.matches_enriched(e))
-                    .collect();
+                enriched.retain(|e| matcher.matches_enriched(e));
             }
 
             self.pipeline_stats.borrow_mut().collection_phase_matched += enriched.len();
@@ -806,10 +802,7 @@ impl Correlator {
             let mut enriched = enrich_events(events, event_index, ci, &rule.scope);
 
             for matcher in collection_matchers {
-                enriched = enriched
-                    .into_iter()
-                    .filter(|e| matcher.matches_enriched(e))
-                    .collect();
+                enriched.retain(|e| matcher.matches_enriched(e));
             }
 
             all_enriched.extend(enriched);
@@ -1058,7 +1051,7 @@ fn render_headline(template: &str, group_events: &[EnrichedEvent], agg_key: &str
     }
 
     let re = Regex::new(r"\{unique_count:([^}]+)\}").unwrap();
-    if let Some(captures) = re.captures(&template) {
+    if let Some(captures) = re.captures(template) {
         if let Some(field_match) = captures.get(1) {
             let field: &str = field_match.as_str();
             let unique_values: std::collections::HashSet<String> = group_events.iter()
@@ -1278,6 +1271,7 @@ fn extract_headline_fields(headline: &str) -> Vec<String> {
         .collect()
 }
 
+#[allow(clippy::vec_init_then_push)]
 pub fn default_correlation_rules() -> Vec<CorrelationRule> {
     let mut rules = Vec::new();
 

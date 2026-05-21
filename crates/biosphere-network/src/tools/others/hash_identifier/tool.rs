@@ -4,6 +4,12 @@ use regex::Regex;
 
 pub struct HashIdentifierTool;
 
+impl Default for HashIdentifierTool {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl HashIdentifierTool {
     pub fn new() -> Self {
         Self
@@ -232,6 +238,12 @@ struct HashRule {
 }
 
 pub struct IpGeoTool;
+
+impl Default for IpGeoTool {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 impl IpGeoTool {
     pub fn new() -> Self {

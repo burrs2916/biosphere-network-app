@@ -411,15 +411,14 @@ impl WifiDeauthDetectorTool {
             }
             if line.contains("Signal level=") {
                 if let Some(sig_part) = line.split("Signal level=").nth(1) {
-                    let sig_str: String = sig_part.chars().take_while(|c| c.is_digit(10) || *c == '-').collect();
+                    let sig_str: String = sig_part.chars().take_while(|c| c.is_ascii_digit() || *c == '-').collect();
                     current_signal = sig_str.parse().unwrap_or(-100);
                 }
             }
-            if line.contains("Encryption key:") {
-                if line.contains("off") {
+            if line.contains("Encryption key:")
+                && line.contains("off") {
                     current_encryption = "OPN".to_string();
                 }
-            }
             if line.contains("WPA3") {
                 current_encryption = "WPA3".to_string();
             } else if line.contains("WPA2") {
@@ -548,7 +547,7 @@ impl WifiDeauthDetectorTool {
     fn extract_channel(text: &str) -> u32 {
         for part in text.split_whitespace() {
             if let Ok(ch) = part.parse::<u32>() {
-                if ch >= 1 && ch <= 165 {
+                if (1..=165).contains(&ch) {
                     return ch;
                 }
             }
@@ -560,7 +559,7 @@ impl WifiDeauthDetectorTool {
         for part in text.split_whitespace() {
             if part.starts_with('-') {
                 if let Ok(sig) = part.trim_end_matches(',').parse::<i32>() {
-                    if sig >= -100 && sig <= 0 {
+                    if (-100..=0).contains(&sig) {
                         return sig;
                     }
                 }

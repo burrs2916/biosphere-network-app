@@ -80,10 +80,8 @@ impl SiteSelfChecker {
 
         let mut results = Vec::new();
         while let Some(result) = join_set.join_next().await {
-            if let Ok(check_result) = result {
-                if let Ok(r) = check_result {
-                    results.push(r);
-                }
+            if let Ok(Ok(r)) = result {
+                results.push(r);
             }
         }
 
@@ -188,12 +186,10 @@ impl SiteSelfChecker {
             } else {
                 SiteCheckStatus::Degraded
             }
+        } else if !unclaimed_test.found {
+            SiteCheckStatus::Healthy
         } else {
-            if !unclaimed_test.found {
-                SiteCheckStatus::Healthy
-            } else {
-                SiteCheckStatus::Broken
-            }
+            SiteCheckStatus::Broken
         };
 
         Ok(SiteCheckResult {

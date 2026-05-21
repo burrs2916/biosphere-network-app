@@ -9,6 +9,7 @@ use super::event_type::BiosEventType;
 use super::target::BiosTarget;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Default)]
 pub struct ModuleMeta {
     pub name: String,
     pub summary: String,
@@ -17,17 +18,6 @@ pub struct ModuleMeta {
     pub categories: Vec<String>,
 }
 
-impl Default for ModuleMeta {
-    fn default() -> Self {
-        Self {
-            name: String::new(),
-            summary: String::new(),
-            flags: Vec::new(),
-            use_cases: Vec::new(),
-            categories: Vec::new(),
-        }
-    }
-}
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct ModuleConfig {
@@ -494,7 +484,7 @@ impl ModuleRegistry {
         let mut to_process: Vec<BiosEventType> = event_types.to_vec();
 
         while let Some(et) = to_process.pop() {
-            let producers = self.modules_producing(&[et.clone()]);
+            let producers = self.modules_producing(std::slice::from_ref(&et));
             for producer in &producers {
                 if required.contains(producer) {
                     continue;
@@ -545,7 +535,7 @@ impl ModuleRegistry {
         for name in module_names {
             if let Some(module) = self.modules.get(name) {
                 for event_type in module.watched_events() {
-                    let producers: Vec<String> = self.modules_producing(&[event_type.clone()]);
+                    let producers: Vec<String> = self.modules_producing(std::slice::from_ref(event_type));
                     let has_producer = producers.iter().any(|p| available.contains(p));
                     if !has_producer && *event_type != BiosEventType::Root {
                         warnings.push(format!(

@@ -475,8 +475,8 @@ impl PayloadInjectorTool {
             "append" => (original_size + payload_size, original_size, false),
             "prepend" => (original_size + payload_size, 0, false),
             "cave" => (original_size, {
-                let cave_offset = if file_type == "PE" { 512 } else { 256 };
-                cave_offset
+                
+                if file_type == "PE" { 512 } else { 256 }
             }, true),
             "section" => (original_size + 4096, original_size, true),
             "replace" => (original_size, 0, false),

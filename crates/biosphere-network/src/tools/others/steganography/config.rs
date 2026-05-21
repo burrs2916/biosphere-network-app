@@ -152,8 +152,8 @@ pub fn detect_steganography(file_data: &[u8], file_path: &str) -> StegDetectResu
             let chunk_type = &file_data[i+4..i+8];
             let chunk_name = std::str::from_utf8(chunk_type).unwrap_or("????");
             
-            if chunk_name == "tEXt" || chunk_name == "iTXt" || chunk_name == "zTXt" {
-                if chunk_len > 1000 {
+            if (chunk_name == "tEXt" || chunk_name == "iTXt" || chunk_name == "zTXt")
+                && chunk_len > 1000 {
                     findings.push(StegFinding {
                         finding_type: "png_text_chunk".to_string(),
                         severity: "medium".to_string(),
@@ -162,7 +162,6 @@ pub fn detect_steganography(file_data: &[u8], file_path: &str) -> StegDetectResu
                     });
                     confidence += 0.15;
                 }
-            }
             if chunk_name == "stEG" || chunk_name == "steg" {
                 detected_tools.push("Custom steganography tool".to_string());
                 confidence += 0.5;

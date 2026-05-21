@@ -31,7 +31,7 @@ impl Tool for DnsQueryTool {
             .and_then(|t| DnsQueryType::from_str(t))
             .unwrap_or(DnsQueryType::A);
         
-        let dns_server = args.get_option("dns_server").map(|s| s.clone());
+        let dns_server = args.get_option("dns_server").cloned();
         let timeout = args.get_option("timeout")
             .and_then(|t| t.parse::<u64>().ok())
             .unwrap_or(5);

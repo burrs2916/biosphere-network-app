@@ -3,6 +3,12 @@ use super::{WhoisConfig, WhoisResolver, WhoisResult};
 
 pub struct WhoisTool;
 
+impl Default for WhoisTool {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl WhoisTool {
     pub fn new() -> Self {
         Self

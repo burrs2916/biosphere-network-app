@@ -50,7 +50,7 @@ impl SiteDatabaseUpdater {
 
         let meta = Self::fetch_meta(&client).await.ok();
         let sha256_expected = meta.as_ref().map(|m| m.data_sha256.clone());
-        let version_compatible = meta.as_ref().map_or(true, |m| {
+        let version_compatible = meta.as_ref().is_none_or(|m| {
             Self::check_version_compatibility(&m.min_maigret_version)
         });
 

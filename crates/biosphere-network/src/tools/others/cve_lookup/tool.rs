@@ -459,11 +459,10 @@ impl CveLookupTool {
             }
 
             if let Some(has_exploit) = config.has_exploit {
-                if has_exploit {
-                    if v.exploitability.is_none() || !v.exploitability.as_ref().unwrap().has_exploit {
+                if has_exploit
+                    && (v.exploitability.is_none() || !v.exploitability.as_ref().unwrap().has_exploit) {
                         return false;
                     }
-                }
             }
 
             true
@@ -523,12 +522,11 @@ impl CveLookupTool {
         for attempt in 0..3 {
             match client.get(url).send().await {
                 Ok(resp) => {
-                    if resp.status().as_u16() == 429 {
-                        if attempt < 2 {
+                    if resp.status().as_u16() == 429
+                        && attempt < 2 {
                             tokio::time::sleep(std::time::Duration::from_secs(2u64.pow(attempt as u32 + 1))).await;
                             continue;
                         }
-                    }
                     return Ok(resp);
                 }
                 Err(e) => {

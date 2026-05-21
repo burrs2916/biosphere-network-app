@@ -6,6 +6,12 @@ use std::time::Duration;
 
 pub struct SslCheckerTool;
 
+impl Default for SslCheckerTool {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl SslCheckerTool {
     pub fn new() -> Self {
         Self
@@ -151,7 +157,7 @@ impl SslCheckerTool {
         let now = openssl::asn1::Asn1Time::days_from_now(0)
             .map_err(|e| ToolError::ExecutionError(format!("Time error: {}", e)))?;
 
-        let is_expired = cert.not_after() < &now;
+        let is_expired = cert.not_after() < now;
         let days_remaining = cert.not_after()
             .diff(&now)
             .map(|diff| diff.days)

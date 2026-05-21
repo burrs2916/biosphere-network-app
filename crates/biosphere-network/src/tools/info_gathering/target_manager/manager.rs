@@ -102,7 +102,7 @@ impl TargetManager {
 
         let target_infos: Vec<TargetInfo> = targets
             .iter()
-            .map(|t| TargetInfo::from_db_target(t))
+            .map(TargetInfo::from_db_target)
             .collect();
 
         Ok(TargetListResult::new(target_infos, total, page, page_size))
@@ -111,7 +111,7 @@ impl TargetManager {
     pub fn get_target_by_value(&self, target_value: &str) -> Result<Option<TargetInfo>> {
         let target = self.db.get_target_by_value(target_value)?;
 
-        Ok(target.as_ref().map(|t| TargetInfo::from_db_target(t)))
+        Ok(target.as_ref().map(TargetInfo::from_db_target))
     }
 
     pub fn search_targets(&self, query: &str, page: i32, page_size: i32) -> Result<TargetListResult> {

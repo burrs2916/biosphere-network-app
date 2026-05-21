@@ -14,7 +14,9 @@ pub const SUPPORTED_IDS: &[&str] = &[
 ];
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Default)]
 pub enum IdType {
+    #[default]
     Username,
     YandexPublicId,
     GaiaId,
@@ -61,11 +63,6 @@ impl IdType {
     }
 }
 
-impl Default for IdType {
-    fn default() -> Self {
-        IdType::Username
-    }
-}
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ExtractedId {
@@ -363,15 +360,14 @@ fn detect_username_from_url(
     if let Some(ref url_main) = platform.url_main {
         let base = url_main.trim_end_matches('/');
         if url.starts_with(base) {
-            let rest = &url[base.len()..];
+            let rest = url.strip_prefix(base).unwrap();
             let rest = rest.trim_start_matches('/');
             let username = rest.split('/').next().unwrap_or("");
             let username = username.trim_end_matches('/');
-            if !username.is_empty() && username.len() >= 1 && username.len() <= 50 {
-                if username.chars().all(|c| c.is_alphanumeric() || c == '_' || c == '-' || c == '.') {
+            if !username.is_empty() && !username.is_empty() && username.len() <= 50
+                && username.chars().all(|c| c.is_alphanumeric() || c == '_' || c == '-' || c == '.') {
                     return Some(username.to_string());
                 }
-            }
         }
     }
 
@@ -397,7 +393,7 @@ pub fn extract_ids_from_results(
             }
             for link in &info.external_links {
                 combined.extracted_links.push(link.clone());
-                let link_result = extract_ids_from_urls(&[link.clone()], platforms);
+                let link_result = extract_ids_from_urls(std::slice::from_ref(link), platforms);
                 combined.merge(link_result);
             }
         }

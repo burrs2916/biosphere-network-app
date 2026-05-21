@@ -250,9 +250,9 @@ impl SecretScannerTool {
     fn extract_domain(url: &str) -> String {
         let url = url.trim();
         let after_scheme = if url.starts_with("https://") {
-            &url[8..]
+            url.strip_prefix("https://").unwrap()
         } else if url.starts_with("http://") {
-            &url[7..]
+            url.strip_prefix("http://").unwrap()
         } else {
             url
         };
@@ -275,11 +275,10 @@ impl SecretScannerTool {
                     continue;
                 }
                 let full_url = Self::resolve_url(base_url, raw);
-                if !full_url.is_empty() && Self::extract_domain(&full_url) == base_domain {
-                    if !links.contains(&full_url) {
+                if !full_url.is_empty() && Self::extract_domain(&full_url) == base_domain
+                    && !links.contains(&full_url) {
                         links.push(full_url);
                     }
-                }
             }
         }
         links
@@ -685,7 +684,7 @@ impl SecretScannerTool {
     }
 
     fn get_line_context(content: &str, pos: usize) -> String {
-        let start = if pos > 50 { pos - 50 } else { 0 };
+        let start = pos.saturating_sub(50);
         let end = (pos + 50).min(content.len());
         let context = &content[start..end];
         context.replace('\n', " ").replace('\r', "").trim().to_string()

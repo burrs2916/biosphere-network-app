@@ -44,7 +44,7 @@ impl SubdomainTakeoverTool {
             return Err(ToolError::ExecutionError("No subdomains to check".to_string()));
         }
 
-        let semaphore = Arc::new(Semaphore::new(config.threads.max(1).min(50)));
+        let semaphore = Arc::new(Semaphore::new(config.threads.clamp(1, 50)));
         let mut join_set = tokio::task::JoinSet::new();
 
         for subdomain in &subdomains {
@@ -134,11 +134,10 @@ impl SubdomainTakeoverTool {
                         if best_cname_match.is_none() || fp.confidence > best_cname_match.unwrap().confidence {
                             best_cname_match = Some(fp);
                         }
-                        if check_cname && !body_lower.is_empty() && body_lower.contains(&fp.fingerprint.to_lowercase()) {
-                            if best_body_match.is_none() || fp.confidence > best_body_match.unwrap().confidence {
+                        if check_cname && !body_lower.is_empty() && body_lower.contains(&fp.fingerprint.to_lowercase())
+                            && (best_body_match.is_none() || fp.confidence > best_body_match.unwrap().confidence) {
                                 best_body_match = Some(fp);
                             }
-                        }
                     }
 
                     if let Some(fp) = best_body_match {
@@ -206,11 +205,10 @@ impl SubdomainTakeoverTool {
                 if check_cname && !body_lower.is_empty() {
                     let mut best_fp: Option<&super::config::TakeoverFingerprint> = None;
                     for fp in TAKEOVER_FINGERPRINTS {
-                        if body_lower.contains(&fp.fingerprint.to_lowercase()) {
-                            if best_fp.is_none() || fp.confidence > best_fp.unwrap().confidence {
+                        if body_lower.contains(&fp.fingerprint.to_lowercase())
+                            && (best_fp.is_none() || fp.confidence > best_fp.unwrap().confidence) {
                                 best_fp = Some(fp);
                             }
-                        }
                     }
                     if let Some(fp) = best_fp {
                         return (0, TakeoverEntry {

@@ -249,6 +249,7 @@ impl Default for SocialPost {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Default)]
 pub struct SocialUser {
     pub id: String,
     pub username: String,
@@ -266,28 +267,9 @@ pub struct SocialUser {
     pub registered_at: String,
 }
 
-impl Default for SocialUser {
-    fn default() -> Self {
-        Self {
-            id: String::new(),
-            username: String::new(),
-            display_name: String::new(),
-            bio: String::new(),
-            avatar_url: String::new(),
-            followers: 0,
-            following: 0,
-            posts_count: 0,
-            verified: false,
-            verified_type: String::new(),
-            url: String::new(),
-            gender: String::new(),
-            location: String::new(),
-            registered_at: String::new(),
-        }
-    }
-}
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Default)]
 pub struct SocialComment {
     pub id: String,
     pub post_id: String,
@@ -300,21 +282,6 @@ pub struct SocialComment {
     pub sub_comments: Vec<SocialComment>,
 }
 
-impl Default for SocialComment {
-    fn default() -> Self {
-        Self {
-            id: String::new(),
-            post_id: String::new(),
-            content: String::new(),
-            author: String::new(),
-            author_id: String::new(),
-            likes: 0,
-            created_at: String::new(),
-            reply_to: String::new(),
-            sub_comments: Vec::new(),
-        }
-    }
-}
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MediaDownloadResult {

@@ -42,7 +42,7 @@ impl SteganographyTool {
         if let Some(ref passphrase) = config.passphrase {
             let marker = b"STEG_PASS:";
             output_data.extend_from_slice(marker);
-            output_data.extend_from_slice(&passphrase.as_bytes().len().to_le_bytes());
+            output_data.extend_from_slice(&passphrase.len().to_le_bytes());
             output_data.extend_from_slice(passphrase.as_bytes());
         }
 

@@ -1,3 +1,9 @@
+// TODO: 逐步消除以下 allow，重构代码以解决这些 lint
+#![allow(clippy::regex_creation_in_loops)]
+#![allow(clippy::too_many_arguments)]
+#![allow(clippy::should_implement_trait)]
+#![allow(clippy::type_complexity)]
+
 pub mod core;
 pub mod infrastructure;
 pub mod tools;

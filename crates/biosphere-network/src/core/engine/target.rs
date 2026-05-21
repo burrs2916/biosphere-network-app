@@ -75,14 +75,13 @@ impl BiosTarget {
 
         if trimmed.contains('/') {
             let parts: Vec<&str> = trimmed.split('/').collect();
-            if parts.len() == 2 {
-                if parts[0].parse::<IpAddr>().is_ok() {
+            if parts.len() == 2
+                && parts[0].parse::<IpAddr>().is_ok() {
                     if parts[0].contains(':') {
                         return BiosEventType::NetblockV6Owner;
                     }
                     return BiosEventType::NetblockOwner;
                 }
-            }
         }
 
         if trimmed.contains('@') && !trimmed.contains(' ') {
@@ -152,11 +151,10 @@ impl BiosTarget {
             .map(|a| a.value.clone())
             .collect();
 
-        if matches!(self.target_type, BiosEventType::IpAddress) {
-            if !addrs.contains(&self.target_value) {
+        if matches!(self.target_type, BiosEventType::IpAddress)
+            && !addrs.contains(&self.target_value) {
                 addrs.push(self.target_value.clone());
             }
-        }
 
         addrs
     }

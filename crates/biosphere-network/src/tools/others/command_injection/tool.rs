@@ -626,7 +626,7 @@ impl CommandInjectionTool {
                 let param_clone = param.clone();
                 let payload_str = payload.to_string();
                 let semaphore_clone = semaphore.clone();
-                let delay_ms = *delay_secs as u64 * 1000;
+                let delay_ms = *delay_secs * 1000;
                 let baseline = baseline_time_ms;
 
                 join_set.spawn(async move {
@@ -635,28 +635,25 @@ impl CommandInjectionTool {
                     let test_url = Self::build_url_with_param(&url_clone, &param_clone, &payload_str);
                     let request_start = Instant::now();
 
-                    match client_clone.get(&test_url).send().await {
-                        Ok(resp) => {
-                            let response_time = request_start.elapsed().as_millis() as u64;
-                            let _ = resp.text().await;
+                    if let Ok(resp) = client_clone.get(&test_url).send().await {
+                        let response_time = request_start.elapsed().as_millis() as u64;
+                        let _ = resp.text().await;
 
-                            if response_time >= baseline + delay_ms {
-                                return Some(CommandInjectionVuln {
-                                    parameter: param_clone,
-                                    injection_type: "time-based".to_string(),
-                                    os_type: "unknown".to_string(),
-                                    severity: "high".to_string(),
-                                    payload: payload_str,
-                                    evidence: format!("Response delayed {}ms (baseline: {}ms, expected delay: {}ms)", response_time, baseline, delay_ms),
-                                    request_url: test_url,
-                                    confidence: 0.7,
-                                    method: "GET".to_string(),
-                                    response_time_ms: Some(response_time),
-                                    http_status: None,
-                                });
-                            }
+                        if response_time >= baseline + delay_ms {
+                            return Some(CommandInjectionVuln {
+                                parameter: param_clone,
+                                injection_type: "time-based".to_string(),
+                                os_type: "unknown".to_string(),
+                                severity: "high".to_string(),
+                                payload: payload_str,
+                                evidence: format!("Response delayed {}ms (baseline: {}ms, expected delay: {}ms)", response_time, baseline, delay_ms),
+                                request_url: test_url,
+                                confidence: 0.7,
+                                method: "GET".to_string(),
+                                response_time_ms: Some(response_time),
+                                http_status: None,
+                            });
                         }
-                        Err(_) => {}
                     }
                     None
                 });

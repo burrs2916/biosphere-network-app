@@ -224,7 +224,7 @@ impl OpenRedirectTool {
                         });
                     }
 
-                    if status >= 300 && status < 400 {
+                    if (300..400).contains(&status) {
                         let payload_clean = payload
                             .trim_start_matches("https://")
                             .trim_start_matches("http://")
@@ -319,7 +319,7 @@ impl OpenRedirectTool {
         score -= (high_count as f64) * 15.0;
         score -= (medium_count as f64) * 8.0;
         score -= (low_count as f64) * 3.0;
-        score = score.max(0.0).min(100.0);
+        score = score.clamp(0.0, 100.0);
 
         let overall_severity = if critical_count > 0 {
             "critical".to_string()

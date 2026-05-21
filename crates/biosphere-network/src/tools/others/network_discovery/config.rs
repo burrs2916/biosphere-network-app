@@ -118,16 +118,15 @@ impl NetworkDiscoveryTool {
         }
 
         let network_range = config.network_range.clone();
-        let hosts: Vec<DiscoveredHost>;
         let mut security_findings = Vec::new();
 
         let real_hosts = Self::try_system_discovery(&network_range).await;
 
-        if real_hosts.is_empty() {
-            hosts = Self::generate_demo_discovery(config);
+        let hosts = if real_hosts.is_empty() {
+            Self::generate_demo_discovery(config)
         } else {
-            hosts = real_hosts;
-        }
+            real_hosts
+        };
 
         for host in &hosts {
             for port in &host.ports {
@@ -238,8 +237,7 @@ impl NetworkDiscoveryTool {
     fn generate_demo_discovery(_config: &NetworkDiscoveryConfig) -> Vec<DiscoveredHost> {
         let mut hosts = Vec::new();
 
-        let sample = vec![
-            ("192.168.1.1", "gateway.local", "00:1A:2B:3C:4D:01", "Cisco/Router", "RouterOS",
+        let sample = [("192.168.1.1", "gateway.local", "00:1A:2B:3C:4D:01", "Cisco/Router", "RouterOS",
              vec![
                  ("22", "tcp", "open", "SSH", Some("OpenSSH 8.9")),
                  ("53", "tcp", "open", "DNS", Some("BIND 9.18")),
@@ -287,8 +285,7 @@ impl NetworkDiscoveryTool {
                  ("80", "tcp", "open", "HTTP", Some("Hikvision Web")),
                  ("554", "tcp", "open", "RTSP", None),
                  ("8000", "tcp", "open", "HTTP-Alt", None),
-             ]),
-        ];
+             ])];
 
         for (i, (ip, hostname, mac, vendor, os, ports_data)) in sample.iter().enumerate() {
             let ports: Vec<DiscoveredPort> = ports_data.iter().map(|(p, proto, state, svc, ver)| {
@@ -424,11 +421,10 @@ impl NetworkDiscoveryTool {
                 let stdout = String::from_utf8_lossy(&output.stdout);
                 for line in stdout.lines() {
                     let parts: Vec<&str> = line.split_whitespace().collect();
-                    if parts.len() >= 2 {
-                        if parts[0] == "default" || parts[0] == "0.0.0.0" {
+                    if parts.len() >= 2
+                        && (parts[0] == "default" || parts[0] == "0.0.0.0") {
                             gateway = Some(parts[1].to_string());
                         }
-                    }
                 }
             }
 
@@ -441,7 +437,7 @@ impl NetworkDiscoveryTool {
                     let stdout = String::from_utf8_lossy(&output.stdout);
                     for line in stdout.lines() {
                         if line.contains("nameserver") {
-                            let ip = line.split(':').last().unwrap_or("").trim().to_string();
+                            let ip = line.split(':').next_back().unwrap_or("").trim().to_string();
                             if !ip.is_empty() && !dns_servers.contains(&ip) {
                                 dns_servers.push(ip);
                             }

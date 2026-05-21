@@ -67,7 +67,7 @@ impl XssScannerTool {
         }
 
         let payloads = get_payloads_for_level(&config.scan_level);
-        let semaphore = Arc::new(Semaphore::new(config.threads.max(1).min(20)));
+        let semaphore = Arc::new(Semaphore::new(config.threads.clamp(1, 20)));
 
         let mut param_test_counts: std::collections::HashMap<String, usize> = std::collections::HashMap::new();
 

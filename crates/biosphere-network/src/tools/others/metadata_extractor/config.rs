@@ -162,7 +162,7 @@ impl MetadataExtractorTool {
             });
         }
 
-        match extension.as_ref() {
+        match extension {
             "jpg" | "jpeg" | "png" | "gif" | "bmp" | "tiff" | "webp" => {
                 file_type = "Image".to_string();
                 if config.extract_image || config.extract_exif {
@@ -251,13 +251,9 @@ impl MetadataExtractorTool {
 
                         let category = if key.starts_with("EXIF") || key.contains("Exposure") || key.contains("ISO") ||
                             key.contains("Focal") || key.contains("Aperture") || key.contains("Shutter") ||
-                            key.contains("White Balance") || key.contains("Flash") {
+                            key.contains("White Balance") || key.contains("Flash") ||
+                            key.contains("GPS") || key.contains("Location") {
                             "EXIF".to_string()
-                        } else if key.contains("GPS") || key.contains("Location") {
-                            "EXIF".to_string()
-                        } else if key.contains("Make") || key.contains("Camera") || key.contains("Model") ||
-                            key.contains("Lens") || key.contains("Software") {
-                            "Image".to_string()
                         } else {
                             "Image".to_string()
                         };
@@ -363,9 +359,9 @@ impl MetadataExtractorTool {
                         let line = line.trim();
                         if line.starts_with('/') {
                             let parsed = if line.contains('(') {
-                                line[1..].split_once('(')
+                                line.strip_prefix('/').unwrap().split_once('(')
                             } else if line.contains('<') {
-                                line[1..].split_once('<')
+                                line.strip_prefix('/').unwrap().split_once('<')
                             } else {
                                 None
                             };
@@ -417,11 +413,7 @@ impl MetadataExtractorTool {
                         let key = k.trim().to_string();
                         let val = v.trim().to_string();
                         if val.is_empty() { continue; }
-                        let category = if key.contains("Page") || key.contains("Word") || key.contains("Sheet") {
-                            "Document".to_string()
-                        } else {
-                            "Document".to_string()
-                        };
+                        let category = "Document".to_string();
 
                         let key_lower = key.to_lowercase();
                         metadata.push(MetadataItem { key, value: val.clone(), category });

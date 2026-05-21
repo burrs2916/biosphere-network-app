@@ -46,7 +46,7 @@ impl TargetService {
 
         let target_infos: Vec<TargetInfo> = targets
             .iter()
-            .map(|t| TargetInfo::from_db_target(t))
+            .map(TargetInfo::from_db_target)
             .collect();
 
         Ok(TargetListResult::new(target_infos, total as i32, page, page_size))
@@ -90,7 +90,7 @@ impl TargetService {
         ).map_err(|e| crate::core::ToolError::ExecutionError(e.to_string()))?;
 
         let target_infos: Vec<TargetInfo> = targets.iter()
-            .map(|t| TargetInfo::from_db_target(t))
+            .map(TargetInfo::from_db_target)
             .collect();
 
         Ok(TargetListResult::new(target_infos, total as i32, page, page_size))

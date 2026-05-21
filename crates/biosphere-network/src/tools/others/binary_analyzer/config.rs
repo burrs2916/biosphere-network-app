@@ -275,7 +275,7 @@ impl BinaryAnalyzerTool {
             return None;
         }
 
-        let is_executable = metadata.permissions().readonly() == false
+        let is_executable = !metadata.permissions().readonly()
             || ext == "exe" || ext == "dll" || ext == "so" || ext == "dylib"
             || ext == "bin" || ext == "apk" || ext == "app";
 
@@ -461,8 +461,8 @@ impl BinaryAnalyzerTool {
         }
 
         for s in &strings {
-            if s.risk_level == "high" {
-                if s.category == "Credentials" || s.category == "Secrets" {
+            if s.risk_level == "high"
+                && (s.category == "Credentials" || s.category == "Secrets") {
                     vulnerabilities.push(BinaryVulnerability {
                         severity: "high".to_string(),
                         category: "Hardcoded Secrets".to_string(),
@@ -470,7 +470,6 @@ impl BinaryAnalyzerTool {
                         recommendation: "Remove hardcoded credentials and use environment variables or key stores".to_string(),
                     });
                 }
-            }
         }
 
         let critical_count = vulnerabilities.iter().filter(|v| v.severity == "critical").count();
@@ -483,7 +482,7 @@ impl BinaryAnalyzerTool {
         score -= high_count as i32 * 15;
         score -= medium_count as i32 * 8;
         score -= low_count as i32 * 3;
-        score = score.max(0).min(100);
+        score = score.clamp(0, 100);
 
         let level = if score >= 90 {
             "Secure".to_string()
@@ -749,7 +748,7 @@ impl BinaryAnalyzerTool {
                             let parts: Vec<&str> = rest.split_whitespace().collect();
                             if parts.len() >= 6 {
                                 let name = parts[0].to_string();
-                                if name.is_empty() || name.starts_with('.') == false && !["text", "data", "bss", "rodata", "got", "plt"].iter().any(|s| name.contains(s)) {
+                                if name.is_empty() || !name.starts_with('.') && !["text", "data", "bss", "rodata", "got", "plt"].iter().any(|s| name.contains(s)) {
                                     continue;
                                 }
 
@@ -1095,11 +1094,8 @@ impl BinaryAnalyzerTool {
     fn classify_string(s: &str) -> (String, String) {
         let s_lower = s.to_lowercase();
 
-        if s_lower.contains("password=") || s_lower.contains("passwd=") || s_lower.contains("pwd=") {
-            ("Credentials".to_string(), "high".to_string())
-        } else if s_lower.contains("api_key=") || s_lower.contains("apikey=") || s_lower.contains("api-key=") {
-            ("Credentials".to_string(), "high".to_string())
-        } else if s_lower.contains("secret=") || s_lower.contains("token=") || s_lower.contains("bearer ") {
+        if s_lower.contains("password=") || s_lower.contains("passwd=") || s_lower.contains("pwd=") ||
+            s_lower.contains("api_key=") || s_lower.contains("apikey=") || s_lower.contains("api-key=") {
             ("Secrets".to_string(), "high".to_string())
         } else if s_lower.contains("private_key") || s_lower.contains("privatekey") || s_lower.contains("-----begin") {
             ("Crypto Keys".to_string(), "high".to_string())

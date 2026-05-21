@@ -516,8 +516,6 @@ impl DdosTesterTool {
             let cancel_flag = cancel_flag.clone();
             let response_times = response_times.clone();
             let status_codes = status_codes.clone();
-            let timeout_secs = timeout_secs;
-            let use_https = use_https;
 
             let handle = tokio::spawn(async move {
                 let start = std::time::Instant::now();
@@ -626,9 +624,7 @@ impl DdosTesterTool {
             let connections_opened = connections_opened.clone();
             let response_times = response_times.clone();
             let status_codes = status_codes.clone();
-            let timeout_secs = timeout_secs;
             let current_request_id = _request_id;
-            let use_https = use_https;
 
             let handle = tokio::spawn(async move {
                 let start = std::time::Instant::now();
@@ -755,8 +751,6 @@ impl DdosTesterTool {
             let cancel_flag = cancel_flag.clone();
             let response_times = response_times.clone();
             let status_codes = status_codes.clone();
-            let timeout_secs = timeout_secs;
-            let use_https = use_https;
 
             let handle = tokio::spawn(async move {
                 let start = std::time::Instant::now();
@@ -857,7 +851,6 @@ impl DdosTesterTool {
             let failed_requests = failed_requests.clone();
             let connections_opened = connections_opened.clone();
             let response_times = response_times.clone();
-            let timeout_secs = timeout_secs;
 
             let handle = tokio::spawn(async move {
                 let start = std::time::Instant::now();

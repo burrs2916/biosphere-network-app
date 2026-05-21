@@ -5,6 +5,12 @@ use regex::Regex;
 
 pub struct Pinger;
 
+impl Default for Pinger {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Pinger {
     pub fn new() -> Self {
         Self

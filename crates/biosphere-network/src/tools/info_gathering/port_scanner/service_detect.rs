@@ -86,7 +86,7 @@ impl ServiceDetector {
     async fn probe_service(stream: &mut TcpStream, port: u16, timeout: Duration) -> String {
         let probe = Self::get_probe_message(port);
         
-        if let Err(_) = tokio::time::timeout(timeout, stream.write_all(probe.as_bytes())).await {
+        if (tokio::time::timeout(timeout, stream.write_all(probe.as_bytes())).await).is_err() {
             return String::new();
         }
 
@@ -106,8 +106,8 @@ impl ServiceDetector {
     fn get_probe_message(port: u16) -> String {
         match port {
             21 | 22 | 23 | 25 | 110 | 143 => String::new(),
-            80 | 8080 | 8443 => format!("HEAD / HTTP/1.0\r\nHost: localhost\r\n\r\n"),
-            443 => format!("HEAD / HTTP/1.0\r\nHost: localhost\r\n\r\n"),
+            80 | 8080 | 8443 => "HEAD / HTTP/1.0\r\nHost: localhost\r\n\r\n".to_string(),
+            443 => "HEAD / HTTP/1.0\r\nHost: localhost\r\n\r\n".to_string(),
             3306 => String::new(),
             _ => String::new(),
         }
@@ -160,7 +160,7 @@ impl ServiceDetector {
     fn parse_http_version(banner: &str) -> Option<String> {
         for line in banner.lines() {
             if line.starts_with("Server:") {
-                return Some(line["Server:".len()..].trim().to_string());
+                return Some(line.strip_prefix("Server:").unwrap().trim().to_string());
             }
         }
         None

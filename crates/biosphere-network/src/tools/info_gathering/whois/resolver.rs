@@ -124,19 +124,19 @@ impl WhoisResolver {
             }
             
             if line_lower.starts_with("creation date:") || line_lower.starts_with("created:") || line_lower.starts_with("domain created:") {
-                if let Some(date) = line.splitn(2, ':').nth(1) {
+                if let Some(date) = line.split_once(':').map(|x| x.1) {
                     result.created_date = Some(Self::clean_date(date.trim()));
                 }
             }
             
             if line_lower.starts_with("updated date:") || line_lower.starts_with("last updated:") || line_lower.starts_with("modified:") {
-                if let Some(date) = line.splitn(2, ':').nth(1) {
+                if let Some(date) = line.split_once(':').map(|x| x.1) {
                     result.updated_date = Some(Self::clean_date(date.trim()));
                 }
             }
             
             if line_lower.starts_with("registry expiry date:") || line_lower.starts_with("expires:") || line_lower.starts_with("expiration date:") {
-                if let Some(date) = line.splitn(2, ':').nth(1) {
+                if let Some(date) = line.split_once(':').map(|x| x.1) {
                     result.expiry_date = Some(Self::clean_date(date.trim()));
                 }
             }

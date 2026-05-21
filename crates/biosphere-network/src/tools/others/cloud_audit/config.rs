@@ -1086,7 +1086,7 @@ impl CloudAuditTool {
     }
 
     pub async fn run_prowler(provider: &str, region: &str) -> std::result::Result<Vec<ProwlerResult>, String> {
-        if std::process::Command::new("which").arg("prowler").output().map(|o| o.status.success()).unwrap_or(false) == false {
+        if !std::process::Command::new("which").arg("prowler").output().map(|o| o.status.success()).unwrap_or(false) {
             return Err("Prowler not found. Install with: pip install prowler".to_string());
         }
 
@@ -1144,7 +1144,7 @@ impl CloudAuditTool {
     }
 
     pub async fn run_trivy_scan(target: &str, scan_type: &str) -> std::result::Result<ContainerScanResult, String> {
-        if std::process::Command::new("which").arg("trivy").output().map(|o| o.status.success()).unwrap_or(false) == false {
+        if !std::process::Command::new("which").arg("trivy").output().map(|o| o.status.success()).unwrap_or(false) {
             return Err("Trivy not found. Install with: https://aquasecurity.github.io/trivy/".to_string());
         }
 
@@ -1222,7 +1222,7 @@ impl CloudAuditTool {
     }
 
     pub async fn run_scoutsuite(provider: &str) -> std::result::Result<Vec<ScoutSuiteResult>, String> {
-        if std::process::Command::new("which").arg("scout").output().map(|o| o.status.success()).unwrap_or(false) == false {
+        if !std::process::Command::new("which").arg("scout").output().map(|o| o.status.success()).unwrap_or(false) {
             return Err("ScoutSuite not found. Install with: pip install scoutsuite".to_string());
         }
 
@@ -1270,7 +1270,7 @@ impl CloudAuditTool {
     pub async fn audit_kubernetes(namespace: Option<&str>) -> std::result::Result<Vec<KubernetesAuditResult>, String> {
         let mut results = Vec::new();
 
-        if std::process::Command::new("which").arg("kubectl").output().map(|o| o.status.success()).unwrap_or(false) == false {
+        if !std::process::Command::new("which").arg("kubectl").output().map(|o| o.status.success()).unwrap_or(false) {
             return Err("kubectl not found. Install kubectl first".to_string());
         }
 
@@ -1364,7 +1364,7 @@ impl CloudAuditTool {
         results.push(KubernetesAuditResult {
             namespace: namespace.unwrap_or("all").to_string(),
             pod_security_findings: pod_findings,
-            rbac_findings: rbac_findings,
+            rbac_findings,
             network_policy_findings: net_findings,
             resource_findings: res_findings,
         });

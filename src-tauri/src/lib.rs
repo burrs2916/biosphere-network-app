@@ -1,3 +1,6 @@
+#![allow(clippy::too_many_arguments)]
+#![allow(clippy::type_complexity)]
+
 mod infrastructure;
 
 use tauri::{Manager, Emitter, State};
@@ -97,9 +100,11 @@ pub fn run() {
             std::fs::create_dir_all(&data_dir)
                 .expect("Failed to create data directory");
             
-            let mut log_config = infrastructure::LogConfig::default();
-            log_config.console_output = true;
-            log_config.clear_on_start = false;
+            let mut log_config = infrastructure::LogConfig {
+                console_output: true,
+                clear_on_start: false,
+                ..Default::default()
+            };
             
             #[cfg(debug_assertions)]
             {

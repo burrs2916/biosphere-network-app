@@ -82,7 +82,7 @@ impl ReverseIpTool {
 
         let mut domains = Vec::new();
         let mut dns_history = Vec::new();
-        let related_ips: Vec<RelatedIp>;
+        
         let mut findings = Vec::new();
 
         let reverse_name = Self::reverse_dns_lookup(&ip);
@@ -109,7 +109,7 @@ impl ReverseIpTool {
             dns_history = Self::get_dns_history(&ip);
         }
 
-        related_ips = Self::find_related_ips(&ip);
+        let related_ips: Vec<RelatedIp> = Self::find_related_ips(&ip);
 
         Self::analyze_security(&ip, &domains, &related_ips, &mut findings);
 
@@ -323,11 +323,11 @@ impl ReverseIpTool {
         {
             let stdout = String::from_utf8_lossy(&output.stdout);
             for line in stdout.lines() {
-                let parts: Vec<&str> = line.trim().split_whitespace().collect();
+                let parts: Vec<&str> = line.split_whitespace().collect();
                 if parts.len() >= 4 && parts.contains(&"PTR") {
                     let domain = parts.last().unwrap_or(&"").trim_end_matches('.').to_string();
-                    if !domain.is_empty() && domain.contains('.') {
-                        if !history.iter().any(|h| h.domain == domain) {
+                    if !domain.is_empty() && domain.contains('.')
+                        && !history.iter().any(|h| h.domain == domain) {
                             history.push(DnsHistoryEntry {
                                 domain: domain.clone(),
                                 ip: ip.to_string(),
@@ -336,7 +336,6 @@ impl ReverseIpTool {
                                 last_seen: chrono::Utc::now().format("%Y-%m-%d").to_string(),
                             });
                         }
-                    }
                 }
             }
         }

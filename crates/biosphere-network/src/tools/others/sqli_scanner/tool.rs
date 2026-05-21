@@ -72,7 +72,7 @@ impl SqliScannerTool {
             }
         }
 
-        let semaphore = Arc::new(Semaphore::new(config.threads.max(1).min(20)));
+        let semaphore = Arc::new(Semaphore::new(config.threads.clamp(1, 20)));
         let mut join_set = tokio::task::JoinSet::new();
         let mut tests_performed: usize = 0;
 
@@ -85,8 +85,6 @@ impl SqliScannerTool {
                     let category = category.to_string();
                     let desc = desc.to_string();
                     let param = param.clone();
-                    let baseline_length = baseline_length;
-                    let baseline_status = baseline_status;
                     let semaphore = semaphore.clone();
                     let is_time_based = category == "Time-based";
 
@@ -203,7 +201,6 @@ impl SqliScannerTool {
                     let param = param.clone();
                     let target_url = target_url.clone();
                     let _baseline_length = baseline_length;
-                    let baseline_status = baseline_status;
                     let semaphore = semaphore.clone();
 
                     join_set.spawn(async move {

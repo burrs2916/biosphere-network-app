@@ -151,7 +151,7 @@ fn get_memory_info() -> (u64, u64) {
         let mut available_mb = 0u64;
         
         if let Ok(output) = Command::new("sysctl")
-            .args(&["-n", "hw.memsize"])
+            .args(["-n", "hw.memsize"])
             .output()
         {
             if let Ok(total_str) = String::from_utf8(output.stdout) {
@@ -262,7 +262,7 @@ fn get_cpu_usage() -> f32 {
         use std::process::Command;
         
         if let Ok(output) = Command::new("ps")
-            .args(&["-A", "-o", "%cpu"])
+            .args(["-A", "-o", "%cpu"])
             .output()
         {
             if let Ok(output_str) = String::from_utf8(output.stdout) {
@@ -298,11 +298,11 @@ fn get_load_average() -> f32 {
         use std::process::Command;
         
         if let Ok(output) = Command::new("sysctl")
-            .args(&["-n", "vm.loadavg"])
+            .args(["-n", "vm.loadavg"])
             .output()
         {
             if let Ok(output_str) = String::from_utf8(output.stdout) {
-                let parts: Vec<&str> = output_str.trim().split_whitespace().collect();
+                let parts: Vec<&str> = output_str.split_whitespace().collect();
                 if parts.len() >= 2 {
                     if let Ok(load) = parts[1].parse::<f32>() {
                         return load;

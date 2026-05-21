@@ -104,8 +104,6 @@ impl ParamDiscoveryTool {
             let waf_result = waf_result.clone();
             let test_value = primary_test_value.clone();
             let detect_reflection = config.detect_reflection;
-            let baseline_cmp = baseline_cmp;
-            let baseline_status = baseline_status;
             let diff_threshold = config.diff_threshold;
 
             join_set.spawn(async move {
@@ -243,8 +241,6 @@ impl ParamDiscoveryTool {
                     let param_name = entry.param_name.clone();
                     let method = config.method.clone();
                     let test_val = test_val.clone();
-                    let baseline_cmp = baseline_cmp;
-                    let baseline_status = baseline_status;
                     let diff_threshold = config.diff_threshold;
                     let detect_reflection = config.detect_reflection;
                     let mv_semaphore = mv_semaphore.clone();

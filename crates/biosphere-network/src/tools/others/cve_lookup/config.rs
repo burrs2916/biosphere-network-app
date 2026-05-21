@@ -79,6 +79,7 @@ pub struct PatchInfo {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Default)]
 pub struct SeverityStats {
     pub critical: usize,
     pub high: usize,
@@ -88,6 +89,7 @@ pub struct SeverityStats {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Default)]
 pub struct CvssDistribution {
     pub range_9_10: usize,
     pub range_7_9: usize,
@@ -116,29 +118,7 @@ impl Default for CveQueryConfig {
     }
 }
 
-impl Default for SeverityStats {
-    fn default() -> Self {
-        Self {
-            critical: 0,
-            high: 0,
-            medium: 0,
-            low: 0,
-            none: 0,
-        }
-    }
-}
 
-impl Default for CvssDistribution {
-    fn default() -> Self {
-        Self {
-            range_9_10: 0,
-            range_7_9: 0,
-            range_4_7: 0,
-            range_0_4: 0,
-            unknown: 0,
-        }
-    }
-}
 
 impl SeverityStats {
     pub fn total(&self) -> usize {

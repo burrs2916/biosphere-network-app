@@ -489,7 +489,7 @@ impl ForensicsAnalyzerTool {
                         if let Ok(cmdline) = std::fs::read_to_string(&cmdline_path) {
                             process_path = cmdline.replace('\0', " ").trim().to_string();
                             if let Some(first) = process_path.split_whitespace().next() {
-                                process_name = first.split('/').last().unwrap_or(first).to_string();
+                                process_name = first.split('/').next_back().unwrap_or(first).to_string();
                             }
                         }
 

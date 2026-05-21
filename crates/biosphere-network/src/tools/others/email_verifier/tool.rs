@@ -106,7 +106,7 @@ impl EmailVerifierTool {
         };
 
         let is_catch_all = if mx_records_found && check_smtp {
-            Some(Self::check_catch_all(domain, &local_part, timeout).await)
+            Some(Self::check_catch_all(domain, local_part, timeout).await)
         } else {
             None
         };
@@ -142,7 +142,7 @@ impl EmailVerifierTool {
             ("Catch-All".to_string(), "Domain accepts all email addresses (catch-all)".to_string())
         } else if is_role_account {
             ("Role Account".to_string(), "This is a role-based email address (not a personal inbox)".to_string())
-        } else if breach_count.map_or(false, |c| c > 0) {
+        } else if breach_count.is_some_and(|c| c > 0) {
             ("Breached".to_string(), format!("Found in {} data breach(es)", breach_count.unwrap()))
         } else {
             ("Valid".to_string(), "Email appears to be valid".to_string())
@@ -232,11 +232,7 @@ impl EmailVerifierTool {
             Ok(lookup) => {
                 let records: Vec<String> = lookup.record_iter()
                     .filter_map(|r| {
-                        if let Some(data) = r.data() {
-                            Some(data.to_string())
-                        } else {
-                            None
-                        }
+                        r.data().map(|data| data.to_string())
                     })
                     .collect();
                 let found = !records.is_empty();
@@ -269,7 +265,7 @@ impl EmailVerifierTool {
                 tokio::time::timeout(
                     Duration::from_secs(timeout.min(5)),
                     TcpStream::connect(&alt_addr)
-                ).await.map_or(false, |r| r.is_ok())
+                ).await.is_ok_and(|r| r.is_ok())
             }
         }
     }

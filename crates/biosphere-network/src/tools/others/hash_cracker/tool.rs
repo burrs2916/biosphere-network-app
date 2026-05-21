@@ -208,7 +208,7 @@ impl HashCrackerTool {
         };
 
         if hash_type == "md5" || hash_type == "sha1" || hash_type == "sha256" {
-            let resp = client.get(&format!("https://www.md5online.org/md5-decrypt.html", ))
+            let resp = client.get("https://www.md5online.org/md5-decrypt.html".to_string())
                 .send().await;
             results.push(OnlineLookupResult {
                 service: "md5online.org".to_string(),
@@ -219,7 +219,7 @@ impl HashCrackerTool {
         }
 
         if hash_type == "md5" {
-            let resp = client.get(&format!("https://api.hashify.net/hash/md5/hex/{}", hash))
+            let resp = client.get(format!("https://api.hashify.net/hash/md5/hex/{}", hash))
                 .send().await;
             match resp {
                 Ok(r) => {
@@ -260,7 +260,7 @@ impl HashCrackerTool {
         }
 
         if hash_type == "md5" || hash_type == "sha1" {
-            let resp = client.get(&format!("https://hashtoolkit.com/reverse-hash?hash={}", hash))
+            let resp = client.get(format!("https://hashtoolkit.com/reverse-hash?hash={}", hash))
                 .header("User-Agent", "Mozilla/5.0")
                 .send().await;
             match resp {
@@ -287,7 +287,7 @@ impl HashCrackerTool {
         }
 
         if hash_type == "md5" {
-            let resp = client.get(&format!("https://www.nitrxgen.net/md5db/{}", hash))
+            let resp = client.get(format!("https://www.nitrxgen.net/md5db/{}", hash))
                 .send().await;
             match resp {
                 Ok(r) => {
@@ -459,12 +459,10 @@ impl HashCrackerTool {
         let reader = BufReader::new(file);
         let mut words = Vec::new();
 
-        for line in reader.lines() {
-            if let Ok(word) = line {
-                let trimmed = word.trim().to_string();
-                if !trimmed.is_empty() {
-                    words.push(trimmed);
-                }
+        for word in reader.lines().map_while(|r: std::io::Result<_>| r.ok()) {
+            let trimmed = word.trim().to_string();
+            if !trimmed.is_empty() {
+                words.push(trimmed);
             }
         }
 
@@ -578,7 +576,7 @@ impl HashCrackerTool {
                 hasher.update(password.as_bytes());
                 let hash1 = hasher.finalize();
                 let mut hasher2 = Sha1::new();
-                hasher2.update(&hash1);
+                hasher2.update(hash1);
                 let hash2 = hasher2.finalize();
                 format!("*{}", hex::encode(hash2))
             }

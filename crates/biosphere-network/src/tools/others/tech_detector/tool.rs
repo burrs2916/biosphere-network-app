@@ -474,7 +474,7 @@ impl TechDetectorTool {
                 if let Some(caps) = re.captures(text) {
                     if let Some(m) = caps.get(1) {
                         let v = m.as_str().to_string();
-                        if v.len() < 20 && v.chars().next().map_or(false, |c| c.is_ascii_digit()) {
+                        if v.len() < 20 && v.chars().next().is_some_and(|c| c.is_ascii_digit()) {
                             return Some(v);
                         }
                     }

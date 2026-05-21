@@ -232,8 +232,8 @@ impl CookieAnalyzerTool {
             }
         }
 
-        if config.check_js_cookies {
-            if cookies.iter().any(|c| !c.http_only) {
+        if config.check_js_cookies
+            && cookies.iter().any(|c| !c.http_only) {
                 let js_accessible: Vec<&CookieInfo> = cookies.iter().filter(|c| !c.http_only).collect();
                 if js_accessible.iter().any(|c| Self::is_sensitive_cookie(&c.name.to_lowercase())) {
                     issues.push(CookieIssue {
@@ -248,7 +248,6 @@ impl CookieAnalyzerTool {
                     });
                 }
             }
-        }
 
         if !response_headers.has_strict_transport && is_https {
             issues.push(CookieIssue {

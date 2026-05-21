@@ -647,8 +647,7 @@ impl BiosEventType {
             return true;
         }
         let self_str = self.as_str();
-        if pattern.ends_with('*') {
-            let prefix = &pattern[..pattern.len() - 1];
+        if let Some(prefix) = pattern.strip_suffix('*') {
             self_str.starts_with(prefix)
         } else {
             self_str == pattern

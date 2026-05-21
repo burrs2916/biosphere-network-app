@@ -53,14 +53,11 @@ impl OSDetection {
                 .output()
         ).await;
         
-        match ping_result {
-            Ok(Ok(output)) => {
-                let stdout = String::from_utf8_lossy(&output.stdout);
-                if let Some(ttl) = Self::extract_ttl_from_ping_output(&stdout) {
-                    return Some(ttl);
-                }
+        if let Ok(Ok(output)) = ping_result {
+            let stdout = String::from_utf8_lossy(&output.stdout);
+            if let Some(ttl) = Self::extract_ttl_from_ping_output(&stdout) {
+                return Some(ttl);
             }
-            _ => {}
         }
         
         None
@@ -89,19 +86,19 @@ impl OSDetection {
 
     fn identify_os_by_ttl(ttl: u8) -> (String, String, u8) {
         if ttl <= 64 {
-            if ttl >= 60 && ttl <= 64 {
+            if (60..=64).contains(&ttl) {
                 ("Linux/Unix".to_string(), "Unix-like".to_string(), 90)
-            } else if ttl >= 50 && ttl < 60 {
+            } else if (50..60).contains(&ttl) {
                 ("Linux/Unix".to_string(), "Unix-like".to_string(), 70)
-            } else if ttl >= 40 && ttl < 50 {
+            } else if (40..50).contains(&ttl) {
                 ("Linux/Unix (distant)".to_string(), "Unix-like".to_string(), 50)
             } else {
                 ("Unknown".to_string(), "Unknown".to_string(), 30)
             }
-        } else if ttl >= 100 && ttl <= 128 {
-            if ttl >= 120 && ttl <= 128 {
+        } else if (100..=128).contains(&ttl) {
+            if (120..=128).contains(&ttl) {
                 ("Windows".to_string(), "Windows".to_string(), 90)
-            } else if ttl >= 110 && ttl < 120 {
+            } else if (110..120).contains(&ttl) {
                 ("Windows".to_string(), "Windows".to_string(), 70)
             } else {
                 ("Windows (distant)".to_string(), "Windows".to_string(), 50)
@@ -118,9 +115,7 @@ impl OSDetection {
     }
 
     pub fn get_display(&self) -> String {
-        if self.confidence >= 80 {
-            format!("{} ({}% confidence)", self.os_type, self.confidence)
-        } else if self.confidence >= 50 {
+        if self.confidence >= 50 {
             format!("{} ({}% confidence)", self.os_type, self.confidence)
         } else {
             format!("Possibly {} ({}% confidence)", self.os_type, self.confidence)

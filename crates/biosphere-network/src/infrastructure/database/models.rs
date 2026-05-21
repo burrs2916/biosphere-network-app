@@ -3,7 +3,9 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 #[serde(rename_all = "snake_case")]
+#[derive(Default)]
 pub enum TargetType {
+    #[default]
     IP,
     Domain,
     URL,
@@ -18,11 +20,6 @@ pub enum TargetType {
     SocialMedia,
 }
 
-impl Default for TargetType {
-    fn default() -> Self {
-        TargetType::IP
-    }
-}
 
 impl TargetType {
     pub fn as_str(&self) -> &'static str {
@@ -92,7 +89,9 @@ impl TargetCategory {
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 #[serde(rename_all = "snake_case")]
+#[derive(Default)]
 pub enum TargetStatus {
+    #[default]
     New,
     Pending,
     Scanning,
@@ -102,11 +101,6 @@ pub enum TargetStatus {
     Error,
 }
 
-impl Default for TargetStatus {
-    fn default() -> Self {
-        TargetStatus::New
-    }
-}
 
 impl TargetStatus {
     pub fn as_str(&self) -> &'static str {
@@ -137,20 +131,17 @@ impl TargetStatus {
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 #[serde(rename_all = "snake_case")]
+#[derive(Default)]
 pub enum RiskLevel {
     Critical,
     High,
     Medium,
     Low,
     Info,
+    #[default]
     None,
 }
 
-impl Default for RiskLevel {
-    fn default() -> Self {
-        RiskLevel::None
-    }
-}
 
 impl RiskLevel {
     pub fn as_str(&self) -> &'static str {
@@ -179,19 +170,16 @@ impl RiskLevel {
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 #[serde(rename_all = "snake_case")]
+#[derive(Default)]
 pub enum Priority {
     Critical,
     High,
     Medium,
     Low,
+    #[default]
     Normal,
 }
 
-impl Default for Priority {
-    fn default() -> Self {
-        Priority::Normal
-    }
-}
 
 impl Priority {
     pub fn as_str(&self) -> &'static str {

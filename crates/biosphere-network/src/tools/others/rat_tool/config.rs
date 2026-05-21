@@ -161,27 +161,23 @@ impl RatTool {
             }
         };
 
-        if let Ok(result) = timeout(Duration::from_secs(5), TcpStream::connect(&socket_addr)).await {
-            if let Ok(mut stream) = result {
-                use tokio::io::{AsyncReadExt, AsyncWriteExt};
-                let _ = stream.writable().await;
-                let probe = match port {
-                    80 | 8080 | 8000 | 443 => b"GET / HTTP/1.1\r\nHost: target\r\n\r\n".to_vec(),
-                    21 | 22 | 25 | 110 | 143 => Vec::new(),
-                    _ => Vec::new(),
-                };
+        if let Ok(Ok(mut stream)) = timeout(Duration::from_secs(5), TcpStream::connect(&socket_addr)).await {
+            use tokio::io::{AsyncReadExt, AsyncWriteExt};
+            let _ = stream.writable().await;
+            let probe = match port {
+                80 | 8080 | 8000 | 443 => b"GET / HTTP/1.1\r\nHost: target\r\n\r\n".to_vec(),
+                21 | 22 | 25 | 110 | 143 => Vec::new(),
+                _ => Vec::new(),
+            };
 
-                if !probe.is_empty() {
-                    let _ = stream.write_all(&probe).await;
-                }
+            if !probe.is_empty() {
+                let _ = stream.write_all(&probe).await;
+            }
 
-                let mut buf = [0u8; 1024];
-                if let Ok(n) = timeout(Duration::from_secs(3), stream.read(&mut buf)).await {
-                    if let Ok(n) = n {
-                        if n > 0 {
-                            return Some(String::from_utf8_lossy(&buf[..n]).to_string());
-                        }
-                    }
+            let mut buf = [0u8; 1024];
+            if let Ok(Ok(n)) = timeout(Duration::from_secs(3), stream.read(&mut buf)).await {
+                if n > 0 {
+                    return Some(String::from_utf8_lossy(&buf[..n]).to_string());
                 }
             }
         }

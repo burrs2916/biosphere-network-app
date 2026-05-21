@@ -20,6 +20,12 @@ macro_rules! impl_hash {
     };
 }
 
+impl Default for EncoderDecoderTool {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl EncoderDecoderTool {
     pub fn new() -> Self {
         Self
@@ -144,7 +150,7 @@ impl EncoderDecoderTool {
     }
 
     fn decode_hex(&self, input: &str) -> Result<String> {
-        if input.len() % 2 != 0 {
+        if !input.len().is_multiple_of(2) {
             return Err(ToolError::ExecutionError("Hex string must have even length".to_string()));
         }
 
@@ -219,7 +225,7 @@ impl EncoderDecoderTool {
             for &c in chunk {
                 if c == b'=' { break; }
                 
-                let val = if (b'A'..=b'Z').contains(&c) {
+                let val = if c.is_ascii_uppercase() {
                     c - b'A'
                 } else if (b'2'..=b'7').contains(&c) {
                     c - b'2' + 26
@@ -351,7 +357,7 @@ impl EncoderDecoderTool {
     }
 
     fn is_valid_base64(s: &str) -> bool {
-        if s.is_empty() || s.len() % 4 != 0 {
+        if s.is_empty() || !s.len().is_multiple_of(4) {
             return false;
         }
         
@@ -383,7 +389,7 @@ impl EncoderDecoderTool {
     }
 
     fn is_valid_hex(s: &str) -> bool {
-        if s.is_empty() || s.len() % 2 != 0 {
+        if s.is_empty() || !s.len().is_multiple_of(2) {
             return false;
         }
         
@@ -470,8 +476,8 @@ impl EncoderDecoderTool {
             "signature": signature
         });
 
-        Ok(serde_json::to_string_pretty(&result)
-            .map_err(|e| ToolError::ExecutionError(format!("JSON formatting error: {}", e)))?)
+        serde_json::to_string_pretty(&result)
+            .map_err(|e| ToolError::ExecutionError(format!("JSON formatting error: {}", e)))
     }
 
     fn encode_rot13(&self, input: &str) -> Result<String> {
@@ -487,7 +493,7 @@ impl EncoderDecoderTool {
     fn encode_rot47(&self, input: &str) -> Result<String> {
         Ok(input.chars().map(|c| {
             let code = c as u8;
-            if code >= 33 && code <= 126 {
+            if (33..=126).contains(&code) {
                 (((code - 33 + 47) % 94) + 33) as char
             } else {
                 c
@@ -545,13 +551,13 @@ impl Tool for EncoderDecoderTool {
             .ok_or_else(|| ToolError::MissingArgument("operation".to_string()))?;
         let input = args.get_target()?;
 
-        let encoding_type = Self::str_to_encoding(&encoding_type_str)?;
-        let operation = Self::str_to_operation(&operation_str)?;
+        let encoding_type = Self::str_to_encoding(encoding_type_str)?;
+        let operation = Self::str_to_operation(operation_str)?;
 
         let result = match operation {
-            Operation::Encode => self.encode(&encoding_type, &input),
-            Operation::Decode => self.decode(&encoding_type, &input),
-            Operation::Hash => Ok(self.compute_hash(&encoding_type_str, &input)),
+            Operation::Encode => self.encode(&encoding_type, input),
+            Operation::Decode => self.decode(&encoding_type, input),
+            Operation::Hash => Ok(self.compute_hash(encoding_type_str, input)),
         };
 
         match result {

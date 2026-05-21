@@ -573,7 +573,7 @@ if interfaces.isEmpty {
                         current_security = trimmed.trim_start_matches("Security:").trim().to_string();
                     } else if trimmed.contains("Signal / Noise:") {
                         if let Some(signal_part) = trimmed.split("Signal / Noise:").last() {
-                            let signal_str = signal_part.trim().split_whitespace().next().unwrap_or("-100");
+                            let signal_str = signal_part.split_whitespace().next().unwrap_or("-100");
                             current_signal = signal_str.parse().unwrap_or(-100);
                         }
                     } else if trimmed.contains("Signal") && trimmed.contains("dBm") {
@@ -1081,7 +1081,7 @@ impl WifiInterfaceTool {
                             interfaces.push(NetworkInterface {
                                 name: current_if.clone(),
                                 display_name: format!("接口 {}", current_if),
-                                is_wifi: current_if.starts_with("en") && !current_if.starts_with("en0") == false,
+                                is_wifi: current_if.starts_with("en") && current_if.starts_with("en0"),
                                 is_up: current_is_up,
                                 mac_address: current_mac.clone(),
                                 ip_address: current_ip.clone(),

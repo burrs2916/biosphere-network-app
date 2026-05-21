@@ -1972,10 +1972,10 @@ impl Database {
         sql.push_str(" ORDER BY alexa_rank ASC NULLS LAST, priority DESC, name ASC");
 
         let mut stmt = conn.prepare(&sql)?;
-        let platforms: Vec<OsintPlatform> = if category.is_some() {
-            stmt.query_map(rusqlite::params![category.unwrap()], |row| self::row_to_osint_platform(row))?.collect::<SqliteResult<Vec<_>>>()?
+        let platforms: Vec<OsintPlatform> = if let Some(cat) = category {
+            stmt.query_map(rusqlite::params![cat], self::row_to_osint_platform)?.collect::<SqliteResult<Vec<_>>>()?
         } else {
-            stmt.query_map([], |row| self::row_to_osint_platform(row))?.collect::<SqliteResult<Vec<_>>>()?
+            stmt.query_map([], self::row_to_osint_platform)?.collect::<SqliteResult<Vec<_>>>()?
         };
         Ok(platforms)
     }
@@ -1985,7 +1985,7 @@ impl Database {
         let mut stmt = conn.prepare(
             "SELECT id, name, display_name, category, url_template, url_main, url_probe, url_subpath, check_type, error_type, error_codes, error_messages, error_url, presence_strs, absence_strs, regex_check, request_method, request_head_only, headers, payload, get_params, activation, errors, tags, id_type, similar_search, ignore403, disabled, protection, engine, engine_data, username_claimed, username_unclaimed, alexa_rank, is_active, is_built_in, priority, notes, source, created_at, updated_at FROM osint_platforms WHERE name = ?1"
         )?;
-        let result = stmt.query_row([name], |row| self::row_to_osint_platform(row)).ok();
+        let result = stmt.query_row([name], self::row_to_osint_platform).ok();
         Ok(result)
     }
 

@@ -18,7 +18,7 @@ impl IdnCheckerTool {
 
         let domain = Self::clean_domain(&domain);
 
-        let is_idn = domain.chars().any(|c| !c.is_ascii());
+        let is_idn = !domain.is_ascii();
         let punycode_domain = if is_idn {
             Some(idna::domain_to_ascii(&domain).unwrap_or_else(|_| domain.clone()))
         } else {

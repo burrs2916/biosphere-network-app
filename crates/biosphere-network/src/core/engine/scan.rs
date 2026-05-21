@@ -122,11 +122,9 @@ impl ScanConfig {
     }
 
     pub fn resolve_value(&self, value: &str) -> String {
-        if value.starts_with("file://") {
-            let path = &value[7..];
+        if let Some(path) = value.strip_prefix("file://") {
             std::fs::read_to_string(path).unwrap_or_else(|_| value.to_string())
-        } else if value.starts_with("env://") {
-            let env_var = &value[6..];
+        } else if let Some(env_var) = value.strip_prefix("env://") {
             std::env::var(env_var).unwrap_or_else(|_| value.to_string())
         } else {
             value.to_string()
@@ -173,7 +171,10 @@ impl ScanOrchestrator {
 
         Self {
             registry,
-            correlator: Arc::new(RwLock::new(correlator)),
+            correlator: {
+                #[allow(clippy::arc_with_non_send_sync)]
+                Arc::new(RwLock::new(correlator))
+            },
             database: None,
             config: EventBusConfig::default(),
             scan_config: ScanConfig::default(),
@@ -204,7 +205,10 @@ impl ScanOrchestrator {
         for yaml in yaml_rules {
             correlator.load_rules_from_yaml(&yaml)?;
         }
-        self.correlator = Arc::new(RwLock::new(correlator));
+        self.correlator = {
+            #[allow(clippy::arc_with_non_send_sync)]
+            Arc::new(RwLock::new(correlator))
+        };
         Ok(self)
     }
 
