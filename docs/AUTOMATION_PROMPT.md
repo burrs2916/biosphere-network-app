@@ -1,6 +1,6 @@
 # Biosphere Network App — 自动化质量巡检与修复工作流
 
-> 用于 WorkBuddy 自动化定时任务执行 | 版本 1.0 | 2026-05-21
+> 用于 WorkBuddy 自动化定时任务执行 | 版本 2.0 | 2026-05-21
 
 ---
 
@@ -15,12 +15,13 @@
 - 每次修复后运行 `cargo check` 和 `npm run build` 验证编译
 - 不要删除任何功能代码，只修复和优化
 - 每次执行完成后，在 `.workbuddy/memory/YYYY-MM-DD.md` 记录结论
+- 在全部阶段完成后，将变更提交并推送到 GitHub（`burrs2916/biosphere-network-app`）
 
 ---
 
 ## 执行流程
 
-按以下 6 个阶段依次执行。每个阶段独立完成后再进入下一阶段。如果某个阶段发现 0 个问题，记录 `"PASS"` 并继续。
+按以下 7 个阶段依次执行。每个阶段独立完成后再进入下一阶段。如果某个阶段发现 0 个问题，记录 `"PASS"` 并继续。
 
 ---
 
@@ -276,6 +277,137 @@ grep -E '^\s+[a-z_]+,' src-tauri/src/lib.rs | \
 
 ---
 
+### 阶段 7: Git 提交与推送
+
+**目标**: 将本次巡检发现并修复的所有变更，提交并推送到 GitHub 远程仓库。
+
+**前置条件**:
+- 阶段 1~6 已完成
+- 工作区干净或仅有本次巡检产生的变更
+- GitHub 仓库地址: `https://github.com/burrs2916/biosphere-network-app.git`
+
+**执行步骤**:
+
+#### 7.1 检查当前 Git 状态
+
+```bash
+cd /Users/liwenchao/GithubProSpace/biosphere-network-app
+git status
+git diff --stat
+```
+
+- 如果 `nothing to commit, working tree clean` → 无需提交，记录到报告并跳过后续步骤
+- 如果有未暂存的变更 → 进入 7.2
+
+#### 7.2 审查变更内容
+
+```bash
+# 列出所有变更文件
+git diff --name-only
+git diff --cached --name-only
+
+# 统计变更行数
+git diff --stat
+git diff --cached --stat
+```
+
+**审查清单**:
+1. 是否只修改了源代码文件（`.rs`, `.svelte`, `.ts`, `.json`, `.toml`, `.md`）？
+2. 是否误修改了构建产物（`target/`, `build/`, `node_modules/`）？
+3. 是否误修改了敏感文件（`.env`, `*.db`）？
+4. 变更行数是否合理（通常 < 500 行）？
+
+**如果发现不应提交的文件**: 使用 `git restore <file>` 撤销误修改
+
+#### 7.3 暂存并提交
+
+```bash
+cd /Users/liwenchao/GithubProSpace/biosphere-network-app
+
+# 暂存所有源代码变更（排除敏感目录）
+git add -A
+git reset -- target/ build/ node_modules/ .svelte-kit/
+
+# 再次确认暂存内容
+git diff --cached --stat
+```
+
+**Commit 消息格式规范**:
+
+根据本次巡检的实际内容，使用以下模板生成 commit 消息：
+
+```
+chore(巡检): YYYY-MM-DD 自动化代码质量巡检 — [本次主要动作]
+
+## 编译修复
+- [具体修复项]
+
+## 代码质量
+- [具体修复项]
+
+## 工具完整性
+- [具体修复项]
+
+## 前后端一致性
+- [具体修复项]
+
+巡检报告: docs/AUTOMATION_PROMPT.md
+健康度评分: XXX/10
+```
+
+**实际示例**:
+```bash
+git commit -m "chore(巡检): 2026-05-21 自动化代码质量巡检 — 修复编译warning、清理死代码
+
+- cargo fix: 自动修复 116 个 warning (unused imports/mut/variables)
+- subdomain_takeover: 修复 null 安全检查 (svelte-check error)
+- svelte-check: 修复 2 个可能的 null reference 错误
+- 前端: 1 处未使用变量移除
+
+巡检报告: docs/AUTOMATION_PROMPT.md
+健康度: 编译 9/10 | 完整性 6/10 | 一致性 9/10 | 架构 4/10 | 综合 7.0/10"
+```
+
+**重要规则**:
+- 使用 `chore(巡检):` 前缀，标明这是自动化操作
+- 消息中包含日期，方便回溯
+- 列出本次的关键修复项（不是所有细节）
+- 如果没有任何变更需要提交，标记为 `NO_CHANGES`
+
+#### 7.4 推送到 GitHub
+
+```bash
+cd /Users/liwenchao/GithubProSpace/biosphere-network-app
+git push origin main
+```
+
+**推送前检查**:
+1. 当前分支是否为 `main`？
+   ```bash
+   git branch --show-current
+   ```
+2. 是否有未拉取的远程更新？（避免冲突）
+   ```bash
+   git fetch origin
+   git log HEAD..origin/main --oneline
+   ```
+   如果有远程新提交，先执行 `git pull --rebase origin main`
+
+3. 推送后验证：
+   ```bash
+   git log --oneline -3
+   ```
+
+#### 7.5 推送失败处理
+
+如果推送失败（如权限问题、网络问题）：
+1. 记录错误日志到 `.workbuddy/memory/YYYY-MM-DD.md`
+2. 在巡检报告中标记 `⚠️ Git 推送失败`
+3. **不要** 重试超过 2 次
+4. 本地 commit 保留，等待下次巡检推送
+
+---
+
 ## 输出格式
 
 每个阶段完成后，生成以下格式的报告：
@@ -299,7 +431,7 @@ grep -E '^\s+[a-z_]+,' src-tauri/src/lib.rs | \
 
 ## 最终汇总
 
-全部 6 个阶段完成后，生成汇总报告：
+全部 7 个阶段完成后，生成汇总报告：
 
 ```markdown
 # Biosphere Network App 自动化巡检报告
@@ -316,6 +448,8 @@ grep -E '^\s+[a-z_]+,' src-tauri/src/lib.rs | \
 | P2 待处理 | N |
 | 编译状态 | ✅ / ❌ |
 | 前端检查 | ✅ / ❌ |
+| Git 提交 | ✅ 已推送 / ⚠️ 无变更 / ❌ 推送失败 |
+| Commit SHA | abc1234 |
 
 ## 关键发现
 1. [最重要的发现]
@@ -344,6 +478,9 @@ grep -E '^\s+[a-z_]+,' src-tauri/src/lib.rs | \
 | `MAX_FIX_ATTEMPTS` | `3` | 编译错误最大修复尝试次数 |
 | `SKIP_STUBS` | `false` | 是否跳过 stub 工具检查 |
 | `REPORT_ONLY` | `false` | 仅生成报告，不做任何修改 |
+| `AUTO_COMMIT` | `true` | 是否自动提交并推送变更到 GitHub |
+| `COMMIT_PREFIX` | `chore(巡检):` | Git commit 消息前缀 |
+| `TARGET_BRANCH` | `main` | 推送目标分支 |
 
 ---
 
