@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "lsof -ti:1420 | xargs -r kill -9 2>/dev/null || true && vite dev",
     "build": "vite build",
+    "predev": "svelte-kit sync",
+    "prebuild": "svelte-kit sync",
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "tauri": "tauri",
