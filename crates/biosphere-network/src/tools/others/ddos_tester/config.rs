@@ -613,7 +613,7 @@ impl DdosTesterTool {
         let semaphore = Arc::new(tokio::sync::Semaphore::new(concurrent));
         let interval = Duration::from_millis(1000 / rps.max(1) as u64);
 
-        let mut request_id = 0u64;
+        let mut _request_id = 0u64;
         let mut handles = Vec::new();
 
         while tokio::time::Instant::now() < deadline {
@@ -627,7 +627,7 @@ impl DdosTesterTool {
             let response_times = response_times.clone();
             let status_codes = status_codes.clone();
             let timeout_secs = timeout_secs;
-            let current_request_id = request_id;
+            let current_request_id = _request_id;
             let use_https = use_https;
 
             let handle = tokio::spawn(async move {
@@ -708,7 +708,7 @@ impl DdosTesterTool {
             });
 
             handles.push(handle);
-            request_id += 1;
+            _request_id += 1;
 
             if handles.len() > 5000 {
                 let drained: Vec<_> = handles.drain(..handles.len() / 2).collect();
@@ -846,7 +846,7 @@ impl DdosTesterTool {
         let semaphore = Arc::new(tokio::sync::Semaphore::new(concurrent));
         let interval = Duration::from_millis(1000 / rps.max(1) as u64);
 
-        let mut request_id = 0u64;
+        let mut _request_id = 0u64;
         let mut handles = Vec::new();
 
         while tokio::time::Instant::now() < deadline {
@@ -879,7 +879,7 @@ impl DdosTesterTool {
             });
 
             handles.push(handle);
-            request_id += 1;
+            _request_id += 1;
 
             if handles.len() > 5000 {
                 let drained: Vec<_> = handles.drain(..handles.len() / 2).collect();

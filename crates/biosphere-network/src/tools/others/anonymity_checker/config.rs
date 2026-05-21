@@ -958,7 +958,7 @@ impl AnonymityCheckerTool {
     fn check_vpn(ip_info: &IpLeakInfo, issues: &mut Vec<AnonymityIssue>) -> VpnInfo {
         let mut vpn_detected = false;
         let mut vpn_provider: Option<String> = None;
-        let mut encryption_level = String::new();
+        let encryption_level: String;
         let mut kill_switch = false;
         let mut dns_protected = false;
         let mut ip_shared = false;

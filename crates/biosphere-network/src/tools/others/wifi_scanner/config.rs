@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
-use std::process::Command;
 use std::io::Write;
+use std::process::Command;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WifiScanConfig {
@@ -78,7 +78,7 @@ impl WifiScannerTool {
             config.interface.clone()
         };
 
-        let mut networks = Vec::new();
+        let mut networks: Vec<WifiNetwork>;
         let mut vulnerabilities = Vec::new();
         let mut is_demo = false;
 
@@ -195,7 +195,7 @@ impl WifiScannerTool {
     }
 
     fn try_system_scan(interface: &str) -> Vec<WifiNetwork> {
-        let mut networks = Vec::new();
+        let mut networks: Vec<WifiNetwork>;
 
         #[cfg(target_os = "macos")]
         {
@@ -459,7 +459,7 @@ if interfaces.isEmpty {
             .output()
         {
             let stdout = String::from_utf8_lossy(&output.stdout);
-            let mut current_interface = String::new();
+            let mut _current_interface = String::new();
             let mut in_current_network = false;
             let mut in_other_networks = false;
             let mut current_ssid = String::new();
@@ -498,7 +498,7 @@ if interfaces.isEmpty {
                 }
 
                 if trimmed.contains("Device:") && trimmed.contains("en") {
-                    current_interface = trimmed.split("Device:").last().unwrap_or("").trim().to_string();
+                    _current_interface = trimmed.split("Device:").last().unwrap_or("").trim().to_string();
                 }
 
                 if trimmed.starts_with("Current Network Information:") {
@@ -677,7 +677,7 @@ if interfaces.isEmpty {
     }
 
     fn evaluate_security(encryption: &str, signal: i32, is_hidden: bool) -> (i32, Vec<String>) {
-        let mut score = 100;
+        let mut score: i32;
         let mut notes = Vec::new();
 
         match encryption {

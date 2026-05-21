@@ -82,7 +82,7 @@ impl ReverseIpTool {
 
         let mut domains = Vec::new();
         let mut dns_history = Vec::new();
-        let mut related_ips = Vec::new();
+        let related_ips: Vec<RelatedIp>;
         let mut findings = Vec::new();
 
         let reverse_name = Self::reverse_dns_lookup(&ip);

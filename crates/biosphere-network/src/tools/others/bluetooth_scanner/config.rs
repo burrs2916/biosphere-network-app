@@ -79,7 +79,7 @@ struct AdapterInfo {
 
 impl BluetoothScannerTool {
     pub async fn scan(config: &BluetoothScanConfig) -> Result<BluetoothScanResult, String> {
-        let mut devices = Vec::new();
+        let mut devices: Vec<BluetoothDevice>;
         let mut vulnerabilities = Vec::new();
         let mut services = Vec::new();
         let mut security_findings = Vec::new();
@@ -134,6 +134,7 @@ impl BluetoothScannerTool {
     }
 
     async fn scan_bluetooth_devices() -> Vec<BluetoothDevice> {
+        #[allow(unused_mut)]
         let mut devices = Vec::new();
 
         #[cfg(target_os = "macos")]
@@ -320,7 +321,8 @@ impl BluetoothScannerTool {
     }
 
     fn scan_via_bluetoothctl() -> Vec<BluetoothDevice> {
-        let devices = Vec::new();
+        #[allow(unused_mut)]
+        let mut devices = Vec::new();
 
         #[cfg(target_os = "linux")]
         {

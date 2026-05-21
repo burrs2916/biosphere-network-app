@@ -117,7 +117,7 @@ impl NetworkDiscoveryTool {
         }
 
         let network_range = config.network_range.clone();
-        let mut hosts = Vec::new();
+        let hosts: Vec<DiscoveredHost>;
         let mut security_findings = Vec::new();
 
         let real_hosts = Self::try_system_discovery(&network_range).await;

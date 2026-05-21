@@ -212,7 +212,7 @@ fn html_to_markdown(html: &str) -> String {
     let mut tag_stack: Vec<String> = Vec::new();
     let mut list_depth: usize = 0;
     let mut in_pre = false;
-    let mut in_code = false;
+    let mut _in_code = false;
     let mut in_blockquote = false;
     let chars: Vec<char> = html.chars().collect();
     let mut i = 0;
@@ -252,7 +252,7 @@ fn html_to_markdown(html: &str) -> String {
                     "p" | "div" => md.push_str("\n\n"),
                     "li" => { list_depth = list_depth.saturating_sub(1); md.push('\n'); }
                     "pre" => in_pre = false,
-                    "code" => { if !in_pre { in_code = false; md.push('`'); } }
+                    "code" => { if !in_pre { _in_code = false; md.push('`'); } }
                     "blockquote" => { in_blockquote = false; md.push('\n'); }
                     "a" => md.push(')'),
                     "tr" => md.push_str("|\n"),
@@ -279,7 +279,7 @@ fn html_to_markdown(html: &str) -> String {
                             md.push_str(&format!("{}- ", indent));
                         }
                         "pre" => { in_pre = true; md.push_str("\n```\n"); }
-                        "code" => { if !in_pre { in_code = true; md.push('`'); } }
+                        "code" => { if !in_pre { _in_code = true; md.push('`'); } }
                         "blockquote" => { in_blockquote = true; md.push_str("> "); }
                         "a" => {
                             if let Some(href_start) = tag_full.find("href=\"") {

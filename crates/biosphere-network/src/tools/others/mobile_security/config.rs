@@ -1068,7 +1068,7 @@ impl MobileSecurityTool {
 
         if let Ok(output) = Self::run_command("strings", &[path]) {
             let mut has_debug_logging = false;
-            let mut has_stack_trace = false;
+            let mut _has_stack_trace = false;
             let mut has_print_stack_trace = false;
 
             for line in output.lines() {
@@ -1080,7 +1080,7 @@ impl MobileSecurityTool {
                     has_print_stack_trace = true;
                 }
                 if line.contains("Exception") && line.contains("at ") && line.contains(".java:") {
-                    has_stack_trace = true;
+                    _has_stack_trace = true;
                 }
             }
 

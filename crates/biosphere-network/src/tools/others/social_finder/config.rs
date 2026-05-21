@@ -981,7 +981,7 @@ impl SocialFinderTool {
     }
 
     fn extract_profile_info(html: &str, platform_name: &str) -> (Option<String>, Option<u64>, Option<String>) {
-        let mut bio = None;
+        let bio: Option<String>;
         let mut followers = None;
         let mut profile_picture = None;
 

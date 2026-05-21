@@ -913,7 +913,7 @@ impl ApkAnalysisTool {
     }
 
     async fn analyze_via_zip(apk_path: &str, config: &ApkAnalysisConfig) -> std::result::Result<ApkAnalysisResult, String> {
-        let mut package_name = String::new();
+        let mut package_name: String;
         let mut version_name = String::new();
         let mut version_code = String::new();
         let mut min_sdk = String::new();

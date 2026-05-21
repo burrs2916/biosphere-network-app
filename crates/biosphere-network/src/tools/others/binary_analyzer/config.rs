@@ -766,7 +766,7 @@ impl BinaryAnalyzerTool {
                                     address.to_string()
                                 };
 
-                                let mut permissions = String::new();
+                                let permissions: String;
                                 let mut suspicious = false;
                                 let mut reason = String::new();
 

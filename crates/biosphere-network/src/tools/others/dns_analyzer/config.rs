@@ -454,7 +454,7 @@ impl DnsAnalyzerTool {
     fn parse_name(response: &[u8], mut offset: usize) -> String {
         let mut name = String::new();
         let mut jumped = false;
-        let mut jump_pos = 0;
+        let mut _jump_pos = 0;
 
         while offset < response.len() {
             let len = response[offset] as usize;
@@ -463,7 +463,7 @@ impl DnsAnalyzerTool {
             }
             if len & 0xC0 == 0xC0 {
                 if !jumped {
-                    jump_pos = offset + 2;
+                    _jump_pos = offset + 2;
                     jumped = true;
                 }
                 offset = ((response[offset] as usize & 0x3F) << 8) | (response[offset + 1] as usize);

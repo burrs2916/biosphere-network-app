@@ -167,7 +167,7 @@ impl PrivilegeEscCheckTool {
         let mut vulnerable_services = Vec::new();
         let mut kernel_exploits = Vec::new();
         let mut docker_issues = Vec::new();
-        let mut misconfigurations = Vec::new();
+        let misconfigurations: Vec<Misconfiguration>;
 
         if config.check_suid {
             suid_binaries = Self::check_suid_binaries(&os_type);
