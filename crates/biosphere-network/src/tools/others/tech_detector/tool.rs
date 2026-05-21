@@ -218,12 +218,7 @@ impl TechDetectorTool {
             .next()?;
 
         match (host, 0).to_socket_addrs() {
-            Ok(addrs) => {
-                for addr in addrs {
-                    return Some(addr.ip().to_string());
-                }
-                None
-            }
+            Ok(addrs) => addrs.into_iter().next().map(|addr| addr.ip().to_string()),
             Err(_) => None,
         }
     }

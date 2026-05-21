@@ -1275,8 +1275,12 @@ impl OsintPlatform {
         } else {
             url
         };
-        let re = regex::Regex::new(r"(?<!:)/+").unwrap();
-        re.replace_all(&url, "/").to_string()
+        // Collapse multiple consecutive slashes, preserving "://"
+        let re = regex::Regex::new(r"[^:]//+").unwrap();
+        re.replace_all(&url, |caps: &regex::Captures| {
+            let matched = caps.get(0).unwrap().as_str();
+            format!("{}/", &matched[..1])
+        }).to_string()
     }
 
     pub fn build_probe_url(&self, username: &str) -> String {
@@ -1295,8 +1299,12 @@ impl OsintPlatform {
                 url.push_str(separator);
                 url.push_str(&query.join("&"));
             }
-            let re = regex::Regex::new(r"(?<!:)/+").unwrap();
-            re.replace_all(&url, "/").to_string()
+            // Collapse multiple consecutive slashes, preserving "://"
+            let re = regex::Regex::new(r"[^:]//+").unwrap();
+            re.replace_all(&url, |caps: &regex::Captures| {
+                let matched = caps.get(0).unwrap().as_str();
+                format!("{}/", &matched[..1])
+            }).to_string()
         } else {
             self.build_url(username)
         }
