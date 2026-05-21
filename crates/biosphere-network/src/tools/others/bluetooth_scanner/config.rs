@@ -255,6 +255,7 @@ impl BluetoothScannerTool {
     }
 
     fn scan_via_system_profiler() -> Vec<BluetoothDevice> {
+        #[allow(unused_mut)]
         let mut devices = Vec::new();
 
         #[cfg(target_os = "macos")]

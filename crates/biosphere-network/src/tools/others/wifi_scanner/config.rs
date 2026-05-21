@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+#[cfg(target_os = "macos")]
 use std::io::Write;
 use std::process::Command;
 
@@ -195,7 +196,7 @@ impl WifiScannerTool {
     }
 
     fn try_system_scan(interface: &str) -> Vec<WifiNetwork> {
-        let mut networks: Vec<WifiNetwork>;
+        let mut networks = Vec::new();
 
         #[cfg(target_os = "macos")]
         {
