@@ -1521,16 +1521,6 @@ import ToolHistory from '$lib/components/ToolHistory.svelte';
 		line-height: 1.6;
 	}
 
-	.btn-danger-confirm {
-		padding: 0.5rem 1rem;
-		background: rgba(239, 68, 68, 0.2);
-		border: 1px solid rgba(239, 68, 68, 0.4);
-		border-radius: 0.375rem;
-		color: #ef4444;
-		cursor: pointer;
-		font-size: 0.85rem;
-	}
-
 	.detail-section {
 		margin-bottom: 1.5rem;
 	}

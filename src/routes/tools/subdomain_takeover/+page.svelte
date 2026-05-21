@@ -950,19 +950,6 @@
 		100% { transform: translateX(400%); }
 	}
 
-	.btn-view-errors {
-		padding: 0.2rem 0.5rem;
-		border-radius: 0.3rem;
-		border: 1px solid rgba(168, 85, 247, 0.3);
-		background: rgba(168, 85, 247, 0.1);
-		color: #c4b5fd;
-		cursor: pointer;
-		font-size: 0.7rem;
-		transition: all 0.2s;
-	}
-
-	.btn-view-errors:hover { background: rgba(168, 85, 247, 0.2); }
-
 	.takeover-item.error-item {
 		background: rgba(148, 163, 184, 0.04);
 		border-color: rgba(148, 163, 184, 0.15);
@@ -1284,12 +1271,6 @@
 		font-family: 'SF Mono', 'Fira Code', monospace;
 		font-size: 0.78rem;
 		color: #c4b5fd;
-	}
-
-	.status-badge {
-		font-weight: 600;
-		font-family: 'SF Mono', 'Fira Code', monospace;
-		font-size: 0.78rem;
 	}
 
 	.filter-bar {

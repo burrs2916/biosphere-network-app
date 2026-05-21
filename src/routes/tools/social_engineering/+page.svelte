@@ -554,7 +554,6 @@
 	.stat-value { font-size: 1.25rem; font-weight: 700; }
 	.stat-value.purple { color: #c4b5fd; }
 	.stat-value.orange { color: #fdba74; }
-	.stat-value.blue { color: #93c5fd; }
 	.stat-value.red { color: #fca5a5; }
 	.stat-value.yellow { color: #fbbf24; }
 	.stat-label { font-size: 0.7rem; color: #64748b; margin-top: 0.2rem; }

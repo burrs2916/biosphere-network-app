@@ -1838,18 +1838,6 @@
     gap: 0.5rem;
   }
 
-  .target-input-wrapper input {
-    width: 100%;
-    padding: 0.75rem;
-    background: rgba(10, 14, 23, 0.6);
-    border: 1px solid rgba(168, 85, 247, 0.3);
-    border-radius: 0.5rem;
-    color: #f1f5f9;
-    font-size: 0.875rem;
-    font-family: inherit;
-    transition: all 0.2s;
-  }
-
   .target-input-wrapper textarea:focus {
     outline: none;
     border-color: #a855f7;

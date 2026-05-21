@@ -269,8 +269,8 @@
 
 	.form-group { margin-bottom: 0.75rem; }
 	.form-label { display: block; font-size: 0.8rem; color: #94a3b8; margin-bottom: 0.25rem; }
-	.form-input, .form-select, .form-textarea { width: 100%; padding: 0.5rem 0.75rem; border-radius: 0.5rem; border: 1px solid rgba(168, 85, 247, 0.15); background: rgba(15, 23, 42, 0.6); color: #f1f5f9; font-size: 0.85rem; box-sizing: border-box; transition: border-color 0.2s; }
-	.form-input:focus, .form-select:focus, .form-textarea:focus { border-color: #a855f7; outline: none; }
+	.form-input, .form-textarea { width: 100%; padding: 0.5rem 0.75rem; border-radius: 0.5rem; border: 1px solid rgba(168, 85, 247, 0.15); background: rgba(15, 23, 42, 0.6); color: #f1f5f9; font-size: 0.85rem; box-sizing: border-box; transition: border-color 0.2s; }
+	.form-input:focus, .form-textarea:focus { border-color: #a855f7; outline: none; }
 	.form-textarea { resize: vertical; font-family: monospace; }
 
 	.operation-toggle { display: flex; gap: 0.25rem; background: rgba(15, 23, 42, 0.6); border-radius: 0.5rem; padding: 0.2rem; }

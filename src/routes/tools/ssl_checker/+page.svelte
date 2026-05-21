@@ -1832,10 +1832,4 @@
 		font-size: 0.85rem;
 	}
 
-	.input-hint {
-		color: var(--text-muted);
-		font-size: 0.8rem;
-		margin-top: 0.25rem;
-		display: block;
-	}
 </style>

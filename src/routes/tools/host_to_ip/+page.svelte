@@ -648,7 +648,7 @@
 	.modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; }
 	.modal-content { background: #1e293b; border-radius: 12px; padding: 24px; max-width: 700px; width: 90%; max-height: 80vh; overflow-y: auto; border: 1px solid #334155; }
 	.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-	.modal-header h2, .modal-header h3 { margin: 0; font-size: 1.1rem; }
+	.modal-header h2 { margin: 0; font-size: 1.1rem; }
 	.modal-close { background: none; border: none; cursor: pointer; font-size: 1.3rem; color: #64748b; }
 	.modal-close:hover { color: #e2e8f0; }
 	.modal-body { display: flex; flex-direction: column; gap: 10px; }
