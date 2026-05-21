@@ -21,21 +21,21 @@ import ToolHistory from '$lib/components/ToolHistory.svelte';
     path: string;
   }
 
-  let mode: 'text' | 'file' = 'text';
-  let activeMainTab = 'analyze';
+  let mode: 'text' | 'file' = $state('text');
+  let activeMainTab = $state('analyze');
   let historyComponent: ToolHistory = $state(null!);
-  let toolMode: 'encode' | 'hash' = 'encode';
-  let encodingType = 'base64';
-  let hashType = 'md5';
-  let operation = 'encode';
-  let input = '';
-  let output = '';
-  let processing = false;
-  let error = '';
-  let showHelpModal = false;
-  let fileInfo: FileInfo | null = null;
-  let noChange = false;
-  let outputFileInfo: FileInfo | null = null;
+  let toolMode: 'encode' | 'hash' = $state('encode');
+  let encodingType = $state('base64');
+  let hashType = $state('md5');
+  let operation = $state('encode');
+  let input = $state('');
+  let output = $state('');
+  let processing = $state(false);
+  let error = $state('');
+  let showHelpModal = $state(false);
+  let fileInfo: FileInfo | null = $state(null);
+  let noChange = $state(false);
+  let outputFileInfo: FileInfo | null = $state(null);
   let autoDetectedType = '';
 
   function formatFileSize(bytes: number): string {

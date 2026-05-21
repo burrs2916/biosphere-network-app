@@ -268,13 +268,13 @@
 	</div>
 
 	<div class="tabs">
-		<button class="tab-btn {activeMainTab === 'analyze' ? 'active' : ''}" on:click={() => activeMainTab = 'analyze'}>
+		<button class="tab-btn {activeMainTab === 'analyze' ? 'active' : ''}" onclick={() => activeMainTab = 'analyze'}>
 			<span class="tab-icon">🔍</span> {$tr('paramDiscovery.buttons.discover')}
 		</button>
-		<button class="tab-btn {activeMainTab === 'history' ? 'active' : ''}" on:click={() => activeMainTab = 'history'}>
+		<button class="tab-btn {activeMainTab === 'history' ? 'active' : ''}" onclick={() => activeMainTab = 'history'}>
 			<span class="tab-icon">📋</span> {$tr('paramDiscovery.history')}
 		</button>
-		<button class="tab-btn {activeMainTab === 'help' ? 'active' : ''}" on:click={() => activeMainTab = 'help'}>
+		<button class="tab-btn {activeMainTab === 'help' ? 'active' : ''}" onclick={() => activeMainTab = 'help'}>
 			<span class="tab-icon">📖</span> {$tr('paramDiscovery.help')}
 		</button>
 	</div>
@@ -288,7 +288,7 @@
 
 					<div class="form-group">
 						<label class="form-label">{$tr('paramDiscovery.config.url')}</label>
-						<input type="text" bind:value={url} placeholder="https://example.com/page" class="form-input" disabled={processing} on:keydown={(e) => e.key === 'Enter' && discover()} />
+						<input type="text" bind:value={url} placeholder="https://example.com/page" class="form-input" disabled={processing} onkeydown={(e) => e.key === 'Enter' && discover()} />
 					</div>
 
 					<div class="form-row">
@@ -367,10 +367,10 @@
 					</div>
 
 					<div class="button-group">
-						<button class="btn-primary" on:click={discover} disabled={processing || !url.trim()}>
+						<button class="btn-primary" onclick={discover} disabled={processing || !url.trim()}>
 							{#if processing}<span class="spinner"></span>{$tr('paramDiscovery.buttons.discovering')}{:else}🔍 {$tr('paramDiscovery.buttons.discover')}{/if}
 						</button>
-						<button class="btn-secondary" on:click={clearAll} disabled={processing}>🗑️</button>
+						<button class="btn-secondary" onclick={clearAll} disabled={processing}>🗑️</button>
 					</div>
 				</div>
 			</div>
@@ -393,8 +393,8 @@
 									<span class="score-label">{$tr('paramDiscovery.result.found')}</span>
 								</div>
 								<div class="export-group">
-									<button class="export-btn" on:click={exportJSON} title="JSON">📋 JSON</button>
-									<button class="export-btn" on:click={exportCSV} title="CSV">📊 CSV</button>
+									<button class="export-btn" onclick={exportJSON} title="JSON">📋 JSON</button>
+									<button class="export-btn" onclick={exportCSV} title="CSV">📊 CSV</button>
 								</div>
 							</div>
 						</div>
@@ -481,16 +481,16 @@
 						{/if}
 
 						<div class="result-tabs">
-							<button class="result-tab {activeResultTab === 'overview' ? 'active' : ''}" on:click={() => activeResultTab = 'overview'}>
+							<button class="result-tab {activeResultTab === 'overview' ? 'active' : ''}" onclick={() => activeResultTab = 'overview'}>
 								📊 {$tr('paramDiscovery.result.overview')}
 							</button>
-							<button class="result-tab {activeResultTab === 'list' ? 'active' : ''}" on:click={() => activeResultTab = 'list'}>
+							<button class="result-tab {activeResultTab === 'list' ? 'active' : ''}" onclick={() => activeResultTab = 'list'}>
 								📋 {$tr('paramDiscovery.result.list')}
 							</button>
-							<button class="result-tab {activeResultTab === 'category' ? 'active' : ''}" on:click={() => activeResultTab = 'category'}>
+							<button class="result-tab {activeResultTab === 'category' ? 'active' : ''}" onclick={() => activeResultTab = 'category'}>
 								🗂️ {$tr('paramDiscovery.result.byCategory')}
 							</button>
-							<button class="result-tab {activeResultTab === 'sensitive' ? 'active' : ''}" on:click={() => activeResultTab = 'sensitive'}>
+							<button class="result-tab {activeResultTab === 'sensitive' ? 'active' : ''}" onclick={() => activeResultTab = 'sensitive'}>
 								🔐 {$tr('paramDiscovery.result.sensitive')}
 							</button>
 						</div>
@@ -545,18 +545,18 @@
 							</div>
 						{:else if activeResultTab === 'list'}
 							<div class="filter-bar">
-								<button class="filter-btn {riskFilter === 'all' && categoryFilter === 'all' ? 'active' : ''}" on:click={() => { riskFilter = 'all'; categoryFilter = 'all'; }}>
+								<button class="filter-btn {riskFilter === 'all' && categoryFilter === 'all' ? 'active' : ''}" onclick={() => { riskFilter = 'all'; categoryFilter = 'all'; }}>
 									{$tr('paramDiscovery.labels.all')} ({result.found_params.length})
 								</button>
 								{#each getRiskGroups() as group}
-									<button class="filter-btn {riskFilter === group.risk && categoryFilter === 'all' ? 'active' : ''}" on:click={() => { riskFilter = group.risk; categoryFilter = 'all'; }}>
+									<button class="filter-btn {riskFilter === group.risk && categoryFilter === 'all' ? 'active' : ''}" onclick={() => { riskFilter = group.risk; categoryFilter = 'all'; }}>
 										{group.icon} {group.risk} ({group.count})
 									</button>
 								{/each}
 								{#if getCategoryGroups().length > 0}
 									<span class="filter-divider">|</span>
 									{#each getCategoryGroups() as group}
-										<button class="filter-btn {categoryFilter === group.category && riskFilter === 'all' ? 'active' : ''}" on:click={() => { categoryFilter = group.category; riskFilter = 'all'; }}>
+										<button class="filter-btn {categoryFilter === group.category && riskFilter === 'all' ? 'active' : ''}" onclick={() => { categoryFilter = group.category; riskFilter = 'all'; }}>
 											{group.icon} {group.category} ({group.count})
 										</button>
 									{/each}
@@ -566,7 +566,7 @@
 							<div class="search-bar">
 								<input type="text" bind:value={searchQuery} placeholder="{$tr('paramDiscovery.labels.search')}" class="search-input" />
 								{#if searchQuery.trim() || riskFilter !== 'all' || categoryFilter !== 'all'}
-									<button class="clear-filter-btn" on:click={() => { searchQuery = ''; riskFilter = 'all'; categoryFilter = 'all'; }}>✕</button>
+									<button class="clear-filter-btn" onclick={() => { searchQuery = ''; riskFilter = 'all'; categoryFilter = 'all'; }}>✕</button>
 								{/if}
 								<span class="filter-count">{getFilteredEntries().length} / {result.found_params.length}</span>
 							</div>

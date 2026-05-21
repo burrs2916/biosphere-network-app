@@ -682,7 +682,7 @@
 	}
 </script>
 
-<svelte:window on:keydown={handleKeydown} />
+<svelte:window onkeydown={handleKeydown} />
 
 <div class="nd-page">
 	<div class="page-header">
@@ -694,13 +694,13 @@
 	</div>
 
 	<div class="tabs">
-		<button class="tab-btn {activeMainTab === 'analyze' ? 'active' : ''}" on:click={() => activeMainTab = 'analyze'}>
+		<button class="tab-btn {activeMainTab === 'analyze' ? 'active' : ''}" onclick={() => activeMainTab = 'analyze'}>
 			<span class="tab-icon">🔍</span> {$tr('webCrawler.crawl')}
 		</button>
-		<button class="tab-btn {activeMainTab === 'history' ? 'active' : ''}" on:click={() => activeMainTab = 'history'}>
+		<button class="tab-btn {activeMainTab === 'history' ? 'active' : ''}" onclick={() => activeMainTab = 'history'}>
 			<span class="tab-icon">📋</span> {$tr('webCrawler.history')}
 		</button>
-		<button class="tab-btn {activeMainTab === 'help' ? 'active' : ''}" on:click={() => activeMainTab = 'help'}>
+		<button class="tab-btn {activeMainTab === 'help' ? 'active' : ''}" onclick={() => activeMainTab = 'help'}>
 			<span class="tab-icon">📖</span> {$tr('webCrawler.help')}
 		</button>
 	</div>
@@ -721,7 +721,7 @@
 						<label class="form-label">{$tr('webCrawler.crawlMode')}</label>
 						<div class="mode-grid">
 							{#each ['quick', 'balanced', 'full', 'deep'] as mode}
-								<button class="mode-btn {crawlMode === mode ? 'active' : ''}" on:click={() => applyCrawlMode(mode)} disabled={processing}>
+								<button class="mode-btn {crawlMode === mode ? 'active' : ''}" onclick={() => applyCrawlMode(mode)} disabled={processing}>
 									<span class="mode-name">{getCrawlModeLabel(mode)}</span>
 								</button>
 							{/each}
@@ -854,13 +854,13 @@
 					</div>
 
 					<div class="button-group">
-						<button class="btn-primary" on:click={crawl} disabled={processing || fullSiteDownloading || !url.trim()}>
+						<button class="btn-primary" onclick={crawl} disabled={processing || fullSiteDownloading || !url.trim()}>
 							{#if processing}<span class="spinner"></span>{$tr('webCrawler.crawling')}{:else}🕷️ {$tr('webCrawler.startCrawl')}{/if}
 						</button>
-						<button class="btn-accent" on:click={downloadFullSite} disabled={processing || fullSiteDownloading || !url.trim()} title="One-click full site download with local path rewriting">
+						<button class="btn-accent" onclick={downloadFullSite} disabled={processing || fullSiteDownloading || !url.trim()} title="One-click full site download with local path rewriting">
 							{#if fullSiteDownloading}<span class="spinner"></span>Downloading...{:else}⚡ Full Site Download{/if}
 						</button>
-						<button class="btn-secondary" on:click={clearAll} disabled={processing || fullSiteDownloading}>🗑️</button>
+						<button class="btn-secondary" onclick={clearAll} disabled={processing || fullSiteDownloading}>🗑️</button>
 					</div>
 
 					{#if fullSiteDownloading || true}
@@ -905,14 +905,14 @@
 									<span class="score-value">{getTotalResources()}</span>
 									<span class="score-label">{$tr('webCrawler.resourcesFound')}</span>
 								</div>
-								<button class="btn-config-toggle" on:click={() => showDownloadConfig = !showDownloadConfig} title="Download Settings">
+								<button class="btn-config-toggle" onclick={() => showDownloadConfig = !showDownloadConfig} title="Download Settings">
 									⚙️
 								</button>
-								<button class="btn-download-site" on:click={downloadSite} disabled={downloadingAll || getTotalResources() === 0}>
+								<button class="btn-download-site" onclick={downloadSite} disabled={downloadingAll || getTotalResources() === 0}>
 									{#if downloadingAll}<span class="spinner-sm"></span>{:else}🌐{/if}
 									{$tr('webCrawler.downloadSite')}
 								</button>
-								<button class="btn-download-all" on:click={downloadAll} disabled={downloadingAll || getTotalResources() === 0}>
+								<button class="btn-download-all" onclick={downloadAll} disabled={downloadingAll || getTotalResources() === 0}>
 									{#if downloadingAll}<span class="spinner-sm"></span>{:else}⬇️{/if}
 									{$tr('webCrawler.downloadAll')}
 								</button>
@@ -920,7 +920,7 @@
 									<option value="json">JSON</option>
 									<option value="csv">CSV</option>
 								</select>
-								<button class="btn-export" on:click={exportResult} disabled={exporting || !result}>
+								<button class="btn-export" onclick={exportResult} disabled={exporting || !result}>
 									{#if exporting}<span class="spinner-sm"></span>{:else}📤{/if}
 									{$tr('webCrawler.export')}
 								</button>
@@ -932,13 +932,13 @@
 								<div class="config-row">
 									<label class="config-label">{$tr('webCrawler.downloadMode')}</label>
 									<div class="config-mode-btns">
-										<button class="config-mode-btn {downloadMode === 'by_type' ? 'active' : ''}" on:click={() => downloadMode = 'by_type'}>
+										<button class="config-mode-btn {downloadMode === 'by_type' ? 'active' : ''}" onclick={() => downloadMode = 'by_type'}>
 											📁 {$tr('webCrawler.modeByType')}
 										</button>
-										<button class="config-mode-btn {downloadMode === 'by_site' ? 'active' : ''}" on:click={() => downloadMode = 'by_site'}>
+										<button class="config-mode-btn {downloadMode === 'by_site' ? 'active' : ''}" onclick={() => downloadMode = 'by_site'}>
 											🌐 {$tr('webCrawler.modeBySite')}
 										</button>
-										<button class="config-mode-btn {downloadMode === 'flat' ? 'active' : ''}" on:click={() => downloadMode = 'flat'}>
+										<button class="config-mode-btn {downloadMode === 'flat' ? 'active' : ''}" onclick={() => downloadMode = 'flat'}>
 											📄 {$tr('webCrawler.modeFlat')}
 										</button>
 									</div>
@@ -968,7 +968,7 @@
 									</div>
 								</div>
 								<div class="config-row">
-									<button class="config-mode-btn {showAuthConfig ? 'active' : ''}" on:click={() => showAuthConfig = !showAuthConfig}>
+									<button class="config-mode-btn {showAuthConfig ? 'active' : ''}" onclick={() => showAuthConfig = !showAuthConfig}>
 										🔐 Auth & Cookies
 									</button>
 								</div>
@@ -987,7 +987,7 @@
 									</div>
 								{/if}
 								<div class="config-row">
-									<button class="config-mode-btn {showAdvancedConfig ? 'active' : ''}" on:click={() => showAdvancedConfig = !showAdvancedConfig}>
+									<button class="config-mode-btn {showAdvancedConfig ? 'active' : ''}" onclick={() => showAdvancedConfig = !showAdvancedConfig}>
 										⚙️ Advanced
 									</button>
 								</div>
@@ -1055,7 +1055,7 @@
 							<div class="download-summary">
 								<span class="dl-success">✅ {downloadLog.filter(d => d.success).length}</span>
 								<span class="dl-failed">❌ {downloadLog.filter(d => !d.success).length}</span>
-								<button class="dl-clear" on:click={() => downloadLog = []}>✕</button>
+								<button class="dl-clear" onclick={() => downloadLog = []}>✕</button>
 							</div>
 							<div class="download-log-list">
 								{#each downloadLog.slice(-20) as dl, i}
@@ -1078,37 +1078,37 @@
 						<div class="summary-bar">{result.summary}</div>
 
 						<div class="result-tabs">
-							<button class="result-tab {activeResultTab === 'overview' ? 'active' : ''}" on:click={() => activeResultTab = 'overview'}>
+							<button class="result-tab {activeResultTab === 'overview' ? 'active' : ''}" onclick={() => activeResultTab = 'overview'}>
 								📊 {$tr('webCrawler.tabOverview')}
 							</button>
-							<button class="result-tab {activeResultTab === 'links' ? 'active' : ''}" on:click={() => activeResultTab = 'links'}>
+							<button class="result-tab {activeResultTab === 'links' ? 'active' : ''}" onclick={() => activeResultTab = 'links'}>
 								🔗 {$tr('webCrawler.tabLinks')} ({result.links.length})
 							</button>
-							<button class="result-tab {activeResultTab === 'resources' ? 'active' : ''}" on:click={() => activeResultTab = 'resources'}>
+							<button class="result-tab {activeResultTab === 'resources' ? 'active' : ''}" onclick={() => activeResultTab = 'resources'}>
 								📦 {$tr('webCrawler.tabResources')} ({getTotalResources()})
 							</button>
-							<button class="result-tab {activeResultTab === 'api' ? 'active' : ''}" on:click={() => activeResultTab = 'api'}>
+							<button class="result-tab {activeResultTab === 'api' ? 'active' : ''}" onclick={() => activeResultTab = 'api'}>
 								🔌 API ({result.api_endpoints.length})
 							</button>
-							<button class="result-tab {activeResultTab === 'dirs' ? 'active' : ''}" on:click={() => activeResultTab = 'dirs'}>
+							<button class="result-tab {activeResultTab === 'dirs' ? 'active' : ''}" onclick={() => activeResultTab = 'dirs'}>
 								📁 {$tr('webCrawler.tabDirs')} ({result.directory_entries.length})
 							</button>
-							<button class="result-tab {activeResultTab === 'tech' ? 'active' : ''}" on:click={() => activeResultTab = 'tech'}>
+							<button class="result-tab {activeResultTab === 'tech' ? 'active' : ''}" onclick={() => activeResultTab = 'tech'}>
 								🔧 {$tr('webCrawler.tabTech')} ({result.technology_details ? result.technology_details.length : result.technologies.length})
 							</button>
-							<button class="result-tab {activeResultTab === 'meta' ? 'active' : ''}" on:click={() => activeResultTab = 'meta'}>
+							<button class="result-tab {activeResultTab === 'meta' ? 'active' : ''}" onclick={() => activeResultTab = 'meta'}>
 								🏷️ {$tr('webCrawler.tabMeta')}
 							</button>
-							<button class="result-tab {activeResultTab === 'security' ? 'active' : ''}" on:click={() => activeResultTab = 'security'}>
+							<button class="result-tab {activeResultTab === 'security' ? 'active' : ''}" onclick={() => activeResultTab = 'security'}>
 								🛡️ Security
 							</button>
 							{#if result.markdown_content}
-							<button class="result-tab {activeResultTab === 'markdown' ? 'active' : ''}" on:click={() => activeResultTab = 'markdown'}>
+							<button class="result-tab {activeResultTab === 'markdown' ? 'active' : ''}" onclick={() => activeResultTab = 'markdown'}>
 								📝 Markdown
 							</button>
 							{/if}
 							{#if result.subdomains && result.subdomains.length > 0}
-							<button class="result-tab {activeResultTab === 'subdomains' ? 'active' : ''}" on:click={() => activeResultTab = 'subdomains'}>
+							<button class="result-tab {activeResultTab === 'subdomains' ? 'active' : ''}" onclick={() => activeResultTab = 'subdomains'}>
 								🌐 Subdomains ({result.subdomains.length})
 							</button>
 							{/if}
@@ -1171,7 +1171,7 @@
 										</div>
 									{/each}
 									{#if result.technology_details.length > 12}
-										<div class="tech-chip more" on:click={() => activeResultTab = 'tech'}>
+										<div class="tech-chip more" onclick={() => activeResultTab = 'tech'}>
 											+{result.technology_details.length - 12}
 										</div>
 									{/if}
@@ -1186,7 +1186,7 @@
 										</div>
 									{/each}
 									{#if result.technologies.length > 12}
-										<div class="tech-chip more" on:click={() => activeResultTab = 'tech'}>
+										<div class="tech-chip more" onclick={() => activeResultTab = 'tech'}>
 											+{result.technologies.length - 12}
 										</div>
 									{/if}
@@ -1200,7 +1200,7 @@
 										<div class="email-item">📧 {email}</div>
 									{/each}
 									{#if result.emails.length > 5}
-										<div class="more-link" on:click={() => activeResultTab = 'resources'}>
+										<div class="more-link" onclick={() => activeResultTab = 'resources'}>
 											{$tr('webCrawler.viewAll')} ({result.emails.length}) →
 										</div>
 									{/if}
@@ -1209,16 +1209,16 @@
 
 						{:else if activeResultTab === 'links'}
 							<div class="filter-bar">
-								<button class="filter-btn {linkFilter === 'all' ? 'active' : ''}" on:click={() => linkFilter = 'all'}>
+								<button class="filter-btn {linkFilter === 'all' ? 'active' : ''}" onclick={() => linkFilter = 'all'}>
 									{$tr('webCrawler.allLinks')} ({result.links.length})
 								</button>
-								<button class="filter-btn {linkFilter === 'success' ? 'active' : ''}" on:click={() => linkFilter = 'success'}>
+								<button class="filter-btn {linkFilter === 'success' ? 'active' : ''}" onclick={() => linkFilter = 'success'}>
 									✅ 2xx ({result.links.filter(l => l.status_code >= 200 && l.status_code < 300).length})
 								</button>
-								<button class="filter-btn {linkFilter === 'redirect' ? 'active' : ''}" on:click={() => linkFilter = 'redirect'}>
+								<button class="filter-btn {linkFilter === 'redirect' ? 'active' : ''}" onclick={() => linkFilter = 'redirect'}>
 									↪️ 3xx ({result.links.filter(l => l.status_code >= 300 && l.status_code < 400).length})
 								</button>
-								<button class="filter-btn {linkFilter === 'error' ? 'active' : ''}" on:click={() => linkFilter = 'error'}>
+								<button class="filter-btn {linkFilter === 'error' ? 'active' : ''}" onclick={() => linkFilter = 'error'}>
 									❌ 4xx+ ({result.links.filter(l => l.status_code >= 400).length})
 								</button>
 							</div>
@@ -1272,25 +1272,25 @@
 
 						{:else if activeResultTab === 'resources'}
 							<div class="resource-toolbar">
-								<button class="btn-dl-type" on:click={() => downloadByType('js')} disabled={downloadingAll || result.js_files.length === 0}>
+								<button class="btn-dl-type" onclick={() => downloadByType('js')} disabled={downloadingAll || result.js_files.length === 0}>
 									⬇️ JS ({result.js_files.length})
 								</button>
-								<button class="btn-dl-type" on:click={() => downloadByType('images')} disabled={downloadingAll || result.images.length === 0}>
+								<button class="btn-dl-type" onclick={() => downloadByType('images')} disabled={downloadingAll || result.images.length === 0}>
 									⬇️ 🖼️ ({result.images.length})
 								</button>
-								<button class="btn-dl-type" on:click={() => downloadByType('css')} disabled={downloadingAll || result.css_files.length === 0}>
+								<button class="btn-dl-type" onclick={() => downloadByType('css')} disabled={downloadingAll || result.css_files.length === 0}>
 									⬇️ CSS ({result.css_files.length})
 								</button>
-								<button class="btn-dl-type" on:click={() => downloadByType('videos')} disabled={downloadingAll || result.videos.length === 0}>
+								<button class="btn-dl-type" onclick={() => downloadByType('videos')} disabled={downloadingAll || result.videos.length === 0}>
 									⬇️ 🎬 ({result.videos.length})
 								</button>
-								<button class="btn-dl-type" on:click={() => downloadByType('docs')} disabled={downloadingAll || result.documents.length === 0}>
+								<button class="btn-dl-type" onclick={() => downloadByType('docs')} disabled={downloadingAll || result.documents.length === 0}>
 									⬇️ 📄 ({result.documents.length})
 								</button>
-								<button class="btn-dl-type" on:click={() => downloadByType('fonts')} disabled={downloadingAll || result.fonts.length === 0}>
+								<button class="btn-dl-type" onclick={() => downloadByType('fonts')} disabled={downloadingAll || result.fonts.length === 0}>
 									⬇️ 🔤 ({result.fonts.length})
 								</button>
-								<button class="btn-dl-type" on:click={() => downloadByType('audio')} disabled={downloadingAll || result.audio_files.length === 0}>
+								<button class="btn-dl-type" onclick={() => downloadByType('audio')} disabled={downloadingAll || result.audio_files.length === 0}>
 									⬇️ 🎵 ({result.audio_files.length})
 								</button>
 							</div>
@@ -1298,7 +1298,7 @@
 							<div class="resource-section">
 								{#if result.videos.length > 0}
 									<h3 class="subsection-title">🎬 {$tr('webCrawler.videosFound')} ({result.videos.length})
-										<button class="btn-dl-section" on:click={() => downloadByType('videos')} disabled={downloadingAll}>⬇️</button>
+										<button class="btn-dl-section" onclick={() => downloadByType('videos')} disabled={downloadingAll}>⬇️</button>
 									</h3>
 									<div class="resource-list">
 										{#each result.videos as v}
@@ -1306,7 +1306,7 @@
 												<span class="resource-icon">{getResourceTypeIcon(v.resource_type)}</span>
 												<a href={v.url} target="_blank" class="resource-url">{v.url}</a>
 												<span class="resource-type-badge">{v.resource_type}</span>
-												<button class="btn-dl-single" on:click={() => downloadSingle(v.url)} disabled={isDownloading(v.url) || downloadingAll}>
+												<button class="btn-dl-single" onclick={() => downloadSingle(v.url)} disabled={isDownloading(v.url) || downloadingAll}>
 													{#if isDownloading(v.url)}<span class="spinner-xs"></span>{:else}⬇️{/if}
 												</button>
 											</div>
@@ -1316,7 +1316,7 @@
 
 								{#if result.audio_files.length > 0}
 									<h3 class="subsection-title">🎵 {$tr('webCrawler.audioFound')} ({result.audio_files.length})
-										<button class="btn-dl-section" on:click={() => downloadByType('audio')} disabled={downloadingAll}>⬇️</button>
+										<button class="btn-dl-section" onclick={() => downloadByType('audio')} disabled={downloadingAll}>⬇️</button>
 									</h3>
 									<div class="resource-list">
 										{#each result.audio_files as audio}
@@ -1324,7 +1324,7 @@
 												<span class="resource-icon">🎵</span>
 												<a href={audio.url} target="_blank" class="resource-url">{audio.url}</a>
 												<span class="resource-type-badge">{audio.resource_type}</span>
-												<button class="btn-dl-single" on:click={() => downloadSingle(audio.url)} disabled={isDownloading(audio.url) || downloadingAll}>
+												<button class="btn-dl-single" onclick={() => downloadSingle(audio.url)} disabled={isDownloading(audio.url) || downloadingAll}>
 													{#if isDownloading(audio.url)}<span class="spinner-xs"></span>{:else}⬇️{/if}
 												</button>
 											</div>
@@ -1334,7 +1334,7 @@
 
 								{#if result.js_files.length > 0}
 									<h3 class="subsection-title">📜 JavaScript ({result.js_files.length})
-										<button class="btn-dl-section" on:click={() => downloadByType('js')} disabled={downloadingAll}>⬇️</button>
+										<button class="btn-dl-section" onclick={() => downloadByType('js')} disabled={downloadingAll}>⬇️</button>
 									</h3>
 									<div class="resource-list">
 										{#each result.js_files as js}
@@ -1342,7 +1342,7 @@
 												<span class="resource-icon">📜</span>
 												<a href={js.url} target="_blank" class="resource-url">{js.url}</a>
 												<span class="resource-type-badge">{js.resource_type}</span>
-												<button class="btn-dl-single" on:click={() => downloadSingle(js.url)} disabled={isDownloading(js.url) || downloadingAll}>
+												<button class="btn-dl-single" onclick={() => downloadSingle(js.url)} disabled={isDownloading(js.url) || downloadingAll}>
 													{#if isDownloading(js.url)}<span class="spinner-xs"></span>{:else}⬇️{/if}
 												</button>
 											</div>
@@ -1352,7 +1352,7 @@
 
 								{#if result.images.length > 0}
 									<h3 class="subsection-title">🖼️ {$tr('webCrawler.imagesFound')} ({result.images.length})
-										<button class="btn-dl-section" on:click={() => downloadByType('images')} disabled={downloadingAll}>⬇️</button>
+										<button class="btn-dl-section" onclick={() => downloadByType('images')} disabled={downloadingAll}>⬇️</button>
 									</h3>
 									<div class="resource-list">
 										{#each result.images as img}
@@ -1360,7 +1360,7 @@
 												<span class="resource-icon">{getResourceTypeIcon(img.resource_type)}</span>
 												<a href={img.url} target="_blank" class="resource-url">{img.url}</a>
 												<span class="resource-type-badge">{img.resource_type}</span>
-												<button class="btn-dl-single" on:click={() => downloadSingle(img.url)} disabled={isDownloading(img.url) || downloadingAll}>
+												<button class="btn-dl-single" onclick={() => downloadSingle(img.url)} disabled={isDownloading(img.url) || downloadingAll}>
 													{#if isDownloading(img.url)}<span class="spinner-xs"></span>{:else}⬇️{/if}
 												</button>
 											</div>
@@ -1370,7 +1370,7 @@
 
 								{#if result.css_files.length > 0}
 									<h3 class="subsection-title">🎨 CSS ({result.css_files.length})
-										<button class="btn-dl-section" on:click={() => downloadByType('css')} disabled={downloadingAll}>⬇️</button>
+										<button class="btn-dl-section" onclick={() => downloadByType('css')} disabled={downloadingAll}>⬇️</button>
 									</h3>
 									<div class="resource-list">
 										{#each result.css_files as css}
@@ -1378,7 +1378,7 @@
 												<span class="resource-icon">🎨</span>
 												<a href={css.url} target="_blank" class="resource-url">{css.url}</a>
 												<span class="resource-type-badge">{css.resource_type}</span>
-												<button class="btn-dl-single" on:click={() => downloadSingle(css.url)} disabled={isDownloading(css.url) || downloadingAll}>
+												<button class="btn-dl-single" onclick={() => downloadSingle(css.url)} disabled={isDownloading(css.url) || downloadingAll}>
 													{#if isDownloading(css.url)}<span class="spinner-xs"></span>{:else}⬇️{/if}
 												</button>
 											</div>
@@ -1388,7 +1388,7 @@
 
 								{#if result.fonts.length > 0}
 									<h3 class="subsection-title">🔤 {$tr('webCrawler.targetFonts')} ({result.fonts.length})
-										<button class="btn-dl-section" on:click={() => downloadByType('fonts')} disabled={downloadingAll}>⬇️</button>
+										<button class="btn-dl-section" onclick={() => downloadByType('fonts')} disabled={downloadingAll}>⬇️</button>
 									</h3>
 									<div class="resource-list">
 										{#each result.fonts as font}
@@ -1396,7 +1396,7 @@
 												<span class="resource-icon">🔤</span>
 												<a href={font.url} target="_blank" class="resource-url">{font.url}</a>
 												<span class="resource-type-badge">{font.resource_type}</span>
-												<button class="btn-dl-single" on:click={() => downloadSingle(font.url)} disabled={isDownloading(font.url) || downloadingAll}>
+												<button class="btn-dl-single" onclick={() => downloadSingle(font.url)} disabled={isDownloading(font.url) || downloadingAll}>
 													{#if isDownloading(font.url)}<span class="spinner-xs"></span>{:else}⬇️{/if}
 												</button>
 											</div>
@@ -1406,7 +1406,7 @@
 
 								{#if result.documents.length > 0}
 									<h3 class="subsection-title">📄 {$tr('webCrawler.docsFound')} ({result.documents.length})
-										<button class="btn-dl-section" on:click={() => downloadByType('docs')} disabled={downloadingAll}>⬇️</button>
+										<button class="btn-dl-section" onclick={() => downloadByType('docs')} disabled={downloadingAll}>⬇️</button>
 									</h3>
 									<div class="resource-list">
 										{#each result.documents as doc}
@@ -1414,7 +1414,7 @@
 												<span class="resource-icon">{getResourceTypeIcon(doc.resource_type)}</span>
 												<a href={doc.url} target="_blank" class="resource-url">{doc.url}</a>
 												<span class="resource-type-badge">{doc.resource_type}</span>
-												<button class="btn-dl-single" on:click={() => downloadSingle(doc.url)} disabled={isDownloading(doc.url) || downloadingAll}>
+												<button class="btn-dl-single" onclick={() => downloadSingle(doc.url)} disabled={isDownloading(doc.url) || downloadingAll}>
 													{#if isDownloading(doc.url)}<span class="spinner-xs"></span>{:else}⬇️{/if}
 												</button>
 											</div>
@@ -1859,7 +1859,7 @@
 						{:else if activeResultTab === 'markdown'}
 							<div class="detail-section">
 								<div style="display: flex; justify-content: flex-end; margin-bottom: 8px;">
-									<button class="action-btn" on:click={() => {
+									<button class="action-btn" onclick={() => {
 										if (result?.markdown_content) {
 											navigator.clipboard.writeText(result.markdown_content);
 										}

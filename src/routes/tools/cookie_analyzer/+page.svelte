@@ -282,7 +282,7 @@
 	}
 </script>
 
-<svelte:window on:keydown={handleKeydown} />
+<svelte:window onkeydown={handleKeydown} />
 
 <div class="nd-page">
 	<div class="page-header">
@@ -294,13 +294,13 @@
 	</div>
 
 	<div class="tabs">
-		<button class="tab-btn {activeMainTab === 'analyze' ? 'active' : ''}" on:click={() => activeMainTab = 'analyze'}>
+		<button class="tab-btn {activeMainTab === 'analyze' ? 'active' : ''}" onclick={() => activeMainTab = 'analyze'}>
 			<span class="tab-icon">🔍</span> {$tr('cookieAnalyzer.tabAnalyze')}
 		</button>
-		<button class="tab-btn {activeMainTab === 'history' ? 'active' : ''}" on:click={() => activeMainTab = 'history'}>
+		<button class="tab-btn {activeMainTab === 'history' ? 'active' : ''}" onclick={() => activeMainTab = 'history'}>
 			<span class="tab-icon">📋</span> {$tr('cookieAnalyzer.tabHistory')}
 		</button>
-		<button class="tab-btn {activeMainTab === 'help' ? 'active' : ''}" on:click={() => activeMainTab = 'help'}>
+		<button class="tab-btn {activeMainTab === 'help' ? 'active' : ''}" onclick={() => activeMainTab = 'help'}>
 			<span class="tab-icon">📖</span> {$tr('cookieAnalyzer.tabHelp')}
 		</button>
 	</div>
@@ -347,7 +347,7 @@
 					</div>
 
 					<div class="form-group">
-						<button class="target-chip {showAdvanced ? 'active' : ''}" on:click={() => showAdvanced = !showAdvanced}>
+						<button class="target-chip {showAdvanced ? 'active' : ''}" onclick={() => showAdvanced = !showAdvanced}>
 							<span>⚙️ {$tr('cookieAnalyzer.advancedOptions')}</span>
 						</button>
 					</div>
@@ -372,10 +372,10 @@
 					{/if}
 
 					<div class="button-group">
-						<button class="btn-primary" on:click={analyze} disabled={processing || !url.trim()}>
+						<button class="btn-primary" onclick={analyze} disabled={processing || !url.trim()}>
 							{#if processing}<span class="spinner"></span>{$tr('cookieAnalyzer.analyzing')}{:else}🔍 {$tr('cookieAnalyzer.startAnalyze')}{/if}
 						</button>
-						<button class="btn-secondary" on:click={clearAll} disabled={processing}>🗑️</button>
+						<button class="btn-secondary" onclick={clearAll} disabled={processing}>🗑️</button>
 					</div>
 				</div>
 			</div>
@@ -405,7 +405,7 @@
 									<option value="json">JSON</option>
 									<option value="csv">CSV</option>
 								</select>
-								<button class="btn-export" on:click={exportResults} disabled={!result}>
+								<button class="btn-export" onclick={exportResults} disabled={!result}>
 									📤 {$tr('cookieAnalyzer.export')}
 								</button>
 							</div>
@@ -414,19 +414,19 @@
 						<div class="summary-bar">{result.summary}</div>
 
 						<div class="result-tabs">
-							<button class="result-tab {activeResultTab === 'overview' ? 'active' : ''}" on:click={() => activeResultTab = 'overview'}>
+							<button class="result-tab {activeResultTab === 'overview' ? 'active' : ''}" onclick={() => activeResultTab = 'overview'}>
 								📊 {$tr('cookieAnalyzer.tabOverview')}
 							</button>
-							<button class="result-tab {activeResultTab === 'issues' ? 'active' : ''}" on:click={() => activeResultTab = 'issues'}>
+							<button class="result-tab {activeResultTab === 'issues' ? 'active' : ''}" onclick={() => activeResultTab = 'issues'}>
 								⚠️ {$tr('cookieAnalyzer.tabIssues')} ({result.issues.length})
 							</button>
-							<button class="result-tab {activeResultTab === 'cookies' ? 'active' : ''}" on:click={() => activeResultTab = 'cookies'}>
+							<button class="result-tab {activeResultTab === 'cookies' ? 'active' : ''}" onclick={() => activeResultTab = 'cookies'}>
 								🍪 {$tr('cookieAnalyzer.tabCookies')} ({result.cookies.length})
 							</button>
-							<button class="result-tab {activeResultTab === 'compliance' ? 'active' : ''}" on:click={() => activeResultTab = 'compliance'}>
+							<button class="result-tab {activeResultTab === 'compliance' ? 'active' : ''}" onclick={() => activeResultTab = 'compliance'}>
 								📋 {$tr('cookieAnalyzer.tabCompliance')}
 							</button>
-							<button class="result-tab {activeResultTab === 'headers' ? 'active' : ''}" on:click={() => activeResultTab = 'headers'}>
+							<button class="result-tab {activeResultTab === 'headers' ? 'active' : ''}" onclick={() => activeResultTab = 'headers'}>
 								🔒 {$tr('cookieAnalyzer.tabHeaders')}
 							</button>
 						</div>
@@ -492,14 +492,14 @@
 								<h3 class="subsection-title">⚠️ {$tr('cookieAnalyzer.topIssues')}</h3>
 								<div class="top-issues-list">
 									{#each result.issues.slice(0, 5) as issue}
-										<div class="top-issue-item" on:click={() => { selectedIssue = issue; activeResultTab = 'issues'; }}>
+										<div class="top-issue-item" onclick={() => { selectedIssue = issue; activeResultTab = 'issues'; }}>
 											<span class="severity-dot" style="background: {getSeverityColor(issue.severity)};"></span>
 											<span class="issue-type-label">{getCategoryIcon(issue.category)} {issue.issue_type}</span>
 											<span class="issue-cookie-mini">🍪 {issue.cookie_name}</span>
 										</div>
 									{/each}
 									{#if result.issues.length > 5}
-										<div class="more-link" on:click={() => activeResultTab = 'issues'}>
+										<div class="more-link" onclick={() => activeResultTab = 'issues'}>
 											{$tr('cookieAnalyzer.viewAll')} ({result.issues.length}) →
 										</div>
 									{/if}
@@ -513,19 +513,19 @@
 
 						{:else if activeResultTab === 'issues'}
 							<div class="filter-bar">
-								<button class="filter-btn {issueFilter === 'all' ? 'active' : ''}" on:click={() => issueFilter = 'all'}>
+								<button class="filter-btn {issueFilter === 'all' ? 'active' : ''}" onclick={() => issueFilter = 'all'}>
 									{$tr('cookieAnalyzer.all')} ({result.issues.length})
 								</button>
-								<button class="filter-btn {issueFilter === 'critical' ? 'active' : ''}" on:click={() => issueFilter = 'critical'}>
+								<button class="filter-btn {issueFilter === 'critical' ? 'active' : ''}" onclick={() => issueFilter = 'critical'}>
 									🔴 Critical ({result.severity_stats.critical})
 								</button>
-								<button class="filter-btn {issueFilter === 'high' ? 'active' : ''}" on:click={() => issueFilter = 'high'}>
+								<button class="filter-btn {issueFilter === 'high' ? 'active' : ''}" onclick={() => issueFilter = 'high'}>
 									🟠 High ({result.severity_stats.high})
 								</button>
-								<button class="filter-btn {issueFilter === 'medium' ? 'active' : ''}" on:click={() => issueFilter = 'medium'}>
+								<button class="filter-btn {issueFilter === 'medium' ? 'active' : ''}" onclick={() => issueFilter = 'medium'}>
 									🟡 Medium ({result.severity_stats.medium})
 								</button>
-								<button class="filter-btn {issueFilter === 'low' ? 'active' : ''}" on:click={() => issueFilter = 'low'}>
+								<button class="filter-btn {issueFilter === 'low' ? 'active' : ''}" onclick={() => issueFilter = 'low'}>
 									🟢 Low ({result.severity_stats.low})
 								</button>
 							</div>
@@ -587,16 +587,16 @@
 
 						{:else if activeResultTab === 'cookies'}
 							<div class="filter-bar">
-								<button class="filter-btn {cookieFilter === 'all' ? 'active' : ''}" on:click={() => cookieFilter = 'all'}>
+								<button class="filter-btn {cookieFilter === 'all' ? 'active' : ''}" onclick={() => cookieFilter = 'all'}>
 									{$tr('cookieAnalyzer.all')} ({result.cookies.length})
 								</button>
-								<button class="filter-btn {cookieFilter === 'insecure' ? 'active' : ''}" on:click={() => cookieFilter = 'insecure'}>
+								<button class="filter-btn {cookieFilter === 'insecure' ? 'active' : ''}" onclick={() => cookieFilter = 'insecure'}>
 									⚠️ {$tr('cookieAnalyzer.insecure')} ({result.cookies.filter(c => !c.secure || !c.http_only).length})
 								</button>
-								<button class="filter-btn {cookieFilter === 'session' ? 'active' : ''}" on:click={() => cookieFilter = 'session'}>
+								<button class="filter-btn {cookieFilter === 'session' ? 'active' : ''}" onclick={() => cookieFilter = 'session'}>
 									⏰ {$tr('cookieAnalyzer.session')} ({result.cookies.filter(c => c.is_session).length})
 								</button>
-								<button class="filter-btn {cookieFilter === 'third_party' ? 'active' : ''}" on:click={() => cookieFilter = 'third_party'}>
+								<button class="filter-btn {cookieFilter === 'third_party' ? 'active' : ''}" onclick={() => cookieFilter = 'third_party'}>
 									🌐 {$tr('cookieAnalyzer.thirdParty')} ({result.cookies.filter(c => c.is_third_party).length})
 								</button>
 							</div>

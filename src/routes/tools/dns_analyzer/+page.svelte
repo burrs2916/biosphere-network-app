@@ -177,7 +177,7 @@
 	}
 </script>
 
-<svelte:window on:keydown={handleKeydown} />
+<svelte:window onkeydown={handleKeydown} />
 
 <div class="nd-page">
 	<div class="page-header">
@@ -189,13 +189,13 @@
 	</div>
 
 	<div class="tabs">
-		<button class="tab-btn {activeMainTab === 'analyze' ? 'active' : ''}" on:click={() => activeMainTab = 'analyze'}>
+		<button class="tab-btn {activeMainTab === 'analyze' ? 'active' : ''}" onclick={() => activeMainTab = 'analyze'}>
 			<span class="tab-icon">🔍</span> {$tr('dnsAnalyzer.analyze')}
 		</button>
-		<button class="tab-btn {activeMainTab === 'history' ? 'active' : ''}" on:click={() => activeMainTab = 'history'}>
+		<button class="tab-btn {activeMainTab === 'history' ? 'active' : ''}" onclick={() => activeMainTab = 'history'}>
 			<span class="tab-icon">📋</span> {$tr('dnsAnalyzer.history')}
 		</button>
-		<button class="tab-btn {activeMainTab === 'help' ? 'active' : ''}" on:click={() => activeMainTab = 'help'}>
+		<button class="tab-btn {activeMainTab === 'help' ? 'active' : ''}" onclick={() => activeMainTab = 'help'}>
 			<span class="tab-icon">📖</span> {$tr('dnsAnalyzer.help')}
 		</button>
 	</div>
@@ -232,10 +232,10 @@
 						</label>
 					</div>
 					<div class="button-group">
-						<button class="btn-primary" on:click={analyze} disabled={processing || !domain.trim()}>
+						<button class="btn-primary" onclick={analyze} disabled={processing || !domain.trim()}>
 							{#if processing}<span class="spinner"></span>{$tr('dnsAnalyzer.analyzing')}{:else}🔍 {$tr('dnsAnalyzer.startAnalyze')}{/if}
 						</button>
-						<button class="btn-secondary" on:click={clearAll} disabled={processing}>🗑️</button>
+						<button class="btn-secondary" onclick={clearAll} disabled={processing}>🗑️</button>
 					</div>
 				</div>
 			</div>
@@ -261,19 +261,19 @@
 						<div class="summary-bar">{result.summary}</div>
 
 						<div class="result-tabs">
-							<button class="result-tab {activeResultTab === 'overview' ? 'active' : ''}" on:click={() => activeResultTab = 'overview'}>
+							<button class="result-tab {activeResultTab === 'overview' ? 'active' : ''}" onclick={() => activeResultTab = 'overview'}>
 								📊 {$tr('dnsAnalyzer.tabOverview')}
 							</button>
-							<button class="result-tab {activeResultTab === 'records' ? 'active' : ''}" on:click={() => activeResultTab = 'records'}>
+							<button class="result-tab {activeResultTab === 'records' ? 'active' : ''}" onclick={() => activeResultTab = 'records'}>
 								📋 {$tr('dnsAnalyzer.tabRecords')} ({result.records.length})
 							</button>
-							<button class="result-tab {activeResultTab === 'security' ? 'active' : ''}" on:click={() => activeResultTab = 'security'}>
+							<button class="result-tab {activeResultTab === 'security' ? 'active' : ''}" onclick={() => activeResultTab = 'security'}>
 								🔒 {$tr('dnsAnalyzer.tabSecurity')} ({result.security_issues.length})
 							</button>
-							<button class="result-tab {activeResultTab === 'dnssec' ? 'active' : ''}" on:click={() => activeResultTab = 'dnssec'}>
+							<button class="result-tab {activeResultTab === 'dnssec' ? 'active' : ''}" onclick={() => activeResultTab = 'dnssec'}>
 								🛡️ DNSSEC
 							</button>
-							<button class="result-tab {activeResultTab === 'zone' ? 'active' : ''}" on:click={() => activeResultTab = 'zone'}>
+							<button class="result-tab {activeResultTab === 'zone' ? 'active' : ''}" onclick={() => activeResultTab = 'zone'}>
 								🔄 {$tr('dnsAnalyzer.tabZone')}
 							</button>
 						</div>
@@ -325,7 +325,7 @@
 										</div>
 									{/each}
 									{#if result.security_issues.length > 3}
-										<div class="finding-more" on:click={() => activeResultTab = 'security'}>
+										<div class="finding-more" onclick={() => activeResultTab = 'security'}>
 											{$tr('dnsAnalyzer.viewAllIssues')} ({result.security_issues.length}) →
 										</div>
 									{/if}
@@ -346,11 +346,11 @@
 
 						{:else if activeResultTab === 'records'}
 							<div class="filter-bar">
-								<button class="filter-btn {recordFilter === 'all' ? 'active' : ''}" on:click={() => recordFilter = 'all'}>
+								<button class="filter-btn {recordFilter === 'all' ? 'active' : ''}" onclick={() => recordFilter = 'all'}>
 									{$tr('dnsAnalyzer.allTypes')} ({result.records.length})
 								</button>
 								{#each getRecordTypes() as type}
-									<button class="filter-btn {recordFilter === type ? 'active' : ''}" on:click={() => recordFilter = type}>
+									<button class="filter-btn {recordFilter === type ? 'active' : ''}" onclick={() => recordFilter = type}>
 										<span style="color: {getRecordTypeColor(type)}">{type}</span>
 										({result.records.filter(r => r.record_type === type).length})
 									</button>

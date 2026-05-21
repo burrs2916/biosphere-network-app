@@ -271,13 +271,13 @@
 	</div>
 
 	<div class="tabs">
-		<button class="tab-btn {activeMainTab === 'analyze' ? 'active' : ''}" on:click={() => activeMainTab = 'analyze'}>
+		<button class="tab-btn {activeMainTab === 'analyze' ? 'active' : ''}" onclick={() => activeMainTab = 'analyze'}>
 			<span class="tab-icon">🔍</span> {$tr('cveLookup.tabSearch')}
 		</button>
-		<button class="tab-btn {activeMainTab === 'history' ? 'active' : ''}" on:click={() => activeMainTab = 'history'}>
+		<button class="tab-btn {activeMainTab === 'history' ? 'active' : ''}" onclick={() => activeMainTab = 'history'}>
 			<span class="tab-icon">📋</span> {$tr('cveLookup.tabHistory')}
 		</button>
-		<button class="tab-btn {activeMainTab === 'help' ? 'active' : ''}" on:click={() => activeMainTab = 'help'}>
+		<button class="tab-btn {activeMainTab === 'help' ? 'active' : ''}" onclick={() => activeMainTab = 'help'}>
 			<span class="tab-icon">📖</span> {$tr('cveLookup.tabHelp')}
 		</button>
 	</div>
@@ -291,18 +291,18 @@
 
 					<div class="form-group">
 						<label class="form-label">{$tr('cveLookup.queryLabel')}</label>
-						<input type="text" bind:value={query} placeholder="CVE-2024-1234 or keyword" class="form-input" disabled={processing} on:keydown={(e) => e.key === 'Enter' && lookup()} />
+						<input type="text" bind:value={query} placeholder="CVE-2024-1234 or keyword" class="form-input" disabled={processing} onkeydown={(e) => e.key === 'Enter' && lookup()} />
 					</div>
 
 					<div class="form-group">
 						<label class="form-label">{$tr('cveLookup.quickSearch')}</label>
 						<div class="quick-grid">
-							<button class="quick-btn" on:click={() => quickSearch('CVE-2024')} disabled={processing}>CVE-2024</button>
-							<button class="quick-btn" on:click={() => quickSearch('CVE-2025')} disabled={processing}>CVE-2025</button>
-							<button class="quick-btn" on:click={() => quickSearch('log4j')} disabled={processing}>Log4j</button>
-							<button class="quick-btn" on:click={() => quickSearch('openssl')} disabled={processing}>OpenSSL</button>
-							<button class="quick-btn" on:click={() => quickSearch('apache')} disabled={processing}>Apache</button>
-							<button class="quick-btn" on:click={() => quickSearch('nginx')} disabled={processing}>Nginx</button>
+							<button class="quick-btn" onclick={() => quickSearch('CVE-2024')} disabled={processing}>CVE-2024</button>
+							<button class="quick-btn" onclick={() => quickSearch('CVE-2025')} disabled={processing}>CVE-2025</button>
+							<button class="quick-btn" onclick={() => quickSearch('log4j')} disabled={processing}>Log4j</button>
+							<button class="quick-btn" onclick={() => quickSearch('openssl')} disabled={processing}>OpenSSL</button>
+							<button class="quick-btn" onclick={() => quickSearch('apache')} disabled={processing}>Apache</button>
+							<button class="quick-btn" onclick={() => quickSearch('nginx')} disabled={processing}>Nginx</button>
 						</div>
 					</div>
 
@@ -324,7 +324,7 @@
 					</div>
 
 					<div class="form-group">
-						<button class="toggle-btn" on:click={() => showAdvanced = !showAdvanced}>
+						<button class="toggle-btn" onclick={() => showAdvanced = !showAdvanced}>
 							<span class="toggle-arrow">{showAdvanced ? '▼' : '▶'}</span> {$tr('cveLookup.advancedOptions')}
 						</button>
 					</div>
@@ -352,10 +352,10 @@
 					{/if}
 
 					<div class="button-group">
-						<button class="btn-primary" on:click={lookup} disabled={processing || !query.trim()}>
+						<button class="btn-primary" onclick={lookup} disabled={processing || !query.trim()}>
 							{#if processing}<span class="spinner"></span>{$tr('cveLookup.searching')}{:else}🔍 {$tr('cveLookup.search')}{/if}
 						</button>
-						<button class="btn-secondary" on:click={clearAll} disabled={processing}>🗑️</button>
+						<button class="btn-secondary" onclick={clearAll} disabled={processing}>🗑️</button>
 					</div>
 				</div>
 			</div>
@@ -378,7 +378,7 @@
 									<option value="json">JSON</option>
 									<option value="csv">CSV</option>
 								</select>
-								<button class="btn-export" on:click={exportResult}>
+								<button class="btn-export" onclick={exportResult}>
 									📤 {$tr('cveLookup.export')}
 								</button>
 							</div>
@@ -387,14 +387,14 @@
 						<div class="summary-bar">{result.summary}</div>
 
 						<div class="result-tabs">
-							<button class="result-tab {activeResultTab === 'overview' ? 'active' : ''}" on:click={() => activeResultTab = 'overview'}>
+							<button class="result-tab {activeResultTab === 'overview' ? 'active' : ''}" onclick={() => activeResultTab = 'overview'}>
 								📊 {$tr('cveLookup.tabOverview')}
 							</button>
-							<button class="result-tab {activeResultTab === 'list' ? 'active' : ''}" on:click={() => activeResultTab = 'list'}>
+							<button class="result-tab {activeResultTab === 'list' ? 'active' : ''}" onclick={() => activeResultTab = 'list'}>
 								📋 {$tr('cveLookup.tabList')} ({result.vulnerabilities.length})
 							</button>
 							{#if selectedCve}
-								<button class="result-tab {activeResultTab === 'details' ? 'active' : ''}" on:click={() => activeResultTab = 'details'}>
+								<button class="result-tab {activeResultTab === 'details' ? 'active' : ''}" onclick={() => activeResultTab = 'details'}>
 									📄 {$tr('cveLookup.tabDetails')}
 								</button>
 							{/if}
@@ -460,10 +460,10 @@
 								<h3 class="subsection-title">🔥 {$tr('cveLookup.topVulnerabilities')}</h3>
 								<div class="top-vulns">
 									{#each result.vulnerabilities.slice(0, 5) as vuln}
-										<div class="vuln-card" on:click={() => selectCve(vuln)}>
+										<div class="vuln-card" onclick={() => selectCve(vuln)}>
 											<div class="vuln-header">
 												<span class="vuln-id">{vuln.cve_id}</span>
-												<button class="copy-btn" on:click|stopPropagation={() => copyToClipboard(vuln.cve_id)} title="Copy">
+												<button class="copy-btn" onclick={(e) => { e.stopPropagation(); copyToClipboard(vuln.cve_id) }} title="Copy">
 													{copiedId === vuln.cve_id ? '✅' : '📋'}
 												</button>
 												{#if vuln.severity}
@@ -492,22 +492,22 @@
 
 						{:else if activeResultTab === 'list'}
 							<div class="filter-bar">
-								<button class="filter-btn {severityLinkFilter === 'all' ? 'active' : ''}" on:click={() => severityLinkFilter = 'all'}>
+								<button class="filter-btn {severityLinkFilter === 'all' ? 'active' : ''}" onclick={() => severityLinkFilter = 'all'}>
 									{$tr('cveLookup.allSeverities')} ({result.vulnerabilities.length})
 								</button>
-								<button class="filter-btn {severityLinkFilter === 'critical' ? 'active' : ''}" on:click={() => severityLinkFilter = 'critical'}>
+								<button class="filter-btn {severityLinkFilter === 'critical' ? 'active' : ''}" onclick={() => severityLinkFilter = 'critical'}>
 									🔴 Critical ({result.vulnerabilities.filter(v => v.severity?.toUpperCase() === 'CRITICAL').length})
 								</button>
-								<button class="filter-btn {severityLinkFilter === 'high' ? 'active' : ''}" on:click={() => severityLinkFilter = 'high'}>
+								<button class="filter-btn {severityLinkFilter === 'high' ? 'active' : ''}" onclick={() => severityLinkFilter = 'high'}>
 									🟠 High ({result.vulnerabilities.filter(v => v.severity?.toUpperCase() === 'HIGH').length})
 								</button>
-								<button class="filter-btn {severityLinkFilter === 'medium' ? 'active' : ''}" on:click={() => severityLinkFilter = 'medium'}>
+								<button class="filter-btn {severityLinkFilter === 'medium' ? 'active' : ''}" onclick={() => severityLinkFilter = 'medium'}>
 									🟡 Medium ({result.vulnerabilities.filter(v => v.severity?.toUpperCase() === 'MEDIUM').length})
 								</button>
-								<button class="filter-btn {severityLinkFilter === 'low' ? 'active' : ''}" on:click={() => severityLinkFilter = 'low'}>
+								<button class="filter-btn {severityLinkFilter === 'low' ? 'active' : ''}" onclick={() => severityLinkFilter = 'low'}>
 									🟢 Low ({result.vulnerabilities.filter(v => v.severity?.toUpperCase() === 'LOW').length})
 								</button>
-								<button class="filter-btn {severityLinkFilter === 'exploit' ? 'active' : ''}" on:click={() => severityLinkFilter = 'exploit'}>
+								<button class="filter-btn {severityLinkFilter === 'exploit' ? 'active' : ''}" onclick={() => severityLinkFilter = 'exploit'}>
 									💥 {$tr('cveLookup.exploitAvailable')} ({result.vulnerabilities.filter(v => v.exploitability?.has_exploit).length})
 								</button>
 							</div>
@@ -519,10 +519,10 @@
 							{#if getFilteredVulnerabilities().length > 0}
 								<div class="cve-list">
 									{#each getFilteredVulnerabilities() as entry}
-										<div class="cve-item" on:click={() => selectCve(entry)}>
+										<div class="cve-item" onclick={() => selectCve(entry)}>
 											<div class="cve-header">
-												<a href={entry.url} target="_blank" class="cve-id" on:click|stopPropagation>{entry.cve_id}</a>
-												<button class="copy-btn" on:click|stopPropagation={() => copyToClipboard(entry.cve_id)} title="Copy">
+												<a href={entry.url} target="_blank" class="cve-id" onclick={(e) => e.stopPropagation()}>{entry.cve_id}</a>
+												<button class="copy-btn" onclick={(e) => { e.stopPropagation(); copyToClipboard(entry.cve_id) }} title="Copy">
 													{copiedId === entry.cve_id ? '✅' : '📋'}
 												</button>
 												{#if entry.severity}
@@ -566,7 +566,7 @@
 							<div class="details-content">
 								<div class="detail-header">
 									<a href={selectedCve.url} target="_blank" class="detail-cve-id">{selectedCve.cve_id}</a>
-									<button class="copy-btn" on:click={() => copyToClipboard(selectedCve!.cve_id)} title="Copy">
+									<button class="copy-btn" onclick={() => copyToClipboard(selectedCve!.cve_id)} title="Copy">
 									{copiedId === selectedCve!.cve_id ? '✅' : '📋'}
 								</button>
 									{#if selectedCve.severity}
@@ -618,7 +618,7 @@
 										<h3 class="detail-section-title">🏷️ CWE IDs</h3>
 										<div class="cwe-tags">
 											{#each selectedCve.cwe_ids as cwe}
-												<a href="https://cwe.mitre.org/data/definitions/{cwe.replace('CWE-', '')}.html" target="_blank" class="cwe-tag" on:click|stopPropagation>
+												<a href="https://cwe.mitre.org/data/definitions/{cwe.replace('CWE-', '')}.html" target="_blank" class="cwe-tag" onclick={(e) => e.stopPropagation()}>
 													{cwe}
 												</a>
 											{/each}

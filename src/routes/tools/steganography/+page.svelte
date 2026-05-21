@@ -11,18 +11,18 @@
 		extracted_data: string | null;
 	}
 
-	let operation = 'hide';
-	let hideMode = 'file';
-	let coverFilePath = '';
-	let secretFilePath = '';
-	let secretText = '';
-	let outputFilePath = '';
-	let passphrase = '';
-	let result: SteganographyResult | null = null;
-	let error = '';
-	let processing = false;
-	let activeMainTab = 'analyze';
-	let copied = false;
+	let operation = $state('hide');
+	let hideMode = $state('file');
+	let coverFilePath = $state('');
+	let secretFilePath = $state('');
+	let secretText = $state('');
+	let outputFilePath = $state('');
+	let passphrase = $state('');
+	let result: SteganographyResult | null = $state(null);
+	let error = $state('');
+	let processing = $state(false);
+	let activeMainTab = $state('analyze');
+	let copied = $state(false);
 
 	let historyComponent: ToolHistory = $state(null!);
 

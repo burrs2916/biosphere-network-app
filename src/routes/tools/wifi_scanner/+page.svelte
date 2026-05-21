@@ -320,16 +320,16 @@
 	</div>
 
 	<div class="tabs">
-		<button class="tab-btn {activeMainTab === 'scan' ? 'active' : ''}" on:click={() => activeMainTab = 'scan'}>
+		<button class="tab-btn {activeMainTab === 'scan' ? 'active' : ''}" onclick={() => activeMainTab = 'scan'}>
 			<span class="tab-icon">🔍</span> {$tr('wifiScanner.scan')}
 		</button>
-		<button class="tab-btn {activeMainTab === 'crack' ? 'active' : ''}" on:click={() => activeMainTab = 'crack'}>
+		<button class="tab-btn {activeMainTab === 'crack' ? 'active' : ''}" onclick={() => activeMainTab = 'crack'}>
 			<span class="tab-icon">🔓</span> {$tr('wifiScanner.crackDiscovery')}
 		</button>
-		<button class="tab-btn {activeMainTab === 'history' ? 'active' : ''}" on:click={() => activeMainTab = 'history'}>
+		<button class="tab-btn {activeMainTab === 'history' ? 'active' : ''}" onclick={() => activeMainTab = 'history'}>
 			<span class="tab-icon">📋</span> {$tr('wifiScanner.history')}
 		</button>
-		<button class="tab-btn {activeMainTab === 'help' ? 'active' : ''}" on:click={() => activeMainTab = 'help'}>
+		<button class="tab-btn {activeMainTab === 'help' ? 'active' : ''}" onclick={() => activeMainTab = 'help'}>
 			<span class="tab-icon">📖</span> {$tr('wifiScanner.help')}
 		</button>
 	</div>
@@ -353,7 +353,7 @@
 						{:else}
 							<input type="text" bind:value={interface_} placeholder="en0" class="form-input" disabled={processing} />
 						{/if}
-						<button class="btn-refresh" on:click={loadInterfaces} disabled={processing} title={$tr('wifiScanner.refreshInterfaces')}>🔄</button>
+						<button class="btn-refresh" onclick={loadInterfaces} disabled={processing} title={$tr('wifiScanner.refreshInterfaces')}>🔄</button>
 					</div>
 					<div class="form-group">
 						<label class="form-label">{$tr('wifiScanner.timeout')}</label>
@@ -378,10 +378,10 @@
 						</label>
 					</div>
 					<div class="button-group">
-						<button class="btn-primary" on:click={scan} disabled={processing}>
+						<button class="btn-primary" onclick={scan} disabled={processing}>
 							{#if processing}<span class="spinner"></span>{$tr('wifiScanner.scanning')}{:else}📶 {$tr('wifiScanner.startScan')}{/if}
 						</button>
-						<button class="btn-secondary" on:click={clearAll} disabled={processing}>🗑️</button>
+						<button class="btn-secondary" onclick={clearAll} disabled={processing}>🗑️</button>
 					</div>
 				</div>
 
@@ -441,8 +441,8 @@
 						<div class="result-summary">{result.summary}</div>
 
 						<div class="result-tabs">
-							<button class="result-tab {activeResultTab === 'overview' ? 'active' : ''}" on:click={() => activeResultTab = 'overview'}>{$tr('wifiScanner.networkList')}</button>
-							<button class="result-tab {activeResultTab === 'security' ? 'active' : ''}" on:click={() => activeResultTab = 'security'}>{$tr('wifiScanner.securityIssues')}</button>
+							<button class="result-tab {activeResultTab === 'overview' ? 'active' : ''}" onclick={() => activeResultTab = 'overview'}>{$tr('wifiScanner.networkList')}</button>
+							<button class="result-tab {activeResultTab === 'security' ? 'active' : ''}" onclick={() => activeResultTab = 'security'}>{$tr('wifiScanner.securityIssues')}</button>
 						</div>
 
 						{#if activeResultTab === 'overview'}
@@ -453,11 +453,11 @@
 								</div>
 							{/if}
 							<div class="filter-bar">
-								<button class="filter-btn {networkFilter === 'all' ? 'active' : ''}" on:click={() => networkFilter = 'all'}>{$tr('wifiScanner.all')} ({result.networks.length})</button>
-								<button class="filter-btn {networkFilter === 'visible' ? 'active' : ''}" on:click={() => networkFilter = 'visible'}>{$tr('wifiScanner.visible')} ({result.networks.filter(n => !n.is_hidden).length})</button>
-								<button class="filter-btn {networkFilter === 'hidden' ? 'active' : ''}" on:click={() => networkFilter = 'hidden'}>{$tr('wifiScanner.hidden')} ({result.networks.filter(n => n.is_hidden).length})</button>
-								<button class="filter-btn {networkFilter === 'open' ? 'active' : ''}" on:click={() => networkFilter = 'open'}>{$tr('wifiScanner.openNet')} ({result.networks.filter(n => n.encryption === 'Open').length})</button>
-								<button class="filter-btn {networkFilter === 'weak' ? 'active' : ''}" on:click={() => networkFilter = 'weak'}>{$tr('wifiScanner.weakSec')} ({result.networks.filter(n => n.security_score < 40).length})</button>
+								<button class="filter-btn {networkFilter === 'all' ? 'active' : ''}" onclick={() => networkFilter = 'all'}>{$tr('wifiScanner.all')} ({result.networks.length})</button>
+								<button class="filter-btn {networkFilter === 'visible' ? 'active' : ''}" onclick={() => networkFilter = 'visible'}>{$tr('wifiScanner.visible')} ({result.networks.filter(n => !n.is_hidden).length})</button>
+								<button class="filter-btn {networkFilter === 'hidden' ? 'active' : ''}" onclick={() => networkFilter = 'hidden'}>{$tr('wifiScanner.hidden')} ({result.networks.filter(n => n.is_hidden).length})</button>
+								<button class="filter-btn {networkFilter === 'open' ? 'active' : ''}" onclick={() => networkFilter = 'open'}>{$tr('wifiScanner.openNet')} ({result.networks.filter(n => n.encryption === 'Open').length})</button>
+								<button class="filter-btn {networkFilter === 'weak' ? 'active' : ''}" onclick={() => networkFilter = 'weak'}>{$tr('wifiScanner.weakSec')} ({result.networks.filter(n => n.security_score < 40).length})</button>
 							</div>
 							{#if getFilteredNetworks().length > 0}
 								<div class="network-table-wrapper">
@@ -499,8 +499,8 @@
 														<span class="score-badge" style="color: {getSecurityScoreColor(net.security_score)}; border-color: {getSecurityScoreColor(net.security_score)}40; background: {getSecurityScoreColor(net.security_score)}15">{net.security_score}</span>
 													</td>
 													<td class="actions-cell">
-														<button class="btn-small btn-info" on:click={() => { selectedNetwork = net; showNetworkDetail = true; }} title={$tr('wifiScanner.viewDetail')}>👁️</button>
-														<button class="btn-small btn-connect" on:click={() => connectToNetwork(net)} title={$tr('wifiScanner.connect')}>🔗</button>
+														<button class="btn-small btn-info" onclick={() => { selectedNetwork = net; showNetworkDetail = true; }} title={$tr('wifiScanner.viewDetail')}>👁️</button>
+														<button class="btn-small btn-connect" onclick={() => connectToNetwork(net)} title={$tr('wifiScanner.connect')}>🔗</button>
 													</td>
 												</tr>
 											{/each}
@@ -548,11 +548,11 @@
 		</div>
 
 		{#if showNetworkDetail && selectedNetwork}
-			<div class="modal-overlay" on:click={() => showNetworkDetail = false} on:keydown={(e) => e.key === 'Escape' && (showNetworkDetail = false)}>
-				<div class="modal-content" on:click|stopPropagation on:keydown|stopPropagation>
+			<div class="modal-overlay" onclick={() => showNetworkDetail = false} onkeydown={(e) => e.key === 'Escape' && (showNetworkDetail = false)}>
+				<div class="modal-content" onclick={(e) => e.stopPropagation()} onkeydown={(e) => e.stopPropagation()}>
 					<div class="modal-header">
 						<h2>{$tr('wifiScanner.networkDetail')} - {selectedNetwork.ssid || $tr('wifiScanner.hiddenSsid')}</h2>
-						<button class="modal-close" on:click={() => showNetworkDetail = false}>✕</button>
+						<button class="modal-close" onclick={() => showNetworkDetail = false}>✕</button>
 					</div>
 					<div class="modal-body">
 						<div class="detail-section">
@@ -604,19 +604,19 @@
 						{/if}
 					</div>
 					<div class="modal-footer">
-						<button class="btn-secondary" on:click={() => showNetworkDetail = false}>{$tr('wifiScanner.close')}</button>
-						<button class="btn-primary" on:click={() => { showNetworkDetail = false; connectToNetwork(selectedNetwork!); }}>🔗 {$tr('wifiScanner.connect')}</button>
+						<button class="btn-secondary" onclick={() => showNetworkDetail = false}>{$tr('wifiScanner.close')}</button>
+						<button class="btn-primary" onclick={() => { showNetworkDetail = false; connectToNetwork(selectedNetwork!); }}>🔗 {$tr('wifiScanner.connect')}</button>
 					</div>
 				</div>
 			</div>
 		{/if}
 
 		{#if showConnectModal && selectedNetwork}
-			<div class="modal-overlay" on:click={() => showConnectModal = false} on:keydown={(e) => e.key === 'Escape' && (showConnectModal = false)}>
-				<div class="modal-content" style="max-width: 450px;" on:click|stopPropagation on:keydown|stopPropagation>
+			<div class="modal-overlay" onclick={() => showConnectModal = false} onkeydown={(e) => e.key === 'Escape' && (showConnectModal = false)}>
+				<div class="modal-content" style="max-width: 450px;" onclick={(e) => e.stopPropagation()} onkeydown={(e) => e.stopPropagation()}>
 					<div class="modal-header">
 						<h2>🔗 {$tr('wifiScanner.connectTo')} {selectedNetwork.ssid}</h2>
-						<button class="modal-close" on:click={() => showConnectModal = false}>✕</button>
+						<button class="modal-close" onclick={() => showConnectModal = false}>✕</button>
 					</div>
 					<div class="modal-body">
 						{#if connectSuccess}
@@ -655,14 +655,14 @@
 					</div>
 					{#if !connectSuccess}
 						<div class="modal-footer">
-							<button class="btn-secondary" on:click={() => showConnectModal = false} disabled={connecting}>{$tr('wifiScanner.cancel')}</button>
-							<button class="btn-primary" on:click={() => doConnect(connectPassword)} disabled={connecting || (selectedNetwork.encryption !== 'Open' && !connectPassword)}>
+							<button class="btn-secondary" onclick={() => showConnectModal = false} disabled={connecting}>{$tr('wifiScanner.cancel')}</button>
+							<button class="btn-primary" onclick={() => doConnect(connectPassword)} disabled={connecting || (selectedNetwork.encryption !== 'Open' && !connectPassword)}>
 								{#if connecting}<span class="spinner"></span>{$tr('wifiScanner.connecting')}{:else}🔗 {$tr('wifiScanner.connect')}{/if}
 							</button>
 						</div>
 					{:else}
 						<div class="modal-footer">
-							<button class="btn-primary" on:click={() => showConnectModal = false}>{$tr('wifiScanner.close')}</button>
+							<button class="btn-primary" onclick={() => showConnectModal = false}>{$tr('wifiScanner.close')}</button>
 						</div>
 					{/if}
 				</div>
@@ -678,10 +678,10 @@
 						<p class="section-desc">{$tr('wifiScanner.crackDesc')}</p>
 					</div>
 					<div class="crack-actions">
-						<button class="btn-primary" on:click={startCrackDiscovery} disabled={cracking || !result || result.networks.length === 0}>
+						<button class="btn-primary" onclick={startCrackDiscovery} disabled={cracking || !result || result.networks.length === 0}>
 							{#if cracking}<span class="spinner"></span>{$tr('wifiScanner.analyzing')}{:else}🔓 {$tr('wifiScanner.startCrackAnalysis')}{/if}
 						</button>
-						<button class="btn-danger" on:click={startAutoCrack} disabled={autoCracking || !result || result.networks.length === 0}>
+						<button class="btn-danger" onclick={startAutoCrack} disabled={autoCracking || !result || result.networks.length === 0}>
 							{#if autoCracking}<span class="spinner"></span>{$tr('wifiScanner.autoCracking')}{:else}⚡ {$tr('wifiScanner.oneClickCrack')}{/if}
 						</button>
 					</div>
@@ -729,7 +729,7 @@
 									</div>
 									{#if acr.cracked || acr.encryption === 'Open'}
 										<div class="acr-footer">
-											<button class="btn-small btn-connect" on:click={() => autoCrackAndConnect(acr)}>🔗 {$tr('wifiScanner.autoConnectBtn')}</button>
+											<button class="btn-small btn-connect" onclick={() => autoCrackAndConnect(acr)}>🔗 {$tr('wifiScanner.autoConnectBtn')}</button>
 										</div>
 									{/if}
 								</div>
@@ -790,7 +790,7 @@
 											</div>
 										</td>
 										<td>
-											<button class="btn-small btn-info" on:click={() => { selectedCrackNetwork = cr; showCrackDetail = true; }}>👁️</button>
+											<button class="btn-small btn-info" onclick={() => { selectedCrackNetwork = cr; showCrackDetail = true; }}>👁️</button>
 										</td>
 									</tr>
 								{/each}
@@ -807,11 +807,11 @@
 		</div>
 
 		{#if showCrackDetail && selectedCrackNetwork}
-			<div class="modal-overlay" on:click={() => showCrackDetail = false} on:keydown={(e) => e.key === 'Escape' && (showCrackDetail = false)}>
-				<div class="modal-content" style="max-width: 550px;" on:click|stopPropagation on:keydown|stopPropagation>
+			<div class="modal-overlay" onclick={() => showCrackDetail = false} onkeydown={(e) => e.key === 'Escape' && (showCrackDetail = false)}>
+				<div class="modal-content" style="max-width: 550px;" onclick={(e) => e.stopPropagation()} onkeydown={(e) => e.stopPropagation()}>
 					<div class="modal-header">
 						<h2>🔓 {$tr('wifiScanner.crackDetail')}</h2>
-						<button class="modal-close" on:click={() => showCrackDetail = false}>✕</button>
+						<button class="modal-close" onclick={() => showCrackDetail = false}>✕</button>
 					</div>
 					<div class="modal-body">
 						<div class="detail-section">
@@ -862,7 +862,7 @@
 						{/if}
 					</div>
 					<div class="modal-footer">
-						<button class="btn-secondary" on:click={() => showCrackDetail = false}>{$tr('wifiScanner.close')}</button>
+						<button class="btn-secondary" onclick={() => showCrackDetail = false}>{$tr('wifiScanner.close')}</button>
 					</div>
 				</div>
 			</div>

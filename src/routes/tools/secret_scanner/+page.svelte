@@ -257,7 +257,7 @@
 	}
 </script>
 
-<svelte:window on:keydown={handleKeydown} />
+<svelte:window onkeydown={handleKeydown} />
 
 <div class="nd-page">
 	<div class="page-header">
@@ -269,13 +269,13 @@
 	</div>
 
 	<div class="tabs">
-		<button class="tab-btn {activeMainTab === 'analyze' ? 'active' : ''}" on:click={() => activeMainTab = 'analyze'}>
+		<button class="tab-btn {activeMainTab === 'analyze' ? 'active' : ''}" onclick={() => activeMainTab = 'analyze'}>
 			<span class="tab-icon">🔍</span> {$tr('secretScanner.tabScan')}
 		</button>
-		<button class="tab-btn {activeMainTab === 'history' ? 'active' : ''}" on:click={() => activeMainTab = 'history'}>
+		<button class="tab-btn {activeMainTab === 'history' ? 'active' : ''}" onclick={() => activeMainTab = 'history'}>
 			<span class="tab-icon">📋</span> {$tr('secretScanner.tabHistory')}
 		</button>
-		<button class="tab-btn {activeMainTab === 'help' ? 'active' : ''}" on:click={() => activeMainTab = 'help'}>
+		<button class="tab-btn {activeMainTab === 'help' ? 'active' : ''}" onclick={() => activeMainTab = 'help'}>
 			<span class="tab-icon">📖</span> {$tr('secretScanner.tabHelp')}
 		</button>
 	</div>
@@ -296,7 +296,7 @@
 						<label class="form-label">{$tr('secretScanner.scanMode')}</label>
 						<div class="mode-grid">
 							{#each ['quick', 'balanced', 'deep', 'full'] as mode}
-								<button class="mode-btn {scanMode === mode ? 'active' : ''}" on:click={() => applyScanMode(mode)} disabled={processing}>
+								<button class="mode-btn {scanMode === mode ? 'active' : ''}" onclick={() => applyScanMode(mode)} disabled={processing}>
 									<span class="mode-name">{getScanModeLabel(mode)}</span>
 								</button>
 							{/each}
@@ -356,7 +356,7 @@
 					</div>
 
 					<div class="form-group">
-						<button class="target-chip {showAdvanced ? 'active' : ''}" on:click={() => showAdvanced = !showAdvanced}>
+						<button class="target-chip {showAdvanced ? 'active' : ''}" onclick={() => showAdvanced = !showAdvanced}>
 							<span>⚙️ {$tr('secretScanner.advancedOptions')}</span>
 						</button>
 					</div>
@@ -405,14 +405,14 @@
 							<label class="form-label">{$tr('secretScanner.customPatterns')}</label>
 							<div class="custom-pattern-input">
 								<input type="text" bind:value={customPatternInput} placeholder="e.g. api_key=..." class="form-input" disabled={processing} />
-								<button class="btn-add-pattern" on:click={addCustomPattern} disabled={processing || !customPatternInput.trim()}>+</button>
+								<button class="btn-add-pattern" onclick={addCustomPattern} disabled={processing || !customPatternInput.trim()}>+</button>
 							</div>
 							{#if customPatterns.length > 0}
 								<div class="pattern-tags">
 									{#each customPatterns as p}
 										<span class="pattern-tag">
 											<code>{p}</code>
-											<button class="tag-remove" on:click={() => removeCustomPattern(p)}>✕</button>
+											<button class="tag-remove" onclick={() => removeCustomPattern(p)}>✕</button>
 										</span>
 									{/each}
 								</div>
@@ -421,10 +421,10 @@
 					{/if}
 
 					<div class="button-group">
-						<button class="btn-primary" on:click={scan} disabled={processing || !url.trim()}>
+						<button class="btn-primary" onclick={scan} disabled={processing || !url.trim()}>
 							{#if processing}<span class="spinner"></span>{$tr('secretScanner.scanning')}{:else}🔍 {$tr('secretScanner.startScan')}{/if}
 						</button>
-						<button class="btn-secondary" on:click={clearAll} disabled={processing}>🗑️</button>
+						<button class="btn-secondary" onclick={clearAll} disabled={processing}>🗑️</button>
 					</div>
 				</div>
 			</div>
@@ -450,7 +450,7 @@
 									<option value="json">JSON</option>
 									<option value="csv">CSV</option>
 								</select>
-								<button class="btn-export" on:click={exportResults} disabled={!result}>
+								<button class="btn-export" onclick={exportResults} disabled={!result}>
 									📤 {$tr('secretScanner.export')}
 								</button>
 							</div>
@@ -459,16 +459,16 @@
 						<div class="summary-bar">{result.summary}</div>
 
 						<div class="result-tabs">
-							<button class="result-tab {activeResultTab === 'overview' ? 'active' : ''}" on:click={() => activeResultTab = 'overview'}>
+							<button class="result-tab {activeResultTab === 'overview' ? 'active' : ''}" onclick={() => activeResultTab = 'overview'}>
 								📊 {$tr('secretScanner.tabOverview')}
 							</button>
-							<button class="result-tab {activeResultTab === 'list' ? 'active' : ''}" on:click={() => activeResultTab = 'list'}>
+							<button class="result-tab {activeResultTab === 'list' ? 'active' : ''}" onclick={() => activeResultTab = 'list'}>
 								📋 {$tr('secretScanner.tabList')} ({result.secrets.length})
 							</button>
-							<button class="result-tab {activeResultTab === 'categories' ? 'active' : ''}" on:click={() => activeResultTab = 'categories'}>
+							<button class="result-tab {activeResultTab === 'categories' ? 'active' : ''}" onclick={() => activeResultTab = 'categories'}>
 								📂 {$tr('secretScanner.tabCategories')} ({result.category_stats.length})
 							</button>
-							<button class="result-tab {activeResultTab === 'urls' ? 'active' : ''}" on:click={() => activeResultTab = 'urls'}>
+							<button class="result-tab {activeResultTab === 'urls' ? 'active' : ''}" onclick={() => activeResultTab = 'urls'}>
 								🌐 {$tr('secretScanner.scannedUrls')} ({result.urls_scanned.length})
 							</button>
 						</div>
@@ -522,7 +522,7 @@
 								<h3 class="subsection-title">🔑 {$tr('secretScanner.topSecrets')}</h3>
 								<div class="top-secrets-list">
 									{#each result.secrets.slice(0, 5) as secret, i}
-										<div class="top-secret-item" on:click={() => { selectedSecret = secret; activeResultTab = 'list'; }}>
+										<div class="top-secret-item" onclick={() => { selectedSecret = secret; activeResultTab = 'list'; }}>
 											<span class="severity-dot" style="background: {getSeverityColor(secret.severity)};"></span>
 											<span class="secret-type-label">{getCategoryIcon(secret.category)} {secret.secret_type}</span>
 											<code class="secret-preview">{secret.value_preview}</code>
@@ -530,7 +530,7 @@
 										</div>
 									{/each}
 									{#if result.secrets.length > 5}
-										<div class="more-link" on:click={() => activeResultTab = 'list'}>
+										<div class="more-link" onclick={() => activeResultTab = 'list'}>
 											{$tr('secretScanner.viewAll')} ({result.secrets.length}) →
 										</div>
 									{/if}
@@ -544,19 +544,19 @@
 
 						{:else if activeResultTab === 'list'}
 							<div class="filter-bar">
-								<button class="filter-btn {listFilter === 'all' ? 'active' : ''}" on:click={() => listFilter = 'all'}>
+								<button class="filter-btn {listFilter === 'all' ? 'active' : ''}" onclick={() => listFilter = 'all'}>
 									{$tr('secretScanner.all')} ({result.secrets.length})
 								</button>
-								<button class="filter-btn {listFilter === 'critical' ? 'active' : ''}" on:click={() => listFilter = 'critical'}>
+								<button class="filter-btn {listFilter === 'critical' ? 'active' : ''}" onclick={() => listFilter = 'critical'}>
 									🔴 Critical ({result.severity_stats.critical})
 								</button>
-								<button class="filter-btn {listFilter === 'high' ? 'active' : ''}" on:click={() => listFilter = 'high'}>
+								<button class="filter-btn {listFilter === 'high' ? 'active' : ''}" onclick={() => listFilter = 'high'}>
 									🟠 High ({result.severity_stats.high})
 								</button>
-								<button class="filter-btn {listFilter === 'medium' ? 'active' : ''}" on:click={() => listFilter = 'medium'}>
+								<button class="filter-btn {listFilter === 'medium' ? 'active' : ''}" onclick={() => listFilter = 'medium'}>
 									🟡 Medium ({result.severity_stats.medium})
 								</button>
-								<button class="filter-btn {listFilter === 'low' ? 'active' : ''}" on:click={() => listFilter = 'low'}>
+								<button class="filter-btn {listFilter === 'low' ? 'active' : ''}" onclick={() => listFilter = 'low'}>
 									🟢 Low ({result.severity_stats.low})
 								</button>
 							</div>
@@ -594,10 +594,10 @@
 													<td class="mono">
 														<div class="preview-cell">
 															<code>{secret.value_preview}</code>
-															<button class="btn-dl-single" on:click={() => copyToClipboard(secret.full_value)} title="Copy">
+															<button class="btn-dl-single" onclick={() => copyToClipboard(secret.full_value)} title="Copy">
 																{copiedId === secret.full_value ? '✅' : '📋'}
 															</button>
-															<button class="btn-dl-single" on:click={() => showFullValue = showFullValue === String(i) ? null : String(i)}>
+															<button class="btn-dl-single" onclick={() => showFullValue = showFullValue === String(i) ? null : String(i)}>
 																{showFullValue === String(i) ? '▲' : '▼'}
 															</button>
 														</div>
