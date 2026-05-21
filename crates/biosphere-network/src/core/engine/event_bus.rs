@@ -526,17 +526,20 @@ impl EventBus {
         false
     }
 
+    #[allow(dead_code)]
     async fn check_module_pending_limit(&self, module_name: &str) -> bool {
         let pending = self.module_pending.read().await;
         let count = pending.get(module_name).copied().unwrap_or(0);
         count < self.config.module_pending_limit
     }
 
+    #[allow(dead_code)]
     async fn increment_module_pending(&self, module_name: &str) {
         let mut pending = self.module_pending.write().await;
         *pending.entry(module_name.to_string()).or_insert(0) += 1;
     }
 
+    #[allow(dead_code)]
     async fn decrement_module_pending(&self, module_name: &str) {
         let mut pending = self.module_pending.write().await;
         if let Some(count) = pending.get_mut(module_name) {

@@ -208,6 +208,7 @@ impl ScanOrchestrator {
         Ok(self)
     }
 
+    #[allow(dead_code)]
     async fn transition_state(state: &Arc<RwLock<ScanInternalState>>, target: ScanState) -> std::result::Result<ScanState, String> {
         let mut internal = state.write().await;
         if !internal.state.can_transition_to(&target) {

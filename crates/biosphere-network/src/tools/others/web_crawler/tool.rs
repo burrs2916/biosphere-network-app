@@ -7,6 +7,7 @@ use rand::Rng;
 use std::cmp::Ordering;
 use std::sync::atomic::{AtomicUsize, Ordering as AtomicOrdering};
 
+#[allow(dead_code)]
 struct ProxyPool {
     proxies: Vec<String>,
     current_index: AtomicUsize,
@@ -14,6 +15,7 @@ struct ProxyPool {
     failed_proxies: Arc<tokio::sync::Mutex<HashSet<String>>>,
 }
 
+#[allow(dead_code)]
 impl ProxyPool {
     fn new(config: &ProxyPoolConfig) -> Self {
         let proxies: Vec<String> = config.proxies.iter()
@@ -68,12 +70,14 @@ impl ProxyPool {
     }
 }
 
+#[allow(dead_code)]
 struct CrawlCache {
     cache_dir: String,
     ttl_seconds: u64,
     enabled: bool,
 }
 
+#[allow(dead_code)]
 impl CrawlCache {
     fn new(config: &CacheConfig) -> Self {
         Self {
@@ -5281,6 +5285,7 @@ impl WebCrawlerTool {
     }
 }
 
+#[allow(dead_code)]
 async fn download_resource(client: &reqwest::Client, url: &str, save_dir: &str, subdir: &str) -> std::result::Result<DownloadResult, ToolError> {
     let response = client.get(url).send().await
         .map_err(|e| ToolError::ExecutionError(format!("Download failed for {}: {}", url, e)))?;
@@ -5326,6 +5331,7 @@ async fn download_resource(client: &reqwest::Client, url: &str, save_dir: &str, 
     })
 }
 
+#[allow(dead_code)]
 fn generate_filename(url: &str, content_type: &str) -> String {
     if let Ok(parsed) = url::Url::parse(url) {
         let path = parsed.path();
@@ -5364,6 +5370,7 @@ fn generate_filename(url: &str, content_type: &str) -> String {
     format!("resource_{}.{}", hash, ext)
 }
 
+#[allow(dead_code)]
 async fn generate_mirror_index(save_dir: &str, results: &[DownloadResult]) -> std::result::Result<String, std::io::Error> {
     let mut html = String::from(r#"<!DOCTYPE html><html><head><meta charset="utf-8"><title>Site Mirror</title><style>body{font-family:sans-serif;margin:20px}h1{color:#333}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ddd;padding:8px;text-align:left}th{background:#f5f5f5}.success{color:green}.failed{color:red}</style></head><body><h1>Site Mirror Index</h1><table><tr><th>File</th><th>Size</th><th>Status</th></tr>"#);
 
@@ -5388,6 +5395,7 @@ async fn generate_mirror_index(save_dir: &str, results: &[DownloadResult]) -> st
     Ok(html)
 }
 
+#[allow(dead_code)]
 fn format_size(bytes: u64) -> String {
     if bytes < 1024 { format!("{} B", bytes) }
     else if bytes < 1024 * 1024 { format!("{:.1} KB", bytes as f64 / 1024.0) }

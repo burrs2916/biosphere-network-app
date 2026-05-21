@@ -781,6 +781,7 @@ impl MemoryForensicsTool {
         String::new()
     }
 
+    #[allow(dead_code)]
     fn is_persistence_script_suspicious(contents: &str) -> bool {
         let suspicious_patterns = [
             "curl |", "wget |", "bash -c", "sh -c", "python -c",

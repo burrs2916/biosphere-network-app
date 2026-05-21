@@ -86,7 +86,7 @@ pub struct CorrelationResult {
 }
 
 #[derive(Debug, Clone)]
-struct EnrichedEvent {
+pub struct EnrichedEvent {
     event: BiosEventRef,
     source_events: Vec<BiosEventRef>,
     child_events: Vec<BiosEventRef>,

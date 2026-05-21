@@ -196,6 +196,7 @@ impl WifiScannerTool {
     }
 
     fn try_system_scan(interface: &str) -> Vec<WifiNetwork> {
+        #[allow(unused_assignments)]
         let mut networks = Vec::new();
 
         #[cfg(target_os = "macos")]
