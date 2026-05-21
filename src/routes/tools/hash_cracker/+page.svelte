@@ -185,7 +185,7 @@
 						<h2 class="section-title">{$tr('hashCracker.config.title')}</h2>
 						<div class="form-group">
 							<label class="form-label">{$tr('hashCracker.config.hashValue')}</label>
-							<textarea bind:value={hash} placeholder={$tr('hashCracker.config.hashPlaceholder')} class="form-textarea" disabled={processing} rows="3" />
+							<textarea bind:value={hash} placeholder={$tr('hashCracker.config.hashPlaceholder')} class="form-textarea" disabled={processing} rows="3"></textarea>
 							{#if detectedType}
 								<div class="detected-type-hint">
 									<span class="detect-icon">🔍</span>
@@ -302,7 +302,7 @@
 						<p class="section-desc">{$tr('hashCracker.batch.desc')}</p>
 						<div class="form-group">
 							<label class="form-label">{$tr('hashCracker.batch.hashList')}</label>
-							<textarea bind:value={batchHashes} placeholder={$tr('hashCracker.batch.placeholder')} class="form-textarea batch-textarea" disabled={batchProcessing} rows="8" />
+							<textarea bind:value={batchHashes} placeholder={$tr('hashCracker.batch.placeholder')} class="form-textarea batch-textarea" disabled={batchProcessing} rows="8"></textarea>
 						</div>
 						<div class="form-group">
 							<label class="form-label">{$tr('hashCracker.config.maxPasswords')}</label>

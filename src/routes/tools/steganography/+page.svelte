@@ -174,7 +174,7 @@
 						{:else}
 							<div class="form-group">
 								<label class="form-label">{$tr('steganography.config.secretText')}</label>
-								<textarea bind:value={secretText} placeholder={$tr('steganography.config.secretTextPlaceholder')} class="form-textarea" disabled={processing} rows="4" />
+								<textarea bind:value={secretText} placeholder={$tr('steganography.config.secretTextPlaceholder')} class="form-textarea" disabled={processing} rows="4"></textarea>
 							</div>
 						{/if}
 						<div class="form-group">
@@ -224,7 +224,7 @@
 										{#if copied}✅{:else}📋{/if}
 									</button>
 								</div>
-								<textarea readonly class="form-textarea result-textarea" rows="10" value={result.extracted_data} />
+								<textarea readonly class="form-textarea result-textarea" rows="10" value={result.extracted_data}></textarea>
 							</div>
 						{/if}
 					{:else}

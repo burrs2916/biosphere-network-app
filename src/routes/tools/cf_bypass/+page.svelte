@@ -511,7 +511,6 @@
 
 	.ssl-card { background: rgba(15, 23, 42, 0.4); border: 1px solid rgba(148, 163, 184, 0.08); border-radius: 0.5rem; padding: 1rem; }
 	.ssl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-	.ssl-field { }
 	.ssl-label { font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; }
 	.ssl-value { font-size: 0.85rem; color: #e2e8f0; margin: 0.2rem 0 0; }
 	.origin-hint { margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 0.4rem; display: flex; align-items: center; gap: 0.5rem; }

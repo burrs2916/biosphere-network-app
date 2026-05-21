@@ -839,7 +839,6 @@
 	.method-detail { font-size: 0.75rem; color: #94a3b8; margin-bottom: 0.2rem; }
 	.method-detail code { color: #e2e8f0; background: rgba(15, 23, 42, 0.6); padding: 0.1rem 0.3rem; border-radius: 0.2rem; font-size: 0.7rem; }
 
-	.headers-section { }
 	.header-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
 	.header-item { padding: 0.5rem 0.75rem; border-radius: 0.4rem; display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; }
 	.header-item.present { background: rgba(34, 197, 94, 0.05); border: 1px solid rgba(34, 197, 94, 0.15); }
