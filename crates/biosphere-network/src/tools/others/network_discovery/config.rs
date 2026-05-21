@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+#[cfg(any(target_os = "macos", target_os = "linux"))]
 use std::process::Command;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -166,6 +167,7 @@ impl NetworkDiscoveryTool {
     }
 
     async fn try_system_discovery(_network_range: &str) -> Vec<DiscoveredHost> {
+        #[cfg_attr(target_os = "windows", allow(unused_mut))]
         let mut hosts = Vec::new();
 
         #[cfg(target_os = "macos")]

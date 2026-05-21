@@ -344,7 +344,7 @@ impl ForensicsAnalyzerTool {
 
                     #[cfg(windows)]
                     {
-                        if metadata.attributes() & 0x2 != 0 {
+                        if metadata.file_attributes() & 0x2 != 0 {
                             *hidden_files += 1;
                         }
                     }
