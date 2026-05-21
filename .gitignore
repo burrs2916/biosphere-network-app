@@ -29,8 +29,9 @@ logs/
 analysis/
 thumbnails/
 
-# Project working memory
+# Project working memory & CodeBuddy
 .workbuddy/
+.codebuddy/
 
 # IDE
 .vscode/
