@@ -123,11 +123,44 @@ jobs:
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # macOS ad-hoc 签名：无 Apple 证书时使用 "-" (ad-hoc) 签名
+          # 这能解决"已损坏"问题 — 用户下载后只需 xattr -cr 即可
+          APPLE_SIGNING_IDENTITY: ${{ startsWith(matrix.platform, 'macOS') && '-' || '' }}
+          APPLE_CERTIFICATE: ''
+          APPLE_CERTIFICATE_PASSWORD: ''
+          APPLE_ID: ''
+          APPLE_PASSWORD: ''
+          APPLE_TEAM_ID: ''
         with:
           tauriScript: npm run tauri
           tagName: app-v__VERSION__
           releaseName: 'Biosphere Network Tools v__VERSION__'
-          releaseBody: 'See the assets to download this version and install.'
+          releaseBody: |
+            ## 📦 Biosphere Network Tools v__VERSION__
+
+            ### 🍎 macOS 用户（重要！）
+            由于未使用 Apple Developer 证书签名，**首次打开可能提示"已损坏"**。
+            请在终端执行以下命令移除隔离属性：
+
+            ```bash
+            # 方式1：对 .dmg 文件移除隔离
+            xattr -cr ~/Downloads/Biosphere.Network.Tools*.dmg
+            # 然后重新打开 .dmg，将 app 拖入 Applications
+
+            # 方式2：如果已拖入 Applications
+            xattr -cr /Applications/Biosphere\ Network\ Tools.app
+            ```
+
+            > 💡 **提示**：只需要执行一次。之后正常双击打开即可。
+
+            ### 🪟 Windows
+            直接运行 `.exe` 安装程序即可。
+
+            ### 🐧 Linux
+            ```bash
+            chmod +x Biosphere.Network.Tools*_amd64.AppImage
+            ./Biosphere.Network.Tools*_amd64.AppImage
+            ```
           releaseDraft: false
           prerelease: ${{ !startsWith(github.ref, 'refs/tags/v') }}
           args: ${{ matrix.args }}
