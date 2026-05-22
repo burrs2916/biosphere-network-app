@@ -550,9 +550,9 @@
           <li>{$tr('portScanner.usageGuideItems.item1')}</li>
           <li>{$tr('portScanner.usageGuideItems.item2')}</li>
           <li>{$tr('portScanner.usageGuideItems.item3')}</li>
-          <li>自动去除协议前缀和 www 前缀</li>
-          <li>支持批量查询多个域名</li>
-          <li>支持从文件导入域名列表</li>
+          <li>{$tr('dnsQuery.help.removePrefixDesc')}</li>
+          <li>{$tr('dnsQuery.help.batchQueryDesc')}</li>
+          <li>{$tr('dnsQuery.help.fileImportDesc')}</li>
         </ul>
       </div>
     </div>

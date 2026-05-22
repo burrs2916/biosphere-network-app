@@ -301,7 +301,9 @@
 				"json": "JSON Format",
 				"csv": "CSV Format",
 				"txt": "TXT Format"
-			}
+			},
+			"riskLevelLabel": "Risk Level: {level}",
+			"openLabel": "Open: {count}"
 		},
 		"helpModal": {
 			"title": "📖 Port Scanner User Manual",
@@ -512,7 +514,10 @@
 			"dnsServer": "8.8.8.8 (leave empty for system DNS)"
 		},
 		"help": {
-			"domains": "Support batch input of multiple domains or IP addresses, one per line or separated by commas/semicolons. For PTR query, please enter IP address. Automatically removes protocol prefixes and www prefix."
+			"domains": "Support batch input of multiple domains or IP addresses, one per line or separated by commas/semicolons. For PTR query, please enter IP address. Automatically removes protocol prefixes and www prefix.",
+			"removePrefixDesc": "Auto-removes protocol prefix and www prefix",
+			"batchQueryDesc": "Supports batch querying multiple domains",
+			"fileImportDesc": "Supports importing domain lists from files"
 		},
 		"types": {
 			"A": "A Record (IPv4)",
@@ -3068,7 +3073,8 @@
 			"isCdn": "CDN Detection",
 			"cdnProvider": "CDN Provider",
 			"cname": "CNAME",
-			"noResults": "Enter a hostname and resolve"
+			"noResults": "Enter a hostname and resolve",
+			"unknown": "Unknown"
 		},
 		"tabs": {
 			"resolve": "Resolve",
@@ -6526,5 +6532,58 @@
 			"open_redirect": "Open Redirect",
 			"insecure_login_page": "Insecure Login Page"
 		}
+	},
+	"portMarker": {
+		"title": "🏷️ Port Marker",
+		"subtitle": "Manage port markers and favorites",
+		"addButton": "➕ Add Marker",
+		"exportButton": "📤 Export",
+		"importButton": "📥 Import",
+		"saveButton": "💾 Save",
+		"emptyTitle": "No Port Markers",
+		"emptyHint": "Click \"Add Marker\" to start managing ports",
+		"editTitle": "✏️ Edit Port Marker",
+		"addTitle": "➕ Add Port Marker",
+		"createdLabel": "Created: ",
+		"updatedLabel": "Updated: ",
+		"editTooltip": "Edit",
+		"deleteTooltip": "Delete",
+		"markTypeLabel": "Mark Type",
+		"noteLabel": "Note (optional)",
+		"notePlaceholder": "Add notes about this port...",
+		"portLabel": "Port *",
+		"portPlaceholder": "e.g. 22, 80, 443",
+		"markTypeFavorite": "⭐ Favorite",
+		"markTypeImportant": "🔴 Important",
+		"markTypeDangerous": "⚠️ Dangerous",
+		"deleteConfirm": "Remove marker for port {port}?",
+		"importSuccess": "Successfully imported {count} port markers",
+		"errors": {
+			"invalidPort": "Please enter a valid port number",
+			"saveFailed": "Save failed: {error}",
+			"deleteFailed": "Delete failed: {error}",
+			"exportFailed": "Export failed: {error}",
+			"importFailed": "Import failed: {error}"
+		}
+	},
+	"toolHistory": {
+		"title": "📋 History",
+		"refresh": "Refresh",
+		"clearAll": "Clear All",
+		"emptyTitle": "No History",
+		"emptyHint": "Results are auto-saved to history after execution",
+		"deleteConfirm": "Delete this history record?",
+		"clearAllConfirm": "Clear all history? This cannot be undone.",
+		"detailTitle": "📋 History Detail",
+		"labelTool": "Tool: ",
+		"labelInput": "Input: ",
+		"labelStatus": "Status: ",
+		"labelTime": "Time: ",
+		"labelSummary": "Summary: ",
+		"labelDetailResult": "Detailed Result: "
+	},
+	"toolHelp": {
+		"usageLabel": "📌 How to Use",
+		"legalWarning": "⚠️ For authorized security auditing only. Comply with local laws."
 	}
 }

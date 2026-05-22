@@ -301,7 +301,9 @@
 				"json": "JSON格式",
 				"csv": "CSV格式",
 				"txt": "TXT格式"
-			}
+			},
+			"riskLevelLabel": "风险等级: {level}",
+			"openLabel": "开放: {count}"
 		},
 		"helpModal": {
 			"title": "📖 Port Scanner 使用手册",
@@ -512,7 +514,10 @@
 			"dnsServer": "8.8.8.8（留空使用系统 DNS）"
 		},
 		"help": {
-			"domains": "支持批量输入多个域名或 IP 地址，每行一个或用逗号/分号分隔。PTR 查询请输入 IP 地址。自动去除协议前缀和 www 前缀。"
+			"domains": "支持批量输入多个域名或 IP 地址，每行一个或用逗号/分号分隔。PTR 查询请输入 IP 地址。自动去除协议前缀和 www 前缀。",
+			"removePrefixDesc": "自动去除协议前缀和 www 前缀",
+			"batchQueryDesc": "支持批量查询多个域名",
+			"fileImportDesc": "支持从文件导入域名列表"
 		},
 		"types": {
 			"A": "A 记录（IPv4）",
@@ -3068,7 +3073,8 @@
 			"isCdn": "CDN检测",
 			"cdnProvider": "CDN提供商",
 			"cname": "CNAME",
-			"noResults": "输入域名并开始解析"
+			"noResults": "输入域名并开始解析",
+			"unknown": "未知"
 		},
 		"tabs": {
 			"resolve": "解析",
@@ -6526,5 +6532,58 @@
 			"open_redirect": "开放重定向",
 			"insecure_login_page": "不安全登录页面"
 		}
+	},
+	"portMarker": {
+		"title": "🏷️ 端口标记管理",
+		"subtitle": "管理常用端口标记、收藏重要端口",
+		"addButton": "➕ 添加标记",
+		"exportButton": "📤 导出标记",
+		"importButton": "📥 导入标记",
+		"saveButton": "💾 保存",
+		"emptyTitle": "暂无端口标记",
+		"emptyHint": "点击 [添加标记] 开始管理你的常用端口",
+		"editTitle": "✏️ 编辑端口标记",
+		"addTitle": "➕ 添加端口标记",
+		"createdLabel": "创建于: ",
+		"updatedLabel": "更新于: ",
+		"editTooltip": "编辑",
+		"deleteTooltip": "删除",
+		"markTypeLabel": "标记类型",
+		"noteLabel": "备注（可选）",
+		"notePlaceholder": "添加关于这个端口的备注...",
+		"portLabel": "端口号 *",
+		"portPlaceholder": "例如: 22, 80, 443",
+		"markTypeFavorite": "⭐ 收藏",
+		"markTypeImportant": "🔴 重要",
+		"markTypeDangerous": "⚠️ 危险",
+		"deleteConfirm": "确定要取消标记端口 {port} 吗？",
+		"importSuccess": "成功导入 {count} 个端口标记",
+		"errors": {
+			"invalidPort": "请输入有效的端口号",
+			"saveFailed": "保存失败: {error}",
+			"deleteFailed": "删除失败: {error}",
+			"exportFailed": "导出失败: {error}",
+			"importFailed": "导入失败: {error}"
+		}
+	},
+	"toolHistory": {
+		"title": "📋 历史记录",
+		"refresh": "刷新",
+		"clearAll": "清空",
+		"emptyTitle": "暂无历史记录",
+		"emptyHint": "执行操作后，结果会自动保存到历史记录",
+		"deleteConfirm": "确定要删除这条历史记录吗？",
+		"clearAllConfirm": "确定要清空所有历史记录吗？此操作不可恢复。",
+		"detailTitle": "📋 历史记录详情",
+		"labelTool": "工具：",
+		"labelInput": "输入：",
+		"labelStatus": "状态：",
+		"labelTime": "时间：",
+		"labelSummary": "摘要：",
+		"labelDetailResult": "详细结果："
+	},
+	"toolHelp": {
+		"usageLabel": "📌 使用方法",
+		"legalWarning": "⚠️ 本工具仅供授权安全审计使用，请遵守当地法律法规"
 	}
 }

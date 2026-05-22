@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { tr } from '$lib/i18n';
 	export let toolType: string;
 
 	interface HelpSection {
@@ -38,7 +39,7 @@
 	{#if loading}
 		<div class="help-loading">
 			<div class="spinner"></div>
-			<span>加载中...</span>
+			<span>{$tr('common.loading')}</span>
 		</div>
 	{:else if error}
 		<div class="help-error">⚠️ {error}</div>
@@ -49,7 +50,7 @@
 			</div>
 			<div class="help-description">{helpInfo.description}</div>
 			<div class="help-usage">
-				<div class="usage-label">📌 使用方法</div>
+				<div class="usage-label">{$tr('toolHelp.usageLabel')}</div>
 				<div class="usage-text">{helpInfo.usage}</div>
 			</div>
 			{#if helpInfo.sections.length > 0}
@@ -63,7 +64,7 @@
 				</div>
 			{/if}
 			<div class="help-footer">
-				<div class="footer-tip">⚠️ 本工具仅供授权安全审计使用，请遵守当地法律法规</div>
+				<div class="footer-tip">{$tr('toolHelp.legalWarning')}</div>
 			</div>
 		</div>
 	{/if}

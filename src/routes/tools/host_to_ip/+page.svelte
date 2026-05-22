@@ -340,7 +340,7 @@
 								{/if}
 								{#if result.is_cdn}
 									<div class="bg-purple-500/10 border border-purple-500/20 rounded p-3">
-										<span class="text-purple-300 text-sm">{$tr('hostToIp.result.isCdn')}: {result.cdn_provider || '未知'}</span>
+										<span class="text-purple-300 text-sm">{$tr('hostToIp.result.isCdn')}: {result.cdn_provider || $tr('hostToIp.result.unknown')}</span>
 									</div>
 								{/if}
 							</div>

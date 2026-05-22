@@ -1011,7 +1011,7 @@
                                 <span 
                                   class="risk-badge" 
                                   style="background-color: {getRiskColor(portInfo.risk_level)}"
-                                  title="风险等级: {portInfo.risk_level}"
+                                  title={$tr('portScanner.results.riskLevelLabel', { level: portInfo.risk_level })}
                                 >
                                   {portInfo.risk_level}
                                 </span>
@@ -1181,7 +1181,7 @@
               <tr>
                 <td>{item.target}</td>
                 <td>{item.scan_mode}</td>
-                <td>{item.total_ports} (开放: {item.open_ports})</td>
+                <td>{item.total_ports} ({$tr('portScanner.results.openLabel', { count: item.open_ports })})</td>
                 <td>{item.status}</td>
                 <td>{formatDateTime(item.created_at)}</td>
                 <td class="actions-cell">
@@ -1232,7 +1232,7 @@
           </div>
           <div class="detail-item">
             <span class="detail-label">🔢 {$tr('portScanner.history.table.ports')}:</span>
-            <span class="detail-value">{selectedHistoryItem.total_ports} (开放: {selectedHistoryItem.open_ports})</span>
+            <span class="detail-value">{selectedHistoryItem.total_ports} ({$tr('portScanner.results.openLabel', { count: selectedHistoryItem.open_ports })})</span>
           </div>
           <div class="detail-item">
             <span class="detail-label">📊 {$tr('portScanner.history.table.status')}:</span>

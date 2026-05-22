@@ -1,6 +1,7 @@
 <script lang="ts">
   import { invoke } from '@tauri-apps/api/core';
   import { onMount } from 'svelte';
+  import { tr, t } from '$lib/i18n';
 
   interface PortMarkingData {
     port: number;
@@ -22,14 +23,14 @@
 
   interface MarkTypeOption {
     value: string;
-    label: string;
+    labelKey: string;
     color: string;
   }
 
   const markTypes: MarkTypeOption[] = [
-    { value: 'favorite', label: '⭐ 收藏', color: '#fbbf24' },
-    { value: 'important', label: '🔴 重要', color: '#ef4444' },
-    { value: 'dangerous', label: '⚠️ 危险', color: '#f97316' },
+    { value: 'favorite', labelKey: 'portMarker.markTypeFavorite', color: '#fbbf24' },
+    { value: 'important', labelKey: 'portMarker.markTypeImportant', color: '#ef4444' },
+    { value: 'dangerous', labelKey: 'portMarker.markTypeDangerous', color: '#f97316' },
   ];
 
   async function loadMarkings() {
@@ -63,7 +64,7 @@
 
   async function saveMarking() {
     if (!newMarking.port || !newMarking.port.match(/^\d+$/)) {
-      alert('请输入有效的端口号');
+      alert(t('portMarker.errors.invalidPort'));
       return;
     }
 
@@ -79,12 +80,12 @@
       await loadMarkings();
     } catch (error) {
       console.error('Failed to save marking:', error);
-      alert('保存失败: ' + error);
+      alert(t('portMarker.errors.saveFailed', { error: String(error) }));
     }
   }
 
   async function removeMarking(port: number) {
-    if (!confirm(`确定要取消标记端口 ${port} 吗？`)) return;
+    if (!confirm(t('portMarker.deleteConfirm', { port }))) return;
 
     try {
       await invoke('unmark_port', { port });
@@ -92,7 +93,7 @@
       await loadMarkings();
     } catch (error) {
       console.error('Failed to unmark port:', error);
-      alert('删除失败: ' + error);
+      alert(t('portMarker.errors.deleteFailed', { error: String(error) }));
     }
   }
 
@@ -112,7 +113,7 @@
       console.log('Port markings exported');
     } catch (error) {
       console.error('Failed to export markings:', error);
-      alert('导出失败: ' + error);
+      alert(t('portMarker.errors.exportFailed', { error: String(error) }));
     }
   }
 
@@ -132,15 +133,15 @@
         if (!eventTarget.result) return;
         
         try {
-          const count = await invoke('import_port_markings', {
+          const count = await invoke<number>('import_port_markings', {
             jsonData: eventTarget.result
           });
           
-          alert(`成功导入 ${count} 个端口标记`);
+          alert(t('portMarker.importSuccess', { count }));
           await loadMarkings();
         } catch (error) {
           console.error('Failed to import markings:', error);
-          alert('导入失败: ' + error);
+          alert(t('portMarker.errors.importFailed', { error: String(error) }));
         }
       };
       reader.readAsText(file);
@@ -159,12 +160,8 @@
   }
 
   function getMarkTypeLabel(type: string): string {
-    switch(type) {
-      case 'favorite': return '收藏';
-      case 'important': return '重要';
-      case 'dangerous': return '危险';
-      default: return type || '自定义';
-    }
+    const opt = markTypes.find(mt => mt.value === type);
+    return opt ? t(opt.labelKey) : (type || t('portMarker.markTypeCustom'));
   }
 
   function getMarkTypeColor(type: string): string {
@@ -183,21 +180,21 @@
 
 <div class="container">
   <div class="header">
-    <h2>🏷️ 端口标记管理</h2>
-    <p class="subtitle">管理常用端口标记、收藏重要端口</p>
+    <h2>{$tr('portMarker.title')}</h2>
+    <p class="subtitle">{$tr('portMarker.subtitle')}</p>
   </div>
 
   <div class="actions-bar">
     <button class="btn btn-primary" on:click={openAddModal}>
-      ➕ 添加标记
+      {$tr('portMarker.addButton')}
     </button>
     
     <button class="btn btn-secondary" on:click={exportMarkings}>
-      📤 导出标记
+      {$tr('portMarker.exportButton')}
     </button>
     
     <button class="btn btn-secondary" on:click={importMarkings}>
-      📥 导入标记
+      {$tr('portMarker.importButton')}
     </button>
   </div>
 
@@ -218,18 +215,18 @@
           
           <div class="card-meta">
             {#if marking.created_at}
-              <small>创建于: {new Date(marking.created_at).toLocaleString()}</small>
+              <small>{$tr('portMarker.createdLabel')}{new Date(marking.created_at).toLocaleString()}</small>
             {/if}
             {#if marking.updated_at}
-              <small>更新于: {new Date(marking.updated_at).toLocaleString()}</small>
+              <small>{$tr('portMarker.updatedLabel')}{new Date(marking.updated_at).toLocaleString()}</small>
             {/if}
           </div>
           
           <div class="card-actions">
-            <button class="btn-icon" on:click={() => editMarking(marking)} title="编辑">
+            <button class="btn-icon" on:click={() => editMarking(marking)} title={$tr('portMarker.editTooltip')}>
               ✏️
             </button>
-            <button class="btn-icon danger" on:click={() => removeMarking(marking.port)} title="删除">
+            <button class="btn-icon danger" on:click={() => removeMarking(marking.port)} title={$tr('portMarker.deleteTooltip')}>
               🗑️
             </button>
           </div>
@@ -239,8 +236,8 @@
   {:else}
     <div class="empty-state">
       <div class="empty-icon">📝</div>
-      <h3>暂无端口标记</h3>
-      <p>点击"添加标记"开始管理你的常用端口</p>
+      <h3>{$tr('portMarker.emptyTitle')}</h3>
+      <p>{$tr('portMarker.emptyHint')}</p>
     </div>
   {/if}
 </div>
@@ -249,18 +246,18 @@
   <div class="modal-overlay" on:click|self={() => showAddModal = false}>
     <div class="modal-content">
       <div class="modal-header">
-        <h3>{editingPort ? '✏️ 编辑端口标记' : '➕ 添加端口标记'}</h3>
+        <h3>{editingPort ? $tr('portMarker.editTitle') : $tr('portMarker.addTitle')}</h3>
         <button class="close-btn" on:click={() => showAddModal = false}>×</button>
       </div>
       
       <form on:submit|preventDefault={saveMarking}>
         <div class="form-group">
-          <label for="port">端口号 *</label>
+          <label for="port">{$tr('portMarker.portLabel')}</label>
           <input
             type="number"
             id="port"
             bind:value={newMarking.port}
-            placeholder="例如: 22, 80, 443"
+            placeholder={$tr('portMarker.portPlaceholder')}
             min="1"
             max="65535"
             required
@@ -268,7 +265,7 @@
         </div>
 
         <div class="form-group">
-          <label>标记类型</label>
+          <label>{$tr('portMarker.markTypeLabel')}</label>
           <div class="mark-type-options">
             {#each markTypes as type}
               <label class="radio-option" style="--color: {type.color}">
@@ -277,28 +274,28 @@
                   bind:group={newMarking.markType}
                   value={type.value}
                 />
-                <span>{type.label}</span>
+                <span>{$tr(type.labelKey)}</span>
               </label>
             {/each}
           </div>
         </div>
 
         <div class="form-group">
-          <label for="note">备注（可选）</label>
+          <label for="note">{$tr('portMarker.noteLabel')}</label>
           <textarea
             id="note"
             bind:value={newMarking.note}
-            placeholder="添加关于这个端口的备注..."
+            placeholder={$tr('portMarker.notePlaceholder')}
             rows="3"
           ></textarea>
         </div>
 
         <div class="modal-actions">
           <button type="button" class="btn btn-secondary" on:click={() => showAddModal = false}>
-            取消
+            {$tr('common.cancel')}
           </button>
           <button type="submit" class="btn btn-primary">
-            💾 保存
+            {$tr('portMarker.saveButton')}
           </button>
         </div>
       </form>

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { tr, t, getLocale } from '$lib/i18n';
 
 	export let toolType: string;
 	export let toolName: string;
@@ -68,7 +69,7 @@
 	}
 
 	async function deleteItem(id: number) {
-		confirmMessage = '确定要删除这条历史记录吗？';
+		confirmMessage = t('toolHistory.deleteConfirm');
 		confirmAction = async () => {
 			try {
 				const { invoke } = await import('@tauri-apps/api/core');
@@ -82,7 +83,7 @@
 	}
 
 	async function clearAll() {
-		confirmMessage = '确定要清空所有历史记录吗？此操作不可恢复。';
+		confirmMessage = t('toolHistory.clearAllConfirm');
 		confirmAction = async () => {
 			try {
 				const { invoke } = await import('@tauri-apps/api/core');
@@ -110,7 +111,8 @@
 
 	function formatDateTime(dateStr: string): string {
 		const date = new Date(dateStr);
-		return date.toLocaleString('zh-CN', {
+		const loc = getLocale() === 'zh' ? 'zh-CN' : 'en-US';
+		return date.toLocaleString(loc, {
 			year: 'numeric',
 			month: '2-digit',
 			day: '2-digit',
@@ -136,10 +138,10 @@
 
 <div class="tool-history">
 	<div class="history-header">
-		<h3 class="history-title">📋 历史记录</h3>
+		<h3 class="history-title">{$tr('toolHistory.title')}</h3>
 		<div class="history-actions">
-			<button class="btn-icon" on:click={loadHistory} disabled={loading} title="刷新">🔄</button>
-			<button class="btn-icon btn-danger" on:click={clearAll} disabled={loading || history.length === 0} title="清空">🗑️</button>
+			<button class="btn-icon" on:click={loadHistory} disabled={loading} title={$tr('toolHistory.refresh')}>🔄</button>
+			<button class="btn-icon btn-danger" on:click={clearAll} disabled={loading || history.length === 0} title={$tr('toolHistory.clearAll')}>🗑️</button>
 		</div>
 	</div>
 
@@ -150,13 +152,13 @@
 	{#if loading}
 		<div class="history-loading">
 			<div class="spinner"></div>
-			<span>加载中...</span>
+			<span>{$tr('common.loading')}</span>
 		</div>
 	{:else if history.length === 0}
 		<div class="history-empty">
 			<div class="empty-icon">📋</div>
-			<p>暂无历史记录</p>
-			<p class="empty-hint">执行操作后，结果会自动保存到历史记录</p>
+			<p>{$tr('toolHistory.emptyTitle')}</p>
+			<p class="empty-hint">{$tr('toolHistory.emptyHint')}</p>
 		</div>
 	{:else}
 		<div class="history-list">
@@ -171,7 +173,7 @@
 						<div class="item-summary">{item.result_summary}</div>
 					{/if}
 					<div class="item-footer">
-						<button class="btn-delete" on:click|stopPropagation={() => deleteItem(item.id)} title="删除">🗑️</button>
+						<button class="btn-delete" on:click|stopPropagation={() => deleteItem(item.id)} title={$tr('common.delete')}>🗑️</button>
 					</div>
 				</div>
 			{/each}
@@ -190,34 +192,34 @@
 		<div class="modal-overlay" on:click={() => showDetail = false}>
 			<div class="modal-content" on:click|stopPropagation>
 				<div class="modal-header">
-					<h3>📋 历史记录详情</h3>
+					<h3>{$tr('toolHistory.detailTitle')}</h3>
 					<button class="modal-close" on:click={() => showDetail = false}>✕</button>
 				</div>
 				<div class="modal-body">
 					<div class="detail-row">
-						<span class="detail-label">工具：</span>
+						<span class="detail-label">{$tr('toolHistory.labelTool')}</span>
 						<span class="detail-value">{selectedItem.tool_name}</span>
 					</div>
 					<div class="detail-row">
-						<span class="detail-label">输入：</span>
+						<span class="detail-label">{$tr('toolHistory.labelInput')}</span>
 						<span class="detail-value">{selectedItem.input_summary}</span>
 					</div>
 					<div class="detail-row">
-						<span class="detail-label">状态：</span>
+						<span class="detail-label">{$tr('toolHistory.labelStatus')}</span>
 						<span class="detail-value">{getStatusBadge(selectedItem.status)} {selectedItem.status}</span>
 					</div>
 					<div class="detail-row">
-						<span class="detail-label">时间：</span>
+						<span class="detail-label">{$tr('toolHistory.labelTime')}</span>
 						<span class="detail-value">{formatDateTime(selectedItem.created_at)}</span>
 					</div>
 					{#if selectedItem.result_summary}
 						<div class="detail-row">
-							<span class="detail-label">摘要：</span>
+							<span class="detail-label">{$tr('toolHistory.labelSummary')}</span>
 							<span class="detail-value">{selectedItem.result_summary}</span>
 						</div>
 					{/if}
 					<div class="detail-json">
-						<div class="detail-label">详细结果：</div>
+						<div class="detail-label">{$tr('toolHistory.labelDetailResult')}</div>
 						<pre class="json-content">{JSON.stringify(JSON.parse(selectedItem.result_json), null, 2)}</pre>
 					</div>
 				</div>
@@ -230,8 +232,8 @@
 			<div class="confirm-dialog" on:click|stopPropagation>
 				<p>{confirmMessage}</p>
 				<div class="confirm-actions">
-					<button class="btn-secondary" on:click={() => showConfirm = false}>取消</button>
-					<button class="btn-danger" on:click={executeConfirm}>确认</button>
+					<button class="btn-secondary" on:click={() => showConfirm = false}>{$tr('common.cancel')}</button>
+					<button class="btn-danger" on:click={executeConfirm}>{$tr('common.confirm')}</button>
 				</div>
 			</div>
 		</div>
