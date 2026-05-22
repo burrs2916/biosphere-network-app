@@ -1437,23 +1437,6 @@ fn target_manager(
             }))
         }
 
-        "scan_history" => {
-            let target_value_str = target_value.ok_or("target_value parameter required")?;
-            let p = page.unwrap_or(1);
-            let ps = page_size.unwrap_or(20);
-
-            let db_guard = db.lock().map_err(|e| e.to_string())?;
-            let service = TargetService::new(db_guard.clone());
-            let tasks = service.get_scan_tasks_by_target(&target_value_str, p, ps)
-                .map_err(|e| e.to_string())?;
-
-            Ok(serde_json::json!({
-                "success": true,
-                "tasks": tasks,
-                "total": tasks.len()
-            }))
-        }
-
         "statistics" => {
             let db_guard = db.lock().map_err(|e| e.to_string())?;
             let service = TargetService::new(db_guard.clone());

@@ -159,8 +159,6 @@ import ToolHistory from '$lib/components/ToolHistory.svelte';
   let showBatchTagModal = false;
   let batchTagValue = '';
   let batchTagAppend = true;
-  let scanHistory: any[] = [];
-  let loadingScanHistory = false;
 
   const groupIconCategories = [
     {
@@ -1140,31 +1138,11 @@ import ToolHistory from '$lib/components/ToolHistory.svelte';
   function openDetailPanel(target: TargetInfo) {
     detailTarget = target;
     showDetailPanel = true;
-    loadScanHistory(target.target_value);
   }
 
   function closeDetailPanel() {
     showDetailPanel = false;
     detailTarget = null;
-    scanHistory = [];
-  }
-
-  async function loadScanHistory(targetValue: string) {
-    loadingScanHistory = true;
-    scanHistory = [];
-    try {
-      const result = await invoke<{ tasks: any[] }>('target_manager', {
-        action: 'scan_history',
-        targetValue: targetValue,
-        page: 1,
-        pageSize: 20,
-      });
-      scanHistory = result.tasks || [];
-    } catch (e: any) {
-      console.error('Load scan history error:', e);
-    } finally {
-      loadingScanHistory = false;
-    }
   }
 
   function resetForm() {
@@ -1292,32 +1270,6 @@ import ToolHistory from '$lib/components/ToolHistory.svelte';
               </button>
             </div>
           {/each}
-        </div>
-
-        <div class="detail-section">
-          <h3>{$tr('targetManager.detail.scanHistory')}</h3>
-          {#if loadingScanHistory}
-            <div class="loading-state"><span class="spinner"></span> {$tr('common.loading')}</div>
-          {:else if scanHistory.length === 0}
-            <p class="empty-hint">{$tr('targetManager.detail.noScanHistory')}</p>
-          {:else}
-            <div class="scan-history-list">
-              {#each scanHistory as task}
-                <div class="scan-history-item">
-                  <div class="scan-history-header">
-                    <span class="scan-tool">{task.tool_name || task.tool || 'Unknown'}</span>
-                    <span class="scan-status {task.status || 'unknown'}">{task.status || 'unknown'}</span>
-                  </div>
-                  <div class="scan-history-meta">
-                    <span>{task.created_at ? formatDate(task.created_at) : '-'}</span>
-                    {#if task.result}
-                      <span class="scan-result-preview">{typeof task.result === 'string' ? task.result.substring(0, 80) : JSON.stringify(task.result).substring(0, 80)}...</span>
-                    {/if}
-                  </div>
-                </div>
-              {/each}
-            </div>
-          {/if}
         </div>
       </div>
       
@@ -2712,88 +2664,6 @@ import ToolHistory from '$lib/components/ToolHistory.svelte';
 
   .clear-filter-btn:hover {
     background: rgba(239, 68, 68, 0.15);
-  }
-
-  .scan-history-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    max-height: 300px;
-    overflow-y: auto;
-  }
-
-  .scan-history-item {
-    padding: 0.6rem;
-    background: rgba(15, 23, 42, 0.4);
-    border: 1px solid rgba(148, 163, 184, 0.1);
-    border-radius: 0.4rem;
-  }
-
-  .scan-history-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.3rem;
-  }
-
-  .scan-tool {
-    font-weight: 600;
-    font-size: 0.85rem;
-    color: #e2e8f0;
-  }
-
-  .scan-status {
-    font-size: 0.7rem;
-    padding: 0.15rem 0.4rem;
-    border-radius: 0.25rem;
-    text-transform: uppercase;
-  }
-
-  .scan-status.completed {
-    background: rgba(34, 197, 94, 0.15);
-    color: #4ade80;
-  }
-
-  .scan-status.running {
-    background: rgba(59, 130, 246, 0.15);
-    color: #60a5fa;
-  }
-
-  .scan-status.failed {
-    background: rgba(239, 68, 68, 0.15);
-    color: #f87171;
-  }
-
-  .scan-status.pending {
-    background: rgba(234, 179, 8, 0.15);
-    color: #facc15;
-  }
-
-  .scan-status.unknown {
-    background: rgba(148, 163, 184, 0.1);
-    color: #94a3b8;
-  }
-
-  .scan-history-meta {
-    display: flex;
-    gap: 0.75rem;
-    font-size: 0.75rem;
-    color: #94a3b8;
-  }
-
-  .scan-result-preview {
-    color: #64748b;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    flex: 1;
-  }
-
-  .empty-hint {
-    color: #64748b;
-    font-size: 0.85rem;
-    text-align: center;
-    padding: 1rem;
   }
 
   .quick-actions {
