@@ -100,7 +100,7 @@ pub fn run() {
             std::fs::create_dir_all(&data_dir)
                 .expect("Failed to create data directory");
             
-            let log_config = infrastructure::LogConfig {
+            let mut log_config = infrastructure::LogConfig {
                 console_output: true,
                 clear_on_start: false,
                 ..Default::default()
