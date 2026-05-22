@@ -162,52 +162,16 @@ import ToolHistory from '$lib/components/ToolHistory.svelte';
 
   const groupIconCategories = [
     {
-      name: $tr('targetManager.iconCategories.files'),
-      icons: ['📁', '📂', '🗂️', '📋', '📝', '📄', '📃', '📑', '📰', '🗞️']
-    },
-    {
-      name: $tr('targetManager.iconCategories.buildings'),
-      icons: ['🏢', '🏠', '🏡', '🏘️', '🏚️', '🏗️', '🏭', '🏛️', '⛪', '🕌', '🕍', '⛩️', '🕋', '🏰', '🏯']
-    },
-    {
-      name: $tr('targetManager.iconCategories.devices'),
-      icons: ['🖥️', '💻', '🖨️', '⌨️', '🖱️', '💽', '💾', '💿', '📀', '📼', '📷', '📹', '🎥', '📺', '📻']
-    },
-    {
       name: $tr('targetManager.iconCategories.network'),
-      icons: ['🌐', '🌍', '🌎', '🌏', '🗺️', '🧭', '📡', '🛰️', '🚀', '✈️', '🛸', '📞', '📟', '📠', '📶']
-    },
-    {
-      name: $tr('targetManager.iconCategories.security'),
-      icons: ['🔒', '🔓', '🔑', '🗝️', '🛡️', '🔐', '🔏', '🛡️', '⚔️', '🗡️', '🛡️', '🚨', '🚫', '⛔', '🛑']
+      icons: ['🌐', '📡', '🛡️', '🔒', '🔑', '🗝️', '⚙️', '🔧', '📊']
     },
     {
       name: $tr('targetManager.iconCategories.targets'),
-      icons: ['🎯', '🎪', '🎰', '🎲', '🎮', '🕹️', '🏆', '🥇', '🥈', '🥉', '🏅', '🎖️', '📍', '📌', '🔖']
-    },
-    {
-      name: $tr('targetManager.iconCategories.tools'),
-      icons: ['⚙️', '🔧', '🔨', '⚒️', '🛠️', '⛏️', '🔩', '🔩', '🔧', '🔩', '⚙️', '🧰', '🔧', '⚙️', '🔩']
-    },
-    {
-      name: $tr('targetManager.iconCategories.charts'),
-      icons: ['📊', '📈', '📉', '💹', '📋', '📁', '📂', '🗂️', '🗃️', '🗄️']
-    },
-    {
-      name: $tr('targetManager.iconCategories.stars'),
-      icons: ['⭐', '🌟', '✨', '💫', '🔥', '💥', '💢', '💦', '💨', '🎉', '🎊', '🎈', '🎁', '🏆', '👑']
+      icons: ['🎯', '📍', '📌', '🏢', '🏠', '🖥️', '💻', '📱', '📂']
     },
     {
       name: $tr('targetManager.iconCategories.status'),
-      icons: ['✅', '❌', '⚠️', '🚫', '⛔', '❗', '❓', '❔', '‼️', '⁉️', '💯', '🔴', '🟠', '🟡', '🟢']
-    },
-    {
-      name: $tr('targetManager.iconCategories.art'),
-      icons: ['🎨', '🖌️', '🖍️', '📝', '✏️', '✒️', '🖊️', '🖋️', '🖌️', '🖍️']
-    },
-    {
-      name: $tr('targetManager.iconCategories.other'),
-      icons: ['💡', '🔦', '🏮', '📱', '💻', '🖥️', '🖨️', '⌨️', '🖱️', '💽', '💾', '💿', '📀', '📼', '📷']
+      icons: ['✅', '⚠️', '🚫', '⭐', '🔥', '💡']
     }
   ];
 
@@ -1191,6 +1155,7 @@ import ToolHistory from '$lib/components/ToolHistory.svelte';
 
   onMount(() => {
     loadGroups();
+    loadTargets();
   });
 </script>
 
@@ -1221,12 +1186,6 @@ import ToolHistory from '$lib/components/ToolHistory.svelte';
       onclick={() => activeTab = 'targets'}
     >
       {$tr('targetManager.tabs.targets')}
-    </button>
-    <button 
-      class="sub-tab {activeTab === 'ports' ? 'active' : ''}" 
-      onclick={() => activeTab = 'ports'}
-    >
-      {$tr('targetManager.tabs.ports')}
     </button>
   </div>
 
