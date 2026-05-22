@@ -123,14 +123,6 @@ jobs:
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # macOS ad-hoc 签名：无 Apple 证书时使用 "-" (ad-hoc) 签名
-          # 这能解决"已损坏"问题 — 用户下载后只需 xattr -cr 即可
-          APPLE_SIGNING_IDENTITY: ${{ startsWith(matrix.platform, 'macOS') && '-' || '' }}
-          APPLE_CERTIFICATE: ''
-          APPLE_CERTIFICATE_PASSWORD: ''
-          APPLE_ID: ''
-          APPLE_PASSWORD: ''
-          APPLE_TEAM_ID: ''
         with:
           tauriScript: npm run tauri
           tagName: app-v__VERSION__
