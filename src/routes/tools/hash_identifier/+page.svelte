@@ -301,7 +301,7 @@ import ToolHistory from '$lib/components/ToolHistory.svelte';
 			class="main-tab-button {activeMainTab === 'help' ? 'active' : ''}"
 			on:click={() => activeMainTab = 'help'}
 		>
-			📖 使用手册
+			{$tr('common.userManual')}
 		</button>
 	</div>
 

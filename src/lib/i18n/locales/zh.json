@@ -2786,6 +2786,7 @@
 			"desc": "输入域名并配置检测选项，识别同形字攻击风险",
 			"domain": "域名",
 			"domainHint": "支持国际化域名(IDN)，可输入包含非ASCII字符的域名",
+			"domainPlaceholder": "example.com 或 paypal.com",
 			"batchDomains": "批量域名",
 			"batchHint": "每行一个域名",
 			"options": "检测选项",

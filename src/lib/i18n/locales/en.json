@@ -2786,6 +2786,7 @@
 			"desc": "Enter a domain and configure detection options to identify homograph attack risks",
 			"domain": "Domain",
 			"domainHint": "Supports IDN domains, including non-ASCII characters",
+			"domainPlaceholder": "example.com or paypal.com",
 			"batchDomains": "Batch Domains",
 			"batchHint": "One domain per line",
 			"options": "Detection Options",

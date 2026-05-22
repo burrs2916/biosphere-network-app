@@ -293,7 +293,7 @@
 					{#if activeTab === 'single'}
 						<div class="form-group">
 							<label class="form-label">{$tr('idnChecker.config.domain')}</label>
-							<input type="text" bind:value={domain} placeholder="example.com 或 pаypal.com" class="form-input" disabled={processing} />
+							<input type="text" bind:value={domain} placeholder={$tr('idnChecker.config.domainPlaceholder')} class="form-input" disabled={processing} />
 							<p class="form-hint">{$tr('idnChecker.config.domainHint')}</p>
 						</div>
 					{:else}
