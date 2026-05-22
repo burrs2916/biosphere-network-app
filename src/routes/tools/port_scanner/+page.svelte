@@ -359,6 +359,23 @@
   }
 
   function parseResults(data: string): PortResult[] {
+    try {
+      const parsed = JSON.parse(data);
+      if (Array.isArray(parsed)) {
+        return parsed.map((r: any) => ({
+          target: r.target,
+          port: r.port,
+          status: r.status === 'Open' ? 'Open' : r.status,
+          service: r.service || undefined,
+          version: r.version ? { service: r.service || '', version: r.version } : undefined,
+          banner: r.banner || undefined,
+        }));
+      }
+    } catch {
+      // Fallback to legacy text parsing for backward compatibility
+    }
+    
+    // Legacy text parsing (kept for backward compatibility)
     const results: PortResult[] = [];
     const lines = data.split('\n');
     let currentTarget: string | undefined;
@@ -712,10 +729,7 @@
       $tr('portScanner.history.messages.clearAllConfirmMessage'),
       async () => {
         try {
-          const allTasks: any[] = await invoke('get_scan_history', { limit: 1000, offset: 0 });
-          for (const task of allTasks) {
-            await invoke('delete_scan_task', { taskId: task.id });
-          }
+          await invoke('clear_scan_history');
           await loadHistory();
         } catch (e) {
           historyError = `${$tr('portScanner.history.messages.clearFailed')}: ${e}`;
@@ -763,6 +777,7 @@
 
   onMount(() => {
     loadSystemInfo();
+    loadHistory();
     document.addEventListener('click', handleClickOutside);
     return () => {
       document.removeEventListener('click', handleClickOutside);

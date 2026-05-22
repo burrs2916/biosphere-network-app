@@ -145,6 +145,7 @@ pub fn run() {
             save_scan_results,
             get_scan_history,
             get_scan_task_detail,
+            clear_scan_history,
             delete_scan_task,
             search_scan_history,
             dns_query,
@@ -403,31 +404,18 @@ async fn scan_ports(
     let output = if open_ports.is_empty() {
         format!("No open ports found on {}", target)
     } else {
-        let mut output = String::new();
-        let mut current_target: Option<String> = None;
-        
-        for result in open_ports {
-            let target_display = result.get_target_display();
-            
-            if current_target.as_ref() != Some(&target_display) {
-                output.push_str(&format!("[{}]\n", target_display));
-                current_target = Some(target_display);
-            }
-            
-            let service_display = result.get_service_display();
-            let banner_info = result.banner.as_ref()
-                .map(|b| format!(" | Banner: {}", b))
-                .unwrap_or_default();
-            
-            output.push_str(&format!(
-                "Port {:5} - {:?}  {}{}\n",
-                result.port,
-                result.status,
-                service_display,
-                banner_info
-            ));
-        }
-        output
+        let json_results: Vec<serde_json::Value> = open_ports.iter().map(|r| {
+            serde_json::json!({
+                "target": r.target,
+                "resolved_ip": r.resolved_ip,
+                "port": r.port,
+                "status": format!("{:?}", r.status),
+                "service": r.service,
+                "version": r.version.as_ref().map(|v| v.version.clone()),
+                "banner": r.banner,
+            })
+        }).collect();
+        serde_json::to_string(&json_results).unwrap_or_default()
     };
 
     Ok(biosphere_network::ToolOutput::success(output))
@@ -559,6 +547,14 @@ fn delete_scan_task(
 ) -> Result<(), String> {
     let db = db.lock().map_err(|e| e.to_string())?;
     db.delete_scan_task(task_id).map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+fn clear_scan_history(
+    db: State<Mutex<Database>>,
+) -> Result<i64, String> {
+    let db = db.lock().map_err(|e| e.to_string())?;
+    db.clear_all_scan_tasks().map(|c| c as i64).map_err(|e| e.to_string())
 }
 
 #[tauri::command]

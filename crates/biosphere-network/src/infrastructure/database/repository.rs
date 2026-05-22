@@ -273,6 +273,14 @@ impl Database {
         Ok(())
     }
 
+    pub fn clear_all_scan_tasks(&self) -> SqliteResult<usize> {
+        let conn = self.conn.lock().unwrap();
+        // Delete scan_results first (FK), then scan_tasks
+        conn.execute("DELETE FROM scan_results", [])?;
+        let count = conn.execute("DELETE FROM scan_tasks", [])?;
+        Ok(count)
+    }
+
     pub fn count_scan_tasks(&self) -> SqliteResult<i32> {
         let conn = self.conn.lock().unwrap();
         let count: i32 = conn.query_row("SELECT COUNT(*) FROM scan_tasks", [], |row| row.get(0))?;
