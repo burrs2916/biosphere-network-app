@@ -284,10 +284,10 @@
 
 	function getRiskColor(risk: string): string {
 		switch (risk) {
-			case '高危': return '#ef4444';
-			case '中危': return '#eab308';
-			case '低危': return '#3b82f6';
-			case '安全': return '#22c55e';
+			case 'High': return '#ef4444';
+			case 'Medium': return '#eab308';
+			case 'Low': return '#3b82f6';
+			case 'Safe': return '#22c55e';
 			default: return '#6b7280';
 		}
 	}

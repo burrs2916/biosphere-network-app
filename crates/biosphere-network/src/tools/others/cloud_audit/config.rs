@@ -254,7 +254,7 @@ impl CloudAuditTool {
                             checks_performed += 1;
                             all_findings.push(CloudFinding {
                                 severity: "info".to_string(),
-                                category: "存储".to_string(),
+                                category: "Storage".to_string(),
                                 resource: "S3 Buckets".to_string(),
                                 description: "S3 bucket listing accessible via CLI".to_string(),
                                 recommendation: "Review bucket ACLs and policies for public access".to_string(),
@@ -365,11 +365,11 @@ impl CloudAuditTool {
             findings: all_findings.clone(),
             checks_performed,
             iam_findings: all_findings.iter().filter(|f| f.category == "IAM").cloned().collect(),
-            storage_findings: all_findings.iter().filter(|f| f.category == "存储").cloned().collect(),
-            network_findings: all_findings.iter().filter(|f| f.category == "网络").cloned().collect(),
-            logging_findings: all_findings.iter().filter(|f| f.category == "日志").cloned().collect(),
-            encryption_findings: all_findings.iter().filter(|f| f.category == "加密").cloned().collect(),
-            compute_findings: all_findings.iter().filter(|f| f.category == "计算").cloned().collect(),
+            storage_findings: all_findings.iter().filter(|f| f.category == "Storage").cloned().collect(),
+            network_findings: all_findings.iter().filter(|f| f.category == "Network").cloned().collect(),
+            logging_findings: all_findings.iter().filter(|f| f.category == "Logging").cloned().collect(),
+            encryption_findings: all_findings.iter().filter(|f| f.category == "Encryption").cloned().collect(),
+            compute_findings: all_findings.iter().filter(|f| f.category == "Compute").cloned().collect(),
             container_scan_results: Vec::new(),
             kubernetes_audit: Vec::new(),
             prowler_results: Vec::new(),
@@ -451,7 +451,7 @@ impl CloudAuditTool {
                                 if acl_resp.contains("AllUsers") || acl_resp.contains("PublicRead") {
                                     storage_findings.push(CloudFinding {
                                         severity: "critical".to_string(),
-                                        category: "存储".to_string(),
+                                        category: "Storage".to_string(),
                                         resource: format!("S3 Bucket: {}", bucket_name),
                                         description: format!("S3 bucket {} allows public access", bucket_name),
                                         recommendation: "Configure bucket policy to restrict public access".to_string(),
@@ -466,7 +466,7 @@ impl CloudAuditTool {
 
             storage_findings.push(CloudFinding {
                 severity: "high".to_string(),
-                category: "存储".to_string(),
+                category: "Storage".to_string(),
                 resource: "S3 Buckets".to_string(),
                 description: "Check if S3 buckets have default encryption enabled".to_string(),
                 recommendation: "Enable server-side encryption (SSE-S3 or SSE-KMS) for all S3 buckets".to_string(),
@@ -475,7 +475,7 @@ impl CloudAuditTool {
 
             storage_findings.push(CloudFinding {
                 severity: "medium".to_string(),
-                category: "存储".to_string(),
+                category: "Storage".to_string(),
                 resource: "S3 Versioning".to_string(),
                 description: "Check if S3 buckets have versioning enabled".to_string(),
                 recommendation: "Enable versioning for all S3 buckets to protect against data loss".to_string(),
@@ -486,7 +486,7 @@ impl CloudAuditTool {
         if config.check_network {
             network_findings.push(CloudFinding {
                 severity: "high".to_string(),
-                category: "网络".to_string(),
+                category: "Network".to_string(),
                 resource: "Security Groups".to_string(),
                 description: "Check if security groups allow 0.0.0.0/0 inbound access".to_string(),
                 recommendation: "Restrict security group inbound rules to only necessary IPs and ports".to_string(),
@@ -495,7 +495,7 @@ impl CloudAuditTool {
 
             network_findings.push(CloudFinding {
                 severity: "medium".to_string(),
-                category: "网络".to_string(),
+                category: "Network".to_string(),
                 resource: "VPC Flow Logs".to_string(),
                 description: "Check if VPC Flow Logs are enabled".to_string(),
                 recommendation: "Enable Flow Logs for all VPCs".to_string(),
@@ -504,7 +504,7 @@ impl CloudAuditTool {
 
             network_findings.push(CloudFinding {
                 severity: "high".to_string(),
-                category: "网络".to_string(),
+                category: "Network".to_string(),
                 resource: "RDS Public Access".to_string(),
                 description: "Check if RDS instances are publicly accessible".to_string(),
                 recommendation: "Disable public access for RDS instances, use VPC-only access".to_string(),
@@ -515,7 +515,7 @@ impl CloudAuditTool {
         if config.check_logging {
             logging_findings.push(CloudFinding {
                 severity: "high".to_string(),
-                category: "日志".to_string(),
+                category: "Logging".to_string(),
                 resource: "CloudTrail".to_string(),
                 description: "Check if CloudTrail is enabled for multi-region logging".to_string(),
                 recommendation: "Enable multi-region CloudTrail logging".to_string(),
@@ -524,7 +524,7 @@ impl CloudAuditTool {
 
             logging_findings.push(CloudFinding {
                 severity: "medium".to_string(),
-                category: "日志".to_string(),
+                category: "Logging".to_string(),
                 resource: "CloudTrail Log Validation".to_string(),
                 description: "Check if CloudTrail log file validation is enabled".to_string(),
                 recommendation: "Enable CloudTrail log file validation to ensure log integrity".to_string(),
@@ -533,7 +533,7 @@ impl CloudAuditTool {
 
             logging_findings.push(CloudFinding {
                 severity: "medium".to_string(),
-                category: "日志".to_string(),
+                category: "Logging".to_string(),
                 resource: "CloudTrail S3 Bucket".to_string(),
                 description: "Check if CloudTrail S3 bucket has access logging enabled".to_string(),
                 recommendation: "Enable S3 bucket access logging for CloudTrail bucket".to_string(),
@@ -544,7 +544,7 @@ impl CloudAuditTool {
         if config.check_encryption {
             encryption_findings.push(CloudFinding {
                 severity: "high".to_string(),
-                category: "加密".to_string(),
+                category: "Encryption".to_string(),
                 resource: "EBS Volumes".to_string(),
                 description: "Check if EBS volumes are encrypted".to_string(),
                 recommendation: "Enable encryption for all EBS volumes".to_string(),
@@ -553,7 +553,7 @@ impl CloudAuditTool {
 
             encryption_findings.push(CloudFinding {
                 severity: "medium".to_string(),
-                category: "加密".to_string(),
+                category: "Encryption".to_string(),
                 resource: "RDS Instances".to_string(),
                 description: "Check if RDS instances are encrypted".to_string(),
                 recommendation: "Enable encryption for all RDS instances".to_string(),
@@ -562,7 +562,7 @@ impl CloudAuditTool {
 
             encryption_findings.push(CloudFinding {
                 severity: "medium".to_string(),
-                category: "加密".to_string(),
+                category: "Encryption".to_string(),
                 resource: "KMS Key Rotation".to_string(),
                 description: "Check if KMS keys have automatic rotation enabled".to_string(),
                 recommendation: "Enable automatic key rotation for KMS customer-managed keys".to_string(),
@@ -573,7 +573,7 @@ impl CloudAuditTool {
         if config.check_compute {
             compute_findings.push(CloudFinding {
                 severity: "medium".to_string(),
-                category: "计算".to_string(),
+                category: "Compute".to_string(),
                 resource: "EC2 Instances".to_string(),
                 description: "Check if EC2 instances use IMDSv2".to_string(),
                 recommendation: "Enforce IMDSv2 on EC2 instances to prevent SSRF attacks".to_string(),
@@ -582,7 +582,7 @@ impl CloudAuditTool {
 
             compute_findings.push(CloudFinding {
                 severity: "low".to_string(),
-                category: "计算".to_string(),
+                category: "Compute".to_string(),
                 resource: "EC2 Detailed Monitoring".to_string(),
                 description: "Check if EC2 instances have detailed monitoring enabled".to_string(),
                 recommendation: "Enable detailed monitoring for production EC2 instances".to_string(),
@@ -633,7 +633,7 @@ impl CloudAuditTool {
         if config.check_storage {
             storage_findings.push(CloudFinding {
                 severity: "high".to_string(),
-                category: "存储".to_string(),
+                category: "Storage".to_string(),
                 resource: "Storage Accounts".to_string(),
                 description: "Check if storage accounts allow public access".to_string(),
                 recommendation: "Disable public access on storage accounts, use SAS tokens for access control".to_string(),
@@ -642,7 +642,7 @@ impl CloudAuditTool {
 
             storage_findings.push(CloudFinding {
                 severity: "medium".to_string(),
-                category: "存储".to_string(),
+                category: "Storage".to_string(),
                 resource: "Storage Encryption".to_string(),
                 description: "Check if storage accounts have encryption enabled".to_string(),
                 recommendation: "Enable Microsoft-managed or customer-managed key encryption for all storage accounts".to_string(),
@@ -651,7 +651,7 @@ impl CloudAuditTool {
 
             storage_findings.push(CloudFinding {
                 severity: "medium".to_string(),
-                category: "存储".to_string(),
+                category: "Storage".to_string(),
                 resource: "Storage Network Rules".to_string(),
                 description: "Check if storage accounts have network access restrictions".to_string(),
                 recommendation: "Configure storage firewalls and virtual network rules".to_string(),
@@ -662,7 +662,7 @@ impl CloudAuditTool {
         if config.check_network {
             network_findings.push(CloudFinding {
                 severity: "high".to_string(),
-                category: "网络".to_string(),
+                category: "Network".to_string(),
                 resource: "NSG".to_string(),
                 description: "Check if Network Security Groups allow broad inbound rules".to_string(),
                 recommendation: "Restrict NSG inbound rules to only necessary IPs and ports".to_string(),
@@ -671,7 +671,7 @@ impl CloudAuditTool {
 
             network_findings.push(CloudFinding {
                 severity: "medium".to_string(),
-                category: "网络".to_string(),
+                category: "Network".to_string(),
                 resource: "DDoS Protection".to_string(),
                 description: "Check if DDoS Protection Standard is enabled".to_string(),
                 recommendation: "Enable DDoS Protection Standard for virtual networks".to_string(),
@@ -682,7 +682,7 @@ impl CloudAuditTool {
         if config.check_logging {
             logging_findings.push(CloudFinding {
                 severity: "high".to_string(),
-                category: "日志".to_string(),
+                category: "Logging".to_string(),
                 resource: "Activity Log".to_string(),
                 description: "Check if Activity Log is configured for log archiving".to_string(),
                 recommendation: "Export Activity Log to storage account or Log Analytics workspace".to_string(),
@@ -691,7 +691,7 @@ impl CloudAuditTool {
 
             logging_findings.push(CloudFinding {
                 severity: "medium".to_string(),
-                category: "日志".to_string(),
+                category: "Logging".to_string(),
                 resource: "Diagnostic Settings".to_string(),
                 description: "Check if resources have diagnostic settings configured".to_string(),
                 recommendation: "Enable diagnostic settings for all resources".to_string(),
@@ -702,7 +702,7 @@ impl CloudAuditTool {
         if config.check_encryption {
             encryption_findings.push(CloudFinding {
                 severity: "medium".to_string(),
-                category: "加密".to_string(),
+                category: "Encryption".to_string(),
                 resource: "Disk Encryption".to_string(),
                 description: "Check if virtual machine disks are encrypted".to_string(),
                 recommendation: "Enable Azure Disk Encryption for all virtual machine disks".to_string(),
@@ -713,7 +713,7 @@ impl CloudAuditTool {
         if config.check_compute {
             compute_findings.push(CloudFinding {
                 severity: "medium".to_string(),
-                category: "计算".to_string(),
+                category: "Compute".to_string(),
                 resource: "VM Endpoint".to_string(),
                 description: "Check if virtual machines use managed disks".to_string(),
                 recommendation: "Use managed disks instead of unmanaged disks".to_string(),
@@ -722,7 +722,7 @@ impl CloudAuditTool {
 
             compute_findings.push(CloudFinding {
                 severity: "low".to_string(),
-                category: "计算".to_string(),
+                category: "Compute".to_string(),
                 resource: "VM Auto-Shutdown".to_string(),
                 description: "Check if non-production VMs have auto-shutdown configured".to_string(),
                 recommendation: "Configure auto-shutdown for non-production VMs to reduce costs".to_string(),
@@ -764,7 +764,7 @@ impl CloudAuditTool {
         if config.check_storage {
             storage_findings.push(CloudFinding {
                 severity: "critical".to_string(),
-                category: "存储".to_string(),
+                category: "Storage".to_string(),
                 resource: "Cloud Storage".to_string(),
                 description: "Check if Cloud Storage buckets allow public access".to_string(),
                 recommendation: "Disable public access on buckets".to_string(),
@@ -773,7 +773,7 @@ impl CloudAuditTool {
 
             storage_findings.push(CloudFinding {
                 severity: "medium".to_string(),
-                category: "存储".to_string(),
+                category: "Storage".to_string(),
                 resource: "Bucket Retention".to_string(),
                 description: "Check if Cloud Storage buckets have retention policies".to_string(),
                 recommendation: "Configure retention policies for compliance requirements".to_string(),
@@ -784,7 +784,7 @@ impl CloudAuditTool {
         if config.check_network {
             network_findings.push(CloudFinding {
                 severity: "high".to_string(),
-                category: "网络".to_string(),
+                category: "Network".to_string(),
                 resource: "Firewall Rules".to_string(),
                 description: "Check if firewall rules allow 0.0.0.0/0 inbound SSH/RDP".to_string(),
                 recommendation: "Restrict firewall rules to only necessary IP access".to_string(),
@@ -793,7 +793,7 @@ impl CloudAuditTool {
 
             network_findings.push(CloudFinding {
                 severity: "medium".to_string(),
-                category: "网络".to_string(),
+                category: "Network".to_string(),
                 resource: "VPC Flow Logs".to_string(),
                 description: "Check if VPC Flow Logs are enabled for all subnets".to_string(),
                 recommendation: "Enable VPC Flow Logs for all subnets".to_string(),
@@ -804,7 +804,7 @@ impl CloudAuditTool {
         if config.check_logging {
             logging_findings.push(CloudFinding {
                 severity: "high".to_string(),
-                category: "日志".to_string(),
+                category: "Logging".to_string(),
                 resource: "Audit Logging".to_string(),
                 description: "Check if audit logging is enabled for all services".to_string(),
                 recommendation: "Enable data access audit logs for all services".to_string(),
@@ -815,7 +815,7 @@ impl CloudAuditTool {
         if config.check_encryption {
             encryption_findings.push(CloudFinding {
                 severity: "medium".to_string(),
-                category: "加密".to_string(),
+                category: "Encryption".to_string(),
                 resource: "Persistent Disks".to_string(),
                 description: "Check if persistent disks use customer-managed encryption keys".to_string(),
                 recommendation: "Use CMEK encryption for sensitive data persistent disks".to_string(),
@@ -841,7 +841,7 @@ impl CloudAuditTool {
                 resource: "RAM Users".to_string(),
                 description: "Check if RAM users have MFA enabled".to_string(),
                 recommendation: "Enable MFA for all RAM users".to_string(),
-                compliance: vec!["等保2.0".to_string()],
+                compliance: vec!["MLPS 2.0".to_string()],
             });
 
             iam_findings.push(CloudFinding {
@@ -850,7 +850,7 @@ impl CloudAuditTool {
                 resource: "Access Keys".to_string(),
                 description: "Check if RAM user Access Keys are rotated regularly".to_string(),
                 recommendation: "Rotate Access Keys regularly, use STS temporary credentials".to_string(),
-                compliance: vec!["等保2.0".to_string()],
+                compliance: vec!["MLPS 2.0".to_string()],
             });
 
             iam_findings.push(CloudFinding {
@@ -859,80 +859,80 @@ impl CloudAuditTool {
                 resource: "RAM Password Policy".to_string(),
                 description: "Check if RAM password policy meets requirements".to_string(),
                 recommendation: "Enforce strong password policy for all RAM users".to_string(),
-                compliance: vec!["等保2.0".to_string()],
+                compliance: vec!["MLPS 2.0".to_string()],
             });
         }
 
         if config.check_storage {
             storage_findings.push(CloudFinding {
                 severity: "critical".to_string(),
-                category: "存储".to_string(),
+                category: "Storage".to_string(),
                 resource: "OSS Buckets".to_string(),
                 description: "Check if OSS buckets allow public read/write".to_string(),
                 recommendation: "Set OSS bucket ACL to private, use signed URLs for access control".to_string(),
-                compliance: vec!["等保2.0".to_string(), "GDPR".to_string()],
+                compliance: vec!["MLPS 2.0".to_string(), "GDPR".to_string()],
             });
 
             storage_findings.push(CloudFinding {
                 severity: "medium".to_string(),
-                category: "存储".to_string(),
+                category: "Storage".to_string(),
                 resource: "OSS Encryption".to_string(),
                 description: "Check if OSS buckets have server-side encryption enabled".to_string(),
                 recommendation: "Enable SSE-KMS or SSE-OSS for all buckets".to_string(),
-                compliance: vec!["等保2.0".to_string()],
+                compliance: vec!["MLPS 2.0".to_string()],
             });
         }
 
         if config.check_network {
             network_findings.push(CloudFinding {
                 severity: "high".to_string(),
-                category: "网络".to_string(),
+                category: "Network".to_string(),
                 resource: "Security Groups".to_string(),
                 description: "Check if security groups allow 0.0.0.0/0 inbound access".to_string(),
                 recommendation: "Restrict security group rules to only necessary IPs and ports".to_string(),
-                compliance: vec!["等保2.0".to_string()],
+                compliance: vec!["MLPS 2.0".to_string()],
             });
 
             network_findings.push(CloudFinding {
                 severity: "medium".to_string(),
-                category: "网络".to_string(),
+                category: "Network".to_string(),
                 resource: "VPC Flow Logs".to_string(),
                 description: "Check if VPC flow logs are enabled".to_string(),
                 recommendation: "Enable VPC flow logs for all VPCs".to_string(),
-                compliance: vec!["等保2.0".to_string()],
+                compliance: vec!["MLPS 2.0".to_string()],
             });
         }
 
         if config.check_logging {
             logging_findings.push(CloudFinding {
                 severity: "high".to_string(),
-                category: "日志".to_string(),
+                category: "Logging".to_string(),
                 resource: "ActionTrail".to_string(),
                 description: "Check if ActionTrail is enabled".to_string(),
                 recommendation: "Enable ActionTrail to record all API calls".to_string(),
-                compliance: vec!["等保2.0".to_string()],
+                compliance: vec!["MLPS 2.0".to_string()],
             });
         }
 
         if config.check_encryption {
             encryption_findings.push(CloudFinding {
                 severity: "medium".to_string(),
-                category: "加密".to_string(),
+                category: "Encryption".to_string(),
                 resource: "ECS Disks".to_string(),
                 description: "Check if ECS disks are encrypted".to_string(),
                 recommendation: "Enable encryption for all ECS disks".to_string(),
-                compliance: vec!["等保2.0".to_string()],
+                compliance: vec!["MLPS 2.0".to_string()],
             });
         }
 
         if config.check_compute {
             compute_findings.push(CloudFinding {
                 severity: "low".to_string(),
-                category: "计算".to_string(),
+                category: "Compute".to_string(),
                 resource: "ECS Instances".to_string(),
                 description: "Check if ECS instances use security enhancement features".to_string(),
                 recommendation: "Enable security enhancement mode for ECS instances".to_string(),
-                compliance: vec!["等保2.0".to_string()],
+                compliance: vec!["MLPS 2.0".to_string()],
             });
         }
 
@@ -1008,7 +1008,7 @@ impl CloudAuditTool {
                         if public_access {
                             findings.push(CloudFinding {
                                 severity: "critical".to_string(),
-                                category: "存储".to_string(),
+                                category: "Storage".to_string(),
                                 resource: format!("Storage: {}", name),
                                 description: format!("Storage account {} allows public Blob access", name),
                                 recommendation: "Disable public access on the storage account".to_string(),
@@ -1185,7 +1185,7 @@ impl CloudAuditTool {
                             for m in misconfig_arr.iter().take(30) {
                                 misconfigs.push(CloudFinding {
                                     severity: m.get("Severity").and_then(|s| s.as_str()).unwrap_or("info").to_string(),
-                                    category: "容器配置".to_string(),
+                                    category: "Container Config".to_string(),
                                     resource: target.to_string(),
                                     description: m.get("Message").and_then(|m| m.as_str()).unwrap_or("").to_string(),
                                     recommendation: m.get("Resolution").and_then(|r| r.as_str()).unwrap_or("").to_string(),
@@ -1298,7 +1298,7 @@ impl CloudAuditTool {
                             if spec.get("hostNetwork").and_then(|v| v.as_bool()).unwrap_or(false) {
                                 pod_findings.push(CloudFinding {
                                     severity: "high".to_string(),
-                                    category: "Pod安全".to_string(),
+                                    category: "Pod Security".to_string(),
                                     resource: pod_name.to_string(),
                                     description: "Pod using hostNetwork".to_string(),
                                     recommendation: "Avoid using hostNetwork unless absolutely necessary".to_string(),
@@ -1309,7 +1309,7 @@ impl CloudAuditTool {
                             if spec.get("hostPID").and_then(|v| v.as_bool()).unwrap_or(false) {
                                 pod_findings.push(CloudFinding {
                                     severity: "high".to_string(),
-                                    category: "Pod安全".to_string(),
+                                    category: "Pod Security".to_string(),
                                     resource: pod_name.to_string(),
                                     description: "Pod using hostPID namespace".to_string(),
                                     recommendation: "Avoid sharing host PID namespace".to_string(),
@@ -1320,7 +1320,7 @@ impl CloudAuditTool {
                             if spec.get("hostIPC").and_then(|v| v.as_bool()).unwrap_or(false) {
                                 pod_findings.push(CloudFinding {
                                     severity: "medium".to_string(),
-                                    category: "Pod安全".to_string(),
+                                    category: "Pod Security".to_string(),
                                     resource: pod_name.to_string(),
                                     description: "Pod using hostIPC namespace".to_string(),
                                     recommendation: "Avoid sharing host IPC namespace".to_string(),
@@ -1334,7 +1334,7 @@ impl CloudAuditTool {
                                         if security_ctx.get("privileged").and_then(|v| v.as_bool()).unwrap_or(false) {
                                             pod_findings.push(CloudFinding {
                                                 severity: "critical".to_string(),
-                                                category: "Pod安全".to_string(),
+                                                category: "Pod Security".to_string(),
                                                 resource: format!("{}/{}", pod_name, container.get("name").and_then(|n| n.as_str()).unwrap_or("")),
                                                 description: "Container running in privileged mode".to_string(),
                                                 recommendation: "Remove privileged flag, use specific capabilities instead".to_string(),
@@ -1345,7 +1345,7 @@ impl CloudAuditTool {
                                         if security_ctx.get("runAsUser").and_then(|v| v.as_u64()).unwrap_or(0) == 0 {
                                             pod_findings.push(CloudFinding {
                                                 severity: "high".to_string(),
-                                                category: "Pod安全".to_string(),
+                                                category: "Pod Security".to_string(),
                                                 resource: format!("{}/{}", pod_name, container.get("name").and_then(|n| n.as_str()).unwrap_or("")),
                                                 description: "Container running as root (UID 0)".to_string(),
                                                 recommendation: "Set runAsNonRoot: true or specify a non-zero runAsUser".to_string(),

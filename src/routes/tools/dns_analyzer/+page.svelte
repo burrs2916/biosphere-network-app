@@ -434,13 +434,13 @@
 											<span class="detail-value mono">{result.dnssec_details.key_tags.join(', ')}</span>
 										</div>
 									{/if}
-									{#if result.dnssec_details.algorithms.length > 0 && result.dnssec_details.algorithms[0] !== '未检测到'}
+									{#if result.dnssec_details.algorithms.length > 0 && result.dnssec_details.algorithms[0] !== 'Not detected'}
 										<div class="detail-row">
 											<span class="detail-label">{$tr('dnsAnalyzer.signAlgorithms')}</span>
 											<span class="detail-value">{result.dnssec_details.algorithms.join(', ')}</span>
 										</div>
 									{/if}
-									{#if result.dnssec_details.digest_types.length > 0 && result.dnssec_details.digest_types[0] !== '未检测到'}
+									{#if result.dnssec_details.digest_types.length > 0 && result.dnssec_details.digest_types[0] !== 'Not detected'}
 										<div class="detail-row">
 											<span class="detail-label">{$tr('dnsAnalyzer.digestTypes')}</span>
 											<span class="detail-value">{result.dnssec_details.digest_types.join(', ')}</span>

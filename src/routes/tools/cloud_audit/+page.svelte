@@ -423,9 +423,9 @@
 									{@const catFindings = getCategoryFindings(cat)}
 									{@const catCritical = catFindings.filter(f => f.severity === 'critical').length}
 									{@const catHigh = catFindings.filter(f => f.severity === 'high').length}
-									<button class="category-card" onclick={() => { categoryFilter = cat === 'iam' ? 'IAM' : cat === 'storage' ? '存储' : cat === 'network' ? '网络' : cat === 'logging' ? '日志' : cat === 'encryption' ? '加密' : '计算'; activeResultTab = 'all'; }}>
+									<button class="category-card" onclick={() => { categoryFilter = cat; activeResultTab = 'all'; }}>
 										<div class="category-header">
-											<span class="category-icon">{getCategoryIcon(cat === 'iam' ? 'IAM' : cat === 'storage' ? '存储' : cat === 'network' ? '网络' : cat === 'logging' ? '日志' : cat === 'encryption' ? '加密' : '计算')}</span>
+											<span class="category-icon">{getCategoryIcon(cat)}</span>
 											<span class="category-name">{$tr(`cloudAudit.category.${cat}`)}</span>
 										</div>
 										<div class="category-count">{count} {$tr('cloudAudit.stats.findings')}</div>

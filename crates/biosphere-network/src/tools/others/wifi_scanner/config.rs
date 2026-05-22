@@ -101,7 +101,7 @@ impl WifiScannerTool {
             if net.encryption == "Open" {
                 vulnerabilities.push(WifiVulnerability {
                     severity: "high".to_string(),
-                    category: "开放网络".to_string(),
+                    category: "Open Network".to_string(),
                     description: format!("网络 '{}' 无加密保护，数据可被窃听", net.ssid),
                     affected_network: net.ssid.clone(),
                     recommendation: "避免连接开放WiFi，或使用VPN加密通信".to_string(),
@@ -110,7 +110,7 @@ impl WifiScannerTool {
             if net.encryption == "WEP" {
                 vulnerabilities.push(WifiVulnerability {
                     severity: "high".to_string(),
-                    category: "弱加密".to_string(),
+                    category: "Weak Encryption".to_string(),
                     description: format!("网络 '{}' 使用WEP加密，可在数分钟内被破解", net.ssid),
                     affected_network: net.ssid.clone(),
                     recommendation: "升级到WPA2或WPA3加密".to_string(),
@@ -119,7 +119,7 @@ impl WifiScannerTool {
             if net.encryption == "WPA" {
                 vulnerabilities.push(WifiVulnerability {
                     severity: "medium".to_string(),
-                    category: "过时加密".to_string(),
+                    category: "Outdated Encryption".to_string(),
                     description: format!("网络 '{}' 使用WPA加密（已过时），存在已知漏洞", net.ssid),
                     affected_network: net.ssid.clone(),
                     recommendation: "升级到WPA2或WPA3加密".to_string(),
@@ -128,7 +128,7 @@ impl WifiScannerTool {
             if net.signal_strength > -50 {
                 vulnerabilities.push(WifiVulnerability {
                     severity: "low".to_string(),
-                    category: "信号过强".to_string(),
+                    category: "Excessive Signal".to_string(),
                     description: format!("网络 '{}' 信号极强，可能泄露到建筑物外部", net.ssid),
                     affected_network: net.ssid.clone(),
                     recommendation: "降低AP发射功率，限制信号覆盖范围".to_string(),
@@ -712,7 +712,7 @@ if interfaces.isEmpty {
             }
             _ => {
                 score = 50;
-                notes.push("未知加密类型".to_string());
+                notes.push("Unknown Encryption".to_string());
             }
         }
 
@@ -739,13 +739,13 @@ if interfaces.isEmpty {
         let weak = networks.iter().filter(|n| n.signal_strength < -75).count();
 
         let overall_risk = if open > 0 || wep > 0 {
-            "高危".to_string()
+            "High".to_string()
         } else if wpa > 0 {
-            "中危".to_string()
+            "Medium".to_string()
         } else if wpa2 > 0 && wpa3 > 0 {
-            "低危".to_string()
+            "Low".to_string()
         } else {
-            "安全".to_string()
+            "Safe".to_string()
         };
 
         WifiSecuritySummary {
@@ -944,7 +944,7 @@ impl WifiCrackDiscoveryTool {
     fn evaluate_crackability(net: &WifiNetwork) -> (bool, String, String, f64, String) {
         match net.encryption.as_str() {
             "Open" => {
-                (true, "无需破解".to_string(), "即时".to_string(), 1.0,
+                (true, "No Crack Needed".to_string(), "即时".to_string(), 1.0,
                  "开放网络无需密码即可连接，所有通信数据可被窃听。攻击者可轻易进行中间人攻击。".to_string())
             }
             "WEP" => {
@@ -992,7 +992,7 @@ impl WifiCrackDiscoveryTool {
                  "WPA3使用SAE替代PSK，提供前向安全性并抵御离线字典攻击。目前没有已知的实用破解方法。".to_string())
             }
             _ => {
-                (false, "未知加密类型".to_string(), "无法评估".to_string(), 0.0,
+                (false, "Unknown Encryption".to_string(), "无法评估".to_string(), 0.0,
                  "无法识别的加密类型，无法评估破解可能性。".to_string())
             }
         }
@@ -1306,7 +1306,7 @@ impl WifiAutoCrackTool {
                  "WPA3使用SAE (Simultaneous Authentication of Equals) 替代PSK，提供前向安全性并完全抵御离线字典攻击。目前没有已知的实用破解方法。".to_string())
             }
             _ => {
-                (false, false, "未知加密类型".to_string(), None, "无法评估".to_string(),
+                (false, false, "Unknown Encryption".to_string(), None, "无法评估".to_string(),
                  "无法识别的加密类型，无法尝试破解。".to_string())
             }
         }

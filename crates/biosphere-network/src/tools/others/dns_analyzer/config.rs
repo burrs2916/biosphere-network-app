@@ -89,7 +89,7 @@ pub struct DnsAnalyzerTool;
 impl DnsAnalyzerTool {
     pub async fn analyze(config: &DnsAnalyzerConfig) -> std::result::Result<DnsAnalyzerResult, String> {
         if config.domain.is_empty() {
-            return Err("请提供域名".to_string());
+            return Err("Please provide a domain name".to_string());
         }
 
         let domain = config.domain.trim().to_string();
@@ -229,8 +229,8 @@ impl DnsAnalyzerTool {
             "DNS分析完成 | 域名: {} | 记录数: {} | DNSSEC: {} | 区域传输风险: {} | 安全问题: {} (高:{} 中:{} 低:{} 信息:{})",
             domain,
             total_records,
-            if dnssec_enabled { "已启用" } else { "未启用" },
-            if zone_transfer_possible { "是" } else { "否" },
+            if dnssec_enabled { "Enabled" } else { "Disabled" },
+            if zone_transfer_possible { "Yes" } else { "No" },
             issue_count,
             high_count,
             medium_count,
@@ -765,8 +765,8 @@ impl DnsAnalyzerTool {
 
         if !enabled {
             key_tags = vec![0];
-            algorithms = vec!["未检测到".to_string()];
-            digest_types = vec!["未检测到".to_string()];
+            algorithms = vec!["Not detected".to_string()];
+            digest_types = vec!["Not detected".to_string()];
         }
 
         (enabled, DnssecDetails {
@@ -789,7 +789,7 @@ impl DnsAnalyzerTool {
             "14" => "ECDSA/P384 SHA-384".to_string(),
             "15" => "Ed25519".to_string(),
             "16" => "Ed448".to_string(),
-            _ => format!("未知({})", code),
+            _ => format!("Unknown({})", code),
         }
     }
 
@@ -799,7 +799,7 @@ impl DnsAnalyzerTool {
             "2" => "SHA-256".to_string(),
             "3" => "GOST R 34.11-94".to_string(),
             "4" => "SHA-384".to_string(),
-            _ => format!("未知({})", code),
+            _ => format!("Unknown({})", code),
         }
     }
 
@@ -847,7 +847,7 @@ impl DnsAnalyzerTool {
 
     async fn attempt_axfr(domain: &str, nameserver_ip: &str) -> std::result::Result<Vec<DnsRecord>, String> {
         let addr = format!("{}:53", nameserver_ip);
-        let socket_addr: SocketAddr = addr.parse().map_err(|e| format!("无效地址: {}", e))?;
+        let socket_addr: SocketAddr = addr.parse().map_err(|e| format!("Invalid address: {}", e))?;
 
         let mut stream = match tokio::net::TcpStream::connect(socket_addr).await {
             Ok(s) => s,
