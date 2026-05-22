@@ -3665,60 +3665,98 @@ struct DashboardToolUsage {
 fn get_dashboard_data(
     db: State<Mutex<Database>>,
 ) -> Result<DashboardData, String> {
-    let db_guard = db.lock().map_err(|e| e.to_string())?;
+    let db_guard = db.lock().map_err(|e| format!("Database lock failed: {}", e))?;
+
+    // Scan stats — return zeros on error (fresh database, missing table, etc.)
+    let (total_scans, completed_scans, failed_scans, running_scans, total_open_ports, success_rate) =
+        db_guard.get_scan_tasks(1000, 0)
+            .map(|tasks| {
+                let total = tasks.len() as i64;
+                let completed = tasks.iter().filter(|t| t.status == "completed").count() as i64;
+                let failed = tasks.iter().filter(|t| t.status == "failed" || t.status == "error").count() as i64;
+                let running = tasks.iter().filter(|t| t.status == "running").count() as i64;
+                let open = tasks.iter().filter_map(|t| t.open_ports).map(|p| p as i64).sum();
+                let rate = if total > 0 { (completed as f64 / total as f64) * 100.0 } else { 0.0 };
+                (total, completed, failed, running, open, rate)
+            })
+            .unwrap_or_else(|e| {
+                eprintln!("Dashboard: scan_tasks query failed: {}", e);
+                (0, 0, 0, 0, 0, 0.0)
+            });
+
+    // Target stats — return zeros on error
     let service = biosphere_network::TargetService::new(db_guard.clone());
+    let (total_targets, total_vulnerabilities, active_targets, at_risk_targets) =
+        service.get_targets(1, 1000)
+            .map(|r| {
+                let t = r.targets;
+                let vuln = t.iter().map(|x| x.vulnerabilities_count as i64).sum();
+                let active = t.iter().filter(|x| x.is_active).count() as i64;
+                let risk = t.iter().filter(|x| x.risk_level == "critical" || x.risk_level == "high").count() as i64;
+                (r.total as i64, vuln, active, risk)
+            })
+            .unwrap_or_else(|e| {
+                eprintln!("Dashboard: target query failed: {}", e);
+                (0, 0, 0, 0)
+            });
 
-    let scan_tasks = db_guard.get_scan_tasks(1000, 0).map_err(|e| e.to_string())?;
-    let total_scans = scan_tasks.len() as i64;
-    let completed_scans = scan_tasks.iter().filter(|t| t.status == "completed").count() as i64;
-    let failed_scans = scan_tasks.iter().filter(|t| t.status == "failed" || t.status == "error").count() as i64;
-    let running_scans = scan_tasks.iter().filter(|t| t.status == "running").count() as i64;
-    let total_open_ports = scan_tasks.iter().filter_map(|t| t.open_ports).map(|p| p as i64).sum();
-    let success_rate = if total_scans > 0 {
-        (completed_scans as f64 / total_scans as f64) * 100.0
-    } else {
-        0.0
-    };
+    // Groups — empty on error
+    let total_groups = db_guard.get_target_groups(1000, 0)
+        .map(|g| g.len() as i64)
+        .unwrap_or_else(|e| {
+            eprintln!("Dashboard: target_groups query failed: {}", e);
+            0
+        });
 
-    let targets_result = service.get_targets(1, 1000).map_err(|e| e.to_string())?;
-    let targets = targets_result.targets;
-    let total_targets = targets_result.total as i64;
-    let total_vulnerabilities = targets.iter().map(|t| t.vulnerabilities_count as i64).sum();
-    let active_targets = targets.iter().filter(|t| t.is_active).count() as i64;
-    let at_risk_targets = targets.iter().filter(|t| t.risk_level == "critical" || t.risk_level == "high").count() as i64;
+    // Risk distribution
+    let risk_distribution = db_guard.get_targets(1000, 0)
+        .map(|targets| DashboardRiskDistribution {
+            critical: targets.iter().filter(|t| t.risk_level == "critical").count() as i64,
+            high: targets.iter().filter(|t| t.risk_level == "high").count() as i64,
+            medium: targets.iter().filter(|t| t.risk_level == "medium").count() as i64,
+            low: targets.iter().filter(|t| t.risk_level == "low").count() as i64,
+            info: targets.iter().filter(|t| t.risk_level == "info" || t.risk_level.is_empty()).count() as i64,
+        })
+        .unwrap_or_else(|e| {
+            eprintln!("Dashboard: risk distribution query failed: {}", e);
+            DashboardRiskDistribution { critical: 0, high: 0, medium: 0, low: 0, info: 0 }
+        });
 
-    let groups = db_guard.get_target_groups(1000, 0).map_err(|e| e.to_string())?;
-    let total_groups = groups.len() as i64;
+    // Recent activity — empty on error
+    let recent_activity = db_guard.get_all_tool_history(10, 0)
+        .map(|history| history.iter().map(|h| DashboardActivityItem {
+            tool_type: h.tool_type.clone(),
+            tool_name: h.tool_name.clone(),
+            input_summary: h.input_summary.clone(),
+            status: h.status.clone(),
+            created_at: h.created_at.format("%Y-%m-%d %H:%M:%S").to_string(),
+        }).collect())
+        .unwrap_or_else(|e| {
+            eprintln!("Dashboard: tool_history query failed: {}", e);
+            Vec::new()
+        });
 
-    let risk_distribution = DashboardRiskDistribution {
-        critical: targets.iter().filter(|t| t.risk_level == "critical").count() as i64,
-        high: targets.iter().filter(|t| t.risk_level == "high").count() as i64,
-        medium: targets.iter().filter(|t| t.risk_level == "medium").count() as i64,
-        low: targets.iter().filter(|t| t.risk_level == "low").count() as i64,
-        info: targets.iter().filter(|t| t.risk_level == "info" || t.risk_level.is_empty()).count() as i64,
-    };
+    // Tool usage — empty on error
+    let tool_usage = db_guard.get_all_tool_history(1000, 0)
+        .map(|all_history| {
+            let mut usage_map: std::collections::HashMap<String, (String, i64)> = std::collections::HashMap::new();
+            for h in &all_history {
+                let entry = usage_map.entry(h.tool_type.clone()).or_insert((h.tool_name.clone(), 0));
+                entry.1 += 1;
+            }
+            let mut usage: Vec<DashboardToolUsage> = usage_map.into_iter()
+                .map(|(tool_type, (tool_name, count))| DashboardToolUsage { tool_type, tool_name, count })
+                .collect();
+            usage.sort_by(|a, b| b.count.cmp(&a.count));
+            usage.truncate(5);
+            usage
+        })
+        .unwrap_or_else(|e| {
+            eprintln!("Dashboard: tool_usage query failed: {}", e);
+            Vec::new()
+        });
 
-    let tool_history = db_guard.get_all_tool_history(10, 0).map_err(|e| e.to_string())?;
-    let recent_activity = tool_history.iter().map(|h| DashboardActivityItem {
-        tool_type: h.tool_type.clone(),
-        tool_name: h.tool_name.clone(),
-        input_summary: h.input_summary.clone(),
-        status: h.status.clone(),
-        created_at: h.created_at.format("%Y-%m-%d %H:%M:%S").to_string(),
-    }).collect();
-
-    let all_tool_history = db_guard.get_all_tool_history(1000, 0).map_err(|e| e.to_string())?;
-    let mut usage_map: std::collections::HashMap<String, (String, i64)> = std::collections::HashMap::new();
-    for h in &all_tool_history {
-        let entry = usage_map.entry(h.tool_type.clone()).or_insert((h.tool_name.clone(), 0));
-        entry.1 += 1;
-    }
-    let mut tool_usage: Vec<DashboardToolUsage> = usage_map.into_iter()
-        .map(|(tool_type, (tool_name, count))| DashboardToolUsage { tool_type, tool_name, count })
-        .collect();
-    tool_usage.sort_by(|a, b| b.count.cmp(&a.count));
-    tool_usage.truncate(5);
-
+    // System info — always available
     let resources = SystemResources::detect_cached();
     let system_info = SystemInfoResponse {
         cpu_cores: resources.cpu_cores,
